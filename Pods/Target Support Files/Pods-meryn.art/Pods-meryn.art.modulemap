@@ -1,0 +1,6 @@
+framework module Pods_meryn_art {
+  umbrella header "Pods-meryn.art-umbrella.h"
+
+  export *
+  module * { export * }
+}
