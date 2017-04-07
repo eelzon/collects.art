@@ -36,11 +36,11 @@ class CollectionsTableViewController: UITableViewController {
   }
   
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let community = collections[indexPath.row] as! NSDictionary
+    let collection = collections[indexPath.row] as! NSDictionary
 
     let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! CollectionsTableViewCell;
     
-    cell.titleLabel?.text = (community["title"]! as! String);
+    cell.titleLabel?.text = (collection.valueForKey("title") as! String);
     
     return cell;
   }
@@ -72,21 +72,24 @@ class CollectionsTableViewController: UITableViewController {
   
   @IBAction func createCollection(button: UIButton) {
     //1. Create the alert controller.
-    var alert = UIAlertController(title: "Add collection", message: "Enter a title", preferredStyle: .Alert)
+    let alert = UIAlertController(title: "Add collection", message: "Enter a title", preferredStyle: .Alert);
     
     //2. Add the text field. You can configure it however you need.
     alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
       textField.text = ""
-    })
+    });
     
     //3. Grab the value from the text field, and print it when the user clicks OK.
     alert.addAction(UIAlertAction(title: "Create", style: .Default, handler: { [weak alert] (action) -> Void in
-      let textField = alert.textFields![0] as UITextField
-      println("Text field: \(textField.text)")
+      let textField = alert!.textFields![0] as UITextField
+      let collection = NSMutableDictionary.init(object: textField.text!, forKey: "title");
+      self.collections.addObject(collection);
+      NSUserDefaults.standardUserDefaults().setObject(self.collections, forKey: "collections");
+      self.tableView.reloadData();
     }))
     
     // 4. Present the alert.
-    self.presentViewController(alert, animated: true, completion: nil)
+    self.presentViewController(alert, animated: true, completion: nil);
   }
   
 }

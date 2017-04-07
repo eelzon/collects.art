@@ -40,7 +40,7 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   }
   
   override func viewWillAppear(animated: Bool) {
-    self.title = (NSUserDefaults.standardUserDefaults().objectForKey("communityName") as! String);
+    //self.title = (NSUserDefaults.standardUserDefaults().objectForKey("communityName") as! String);
     self.navigationItem.setHidesBackButton(false, animated: false)
     
     // get entries
@@ -50,7 +50,7 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   }
   
   override func viewWillDisappear(animated: Bool) {
-    self.title = "";
+    //self.title = "";
     super.viewWillDisappear(animated)
   }
   
