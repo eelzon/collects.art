@@ -10,6 +10,6 @@ import UIKit
 
 class CollectionsTableViewCell: UITableViewCell {
 
-    @IBOutlet var titleLabel: UILabel!
+  @IBOutlet var titleLabel: UILabel!
 
 }
