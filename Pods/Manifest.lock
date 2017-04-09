@@ -4,17 +4,47 @@ PODS:
     - Alamofire (~> 3.3)
   - AlamofireNetworkActivityIndicator (1.0.1):
     - Alamofire (~> 3.3)
+  - Firebase (3.3.0):
+    - Firebase/Core (= 3.3.0)
+  - Firebase/Analytics (3.3.0):
+    - FirebaseAnalytics (= 3.2.1)
+  - Firebase/Core (3.3.0):
+    - Firebase/Analytics (= 3.3.0)
+  - FirebaseAnalytics (3.2.1):
+    - FirebaseInstanceID (~> 1.0)
+    - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleSymbolUtilities (~> 1.1)
+    - GoogleUtilities (~> 1.3)
+  - FirebaseInstanceID (1.0.7)
+  - Google (3.0.3):
+    - Google/Core (= 3.0.3)
+  - Google/Core (3.0.3):
+    - FirebaseAnalytics (~> 3.2)
+  - GoogleInterchangeUtilities (1.2.1):
+    - GoogleSymbolUtilities (~> 1.0)
+  - GoogleSymbolUtilities (1.1.1)
+  - GoogleUtilities (1.3.1):
+    - GoogleSymbolUtilities (~> 1.0)
 
 DEPENDENCIES:
   - Alamofire (~> 3.4)
   - AlamofireImage (~> 2.0)
   - AlamofireNetworkActivityIndicator (~> 1.0)
+  - Firebase
+  - Google
 
 SPEC CHECKSUMS:
   Alamofire: 01a82e2f6c0f860ade35534c8dd88be61bdef40c
   AlamofireImage: 87408b652e0f5ae5fe364035f15aea8b9b24c77e
   AlamofireNetworkActivityIndicator: 49a6e39afb947136f7b1872bae2d684957c26697
+  Firebase: 6250071f0e2440a5c4c67b8cb6b868f868237ac3
+  FirebaseAnalytics: 0fd6532cb2c3d03cd5cf26ad295ccb091efd3104
+  FirebaseInstanceID: a9d923f3d0b6fbf9fac89310860357aaadc34be5
+  Google: 813c467362eabc11385f5a5cc9ad0cb651a58f4e
+  GoogleInterchangeUtilities: def8415a862effc67d549d5b5b0b9c7a2f97d4de
+  GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
+  GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
 
-PODFILE CHECKSUM: 1a30f627a750ff873522e86c9014a40212081df5
+PODFILE CHECKSUM: da4d836f103060b02afbd8727918c7cb7424c175
 
 COCOAPODS: 1.2.0

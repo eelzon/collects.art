@@ -6,4 +6,6 @@ target 'meryn.art' do
   pod "Alamofire", "~> 3.4"
   pod "AlamofireImage", "~> 2.0"
   pod "AlamofireNetworkActivityIndicator", "~> 1.0"
+  pod "Google"
+  pod "Firebase"
 end

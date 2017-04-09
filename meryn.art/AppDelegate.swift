@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if (collections == nil) {
       NSUserDefaults.standardUserDefaults().setObject([], forKey: "collections");
     }
+    
+    // Use Firebase library to configure APIs
+    FIRApp.configure()
 
     return true
   }
