@@ -17,6 +17,7 @@
 		652CA7C21E971A2900AA749F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652CA7C11E971A2900AA749F /* AppDelegate.swift */; };
 		652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7C81E971A2900AA749F /* Assets.xcassets */; };
 		652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */; };
+		65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,7 +25,6 @@
 		652839671E9726530060CFB7 /* CollectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionTableViewCell.swift; sourceTree = "<group>"; };
 		652839681E9726530060CFB7 /* EntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
 		652839691E9726530060CFB7 /* CollectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionTableViewController.swift; sourceTree = "<group>"; };
-		6528396A1E9726530060CFB7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		652839731E9737040060CFB7 /* CollectionsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionsTableViewCell.swift; sourceTree = "<group>"; };
 		652839741E9737040060CFB7 /* CollectionsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionsTableViewController.swift; sourceTree = "<group>"; };
 		652CA7BE1E971A2900AA749F /* meryn.art.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = meryn.art.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,6 +32,7 @@
 		652CA7C81E971A2900AA749F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		652CA7CB1E971A2900AA749F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		652CA7CD1E971A2900AA749F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8A30967433E219950A198B53 /* Pods-meryn.art.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meryn.art.release.xcconfig"; path = "Pods/Target Support Files/Pods-meryn.art/Pods-meryn.art.release.xcconfig"; sourceTree = "<group>"; };
 		D8B52D470C5C074290F0AB5E /* Pods_meryn_art.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_meryn_art.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76062C24DFE19F2653AA3AF /* Pods-meryn.art.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-meryn.art.debug.xcconfig"; path = "Pods/Target Support Files/Pods-meryn.art/Pods-meryn.art.debug.xcconfig"; sourceTree = "<group>"; };
@@ -79,16 +80,16 @@
 			isa = PBXGroup;
 			children = (
 				652CA7C11E971A2900AA749F /* AppDelegate.swift */,
-				652839621E9726450060CFB7 /* Main.storyboard */,
 				652839731E9737040060CFB7 /* CollectionsTableViewCell.swift */,
 				652839741E9737040060CFB7 /* CollectionsTableViewController.swift */,
 				652839681E9726530060CFB7 /* EntryViewController.swift */,
 				652839671E9726530060CFB7 /* CollectionTableViewCell.swift */,
 				652839691E9726530060CFB7 /* CollectionTableViewController.swift */,
-				6528396A1E9726530060CFB7 /* Info.plist */,
 				652CA7C81E971A2900AA749F /* Assets.xcassets */,
+				652839621E9726450060CFB7 /* Main.storyboard */,
 				652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */,
 				652CA7CD1E971A2900AA749F /* Info.plist */,
+				65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */,
 			);
 			path = meryn.art;
 			sourceTree = "<group>";
@@ -165,6 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				652839641E9726450060CFB7 /* Main.storyboard in Resources */,
+				65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */,
 				652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */,
 				652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */,
 			);
