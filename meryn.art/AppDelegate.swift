@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Use Firebase library to configure APIs
     FIRApp.configure()
 
+    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "Times New Roman", size:16)!];
+
     return true
   }
 

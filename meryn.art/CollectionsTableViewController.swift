@@ -45,6 +45,11 @@ class CollectionsTableViewController: UITableViewController {
     return cell;
   }
   
+  override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    cell.separatorInset = UIEdgeInsetsZero
+    cell.layoutMargins = UIEdgeInsetsZero
+  }
+
 //  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 //    let community = collections[indexPath.row] as! NSDictionary
 //    let communityID = community["community_id"]! as! Int
