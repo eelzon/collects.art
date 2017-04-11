@@ -11,12 +11,6 @@ import UIKit
 class CollectionTableViewCell: UITableViewCell {
 
   @IBOutlet var titleLabel: UILabel!
-  @IBOutlet var bodyImageView: UIImageView!
-  @IBOutlet var profileImageView: UIImageView!
-  @IBOutlet var bodyLabel: UILabel!
-  @IBOutlet var userLabel: UILabel!
-  @IBOutlet var publishedLabel: UILabel!
-  @IBOutlet var commentsLabel: UILabel!
-  @IBOutlet var shareButton: UIButton!
+  @IBOutlet var entryImageView: UIImageView!
   
 }

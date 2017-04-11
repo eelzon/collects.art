@@ -12,27 +12,25 @@ import Firebase
 class CollectionsTableViewController: UITableViewController {
   
   var collections: NSMutableArray!
-  var storageRef: FIRStorageReference!
-  var databaseRef: FIRDatabaseReference!
+  var ref: FIRDatabaseReference!
+  var uid: String!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    storageRef = FIRStorage.storage().reference()
-    databaseRef = FIRDatabase.database().reference()
+    ref = FIRDatabase.database().reference()
+    
+    uid = UserDefaults.standard.string(forKey: "uid")!;
 
-    collections = UserDefaults.standard.object(forKey: "collections") as! NSMutableArray;
+    let array = UserDefaults.standard.object(forKey: "collections") as! NSArray;
+    collections = NSMutableArray(array: array)
   }
   
   override func viewWillAppear(_ animated: Bool) {
-//    self.title = "Pick a Community";
-//    self.navigationItem.setHidesBackButton(true, animated: false)
     super.viewWillAppear(animated)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-//    self.title = "";
-//    self.navigationItem.setHidesBackButton(false, animated: false)
     super.viewWillDisappear(animated)
   }
   
@@ -45,7 +43,7 @@ class CollectionsTableViewController: UITableViewController {
 
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectionsTableViewCell;
     
-    cell.titleLabel?.text = (collection.value(forKey: "title") as! String);
+    cell.titleLabel?.text = collection.value(forKey: "title") as? String;
     
     return cell;
   }
@@ -55,15 +53,8 @@ class CollectionsTableViewController: UITableViewController {
     cell.layoutMargins = UIEdgeInsets.zero
   }
 
-//  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//    let community = collections[indexPath.row] as! NSDictionary
-//    let communityID = community["community_id"]! as! Int
-//    let communityName = community["community_name"]! as! String
-//    NSUserDefaults.standardUserDefaults().setInteger(communityID, forKey: "communityID");
-//    NSUserDefaults.standardUserDefaults().setObject(communityName, forKey: "communityName");
-//    
-//    let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Feed");
-//    self.navigationController?.pushViewController(vc, animated: true);
+//  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//
 //  }
   
   override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
@@ -72,8 +63,11 @@ class CollectionsTableViewController: UITableViewController {
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if (editingStyle == UITableViewCellEditingStyle.delete) {
+      let collection = collections[indexPath.row] as! NSDictionary
       collections.removeObject(at: indexPath.row);
-
+      UserDefaults.standard.set(collections, forKey: "collections");
+      self.ref.child("users/\(uid)/collects/\(collection.value(forKey: "title") as! String)").removeValue()
+      
       tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
       
       tableView.reloadData();
@@ -82,7 +76,7 @@ class CollectionsTableViewController: UITableViewController {
   
   @IBAction func createCollection(_ button: UIButton) {
     //1. Create the alert controller.
-    let alert = UIAlertController(title: "Add collection", message: "Enter a title", preferredStyle: .alert);
+    let alert = UIAlertController(title: "Add collect", message: "Enter a title", preferredStyle: .alert);
     
     //2. Add the text field. You can configure it however you need.
     alert.addTextField(configurationHandler: { (textField) -> Void in
@@ -105,30 +99,20 @@ class CollectionsTableViewController: UITableViewController {
     // upload blank file
     // store data in nsuserdefaults
     
-    let collection = NSMutableDictionary.init(object: collect, forKey: "title" as NSCopying);
+    self.ref.child("users/\(uid)/collects/\(collect!)").setValue(["readonly": false])
+    self.ref.child("collects/\(collect!)").setValue(["url": false, "template": false, "entries": false])
+    
+    let collection: [String: Any] = ["title": collect!]
 
     collections.add(collection);
     
     UserDefaults.standard.set(collections, forKey: "collections");
-    
-    let file = "index.txt" //this is the file. we will write to and read from it
-    
-    let text = "" //just a text
-    
-    if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
-      let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
-      
-      //writing
-      do {
-        try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
-      }
-      catch {/* error handling here */}
-      
-//      //reading
-//      do {
-//        let text2 = try NSString(contentsOfURL: path, encoding: NSUTF8StringEncoding)
-//      }
-//      catch {/* error handling here */}
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if let indexPath = tableView.indexPathForSelectedRow {
+      let collection = collections[indexPath.row] as! NSDictionary
+      UserDefaults.standard.set(collection.value(forKey: "title") as! String, forKey: "collectName");
     }
   }
   
