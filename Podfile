@@ -3,9 +3,8 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'meryn.art' do
-  pod "Alamofire", "~> 3.4"
-  pod "AlamofireImage", "~> 2.0"
-  pod "AlamofireNetworkActivityIndicator", "~> 1.0"
-  pod "Google"
-  pod "Firebase"
+  pod 'Firebase'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
 end

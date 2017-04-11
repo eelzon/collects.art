@@ -7,47 +7,52 @@
 //
 
 import UIKit
-import AlamofireImage
+import Firebase
 
 class CollectionsTableViewController: UITableViewController {
   
-  var collections = NSMutableArray();
+  var collections: NSMutableArray!
+  var storageRef: FIRStorageReference!
+  var databaseRef: FIRDatabaseReference!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    collections = NSUserDefaults.standardUserDefaults().objectForKey("collections") as! NSMutableArray;
+    storageRef = FIRStorage.storage().reference()
+    databaseRef = FIRDatabase.database().reference()
+
+    collections = UserDefaults.standard.object(forKey: "collections") as! NSMutableArray;
   }
   
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
 //    self.title = "Pick a Community";
 //    self.navigationItem.setHidesBackButton(true, animated: false)
     super.viewWillAppear(animated)
   }
   
-  override func viewWillDisappear(animated: Bool) {
+  override func viewWillDisappear(_ animated: Bool) {
 //    self.title = "";
 //    self.navigationItem.setHidesBackButton(false, animated: false)
     super.viewWillDisappear(animated)
   }
   
-  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return collections.count;
   }
   
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let collection = collections[indexPath.row] as! NSDictionary
 
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! CollectionsTableViewCell;
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectionsTableViewCell;
     
-    cell.titleLabel?.text = (collection.valueForKey("title") as! String);
+    cell.titleLabel?.text = (collection.value(forKey: "title") as! String);
     
     return cell;
   }
   
-  override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-    cell.separatorInset = UIEdgeInsetsZero
-    cell.layoutMargins = UIEdgeInsetsZero
+  override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    cell.separatorInset = UIEdgeInsets.zero
+    cell.layoutMargins = UIEdgeInsets.zero
   }
 
 //  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -61,40 +66,70 @@ class CollectionsTableViewController: UITableViewController {
 //    self.navigationController?.pushViewController(vc, animated: true);
 //  }
   
-  override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
+  override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
     return "X";
   }
   
-  override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    if (editingStyle == UITableViewCellEditingStyle.Delete) {
-      collections.removeObjectAtIndex(indexPath.row);
+  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if (editingStyle == UITableViewCellEditingStyle.delete) {
+      collections.removeObject(at: indexPath.row);
 
-      tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic);
+      tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
       
       tableView.reloadData();
     }
   }
   
-  @IBAction func createCollection(button: UIButton) {
+  @IBAction func createCollection(_ button: UIButton) {
     //1. Create the alert controller.
-    let alert = UIAlertController(title: "Add collection", message: "Enter a title", preferredStyle: .Alert);
+    let alert = UIAlertController(title: "Add collection", message: "Enter a title", preferredStyle: .alert);
     
     //2. Add the text field. You can configure it however you need.
-    alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
+    alert.addTextField(configurationHandler: { (textField) -> Void in
       textField.text = ""
     });
     
     //3. Grab the value from the text field, and print it when the user clicks OK.
-    alert.addAction(UIAlertAction(title: "Create", style: .Default, handler: { [weak alert] (action) -> Void in
+    alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
-      let collection = NSMutableDictionary.init(object: textField.text!, forKey: "title");
-      self.collections.addObject(collection);
-      NSUserDefaults.standardUserDefaults().setObject(self.collections, forKey: "collections");
+      self.createCollect(textField.text! as NSString)
       self.tableView.reloadData();
     }))
     
     // 4. Present the alert.
-    self.presentViewController(alert, animated: true, completion: nil);
+    self.present(alert, animated: true, completion: nil);
+  }
+  
+  func createCollect(_ collect: NSString!) {
+    // create blank file
+    // upload blank file
+    // store data in nsuserdefaults
+    
+    let collection = NSMutableDictionary.init(object: collect, forKey: "title" as NSCopying);
+
+    collections.add(collection);
+    
+    UserDefaults.standard.set(collections, forKey: "collections");
+    
+    let file = "index.txt" //this is the file. we will write to and read from it
+    
+    let text = "" //just a text
+    
+    if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+      let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
+      
+      //writing
+      do {
+        try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
+      }
+      catch {/* error handling here */}
+      
+//      //reading
+//      do {
+//        let text2 = try NSString(contentsOfURL: path, encoding: NSUTF8StringEncoding)
+//      }
+//      catch {/* error handling here */}
+    }
   }
   
 }

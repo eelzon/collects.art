@@ -8,16 +8,14 @@
 
 import QuartzCore
 import UIKit
-import Alamofire
-import AlamofireImage
 
 class CollectionTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
-  var entries = [];
+  var entries: NSArray!;
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  let dateParser = NSDateFormatter()
-  let dateFormatter = NSDateFormatter()
+  let dateParser = DateFormatter()
+  let dateFormatter = DateFormatter()
   let refreshControl = UIRefreshControl()
 
   override func viewDidLoad() {
@@ -31,17 +29,17 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
     
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-    tableView.hidden = true
+    tableView.isHidden = true
 
     // Initialize the refresh control.
     refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
-    refreshControl.addTarget(self, action: #selector(CollectionTableViewController.getEntries), forControlEvents: .ValueChanged)
+    refreshControl.addTarget(self, action: #selector(CollectionTableViewController.getEntries), for: .valueChanged)
     tableView.addSubview(refreshControl)
   }
   
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
     //self.title = (NSUserDefaults.standardUserDefaults().objectForKey("communityName") as! String);
-    self.navigationItem.setHidesBackButton(false, animated: false)
+    //self.navigationItem.setHidesBackButton(false, animated: false)
     
     // get entries
     getEntries();
@@ -49,33 +47,33 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
     super.viewWillAppear(animated)
   }
   
-  override func viewWillDisappear(animated: Bool) {
+  override func viewWillDisappear(_ animated: Bool) {
     //self.title = "";
     super.viewWillDisappear(animated)
   }
   
   func getEntries() {
     activityIndicator.startAnimating()
-    let headers = [
-      "Authorization": "foo",
-      "Accept": "application/json"
-    ]
-    let parameters = [
-      "type": "foo"
-    ];
-    
-    Alamofire.request(.GET,
-      "http://google.com",
-      headers: headers,
-      parameters: parameters)
-      .responseJSON { response in
-        let dict = response.result.value as! NSDictionary;
-        self.entries = (dict["_embedded"] as! NSDictionary)["entry"] as! NSArray;
-        self.activityIndicator.stopAnimating()
-        self.tableView.hidden = false;
-        self.tableView.reloadData();
-        self.refreshControl.endRefreshing()
-    }
+//    let headers = [
+//      "Authorization": "foo",
+//      "Accept": "application/json"
+//    ]
+//    let parameters = [
+//      "type": "foo"
+//    ];
+//    
+//    Alamofire.request(.GET,
+//      "http://google.com",
+//      headers: headers,
+//      parameters: parameters)
+//      .responseJSON { response in
+//        //let dict = response.result.value as! NSDictionary;
+//        //self.entries = (dict["_embedded"] as! NSDictionary)["entry"] as! NSArray;
+//        self.activityIndicator.stopAnimating()
+//        self.tableView.hidden = false;
+//        self.tableView.reloadData();
+//        self.refreshControl.endRefreshing()
+//    }
     
   }
   
@@ -83,12 +81,12 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
     
   }
   
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    NSNotificationCenter.defaultCenter().addObserverForName(UIContentSizeCategoryDidChangeNotification,
+    NotificationCenter.default.addObserver(forName: NSNotification.Name.UIContentSizeCategoryDidChange,
                                 object: nil,
-                                queue: NSOperationQueue.mainQueue()) {
+                                queue: OperationQueue.main) {
                                   [weak self] _ in self?.tableView.reloadData()
     }
   }
@@ -100,101 +98,105 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
 
   // MARK: - Table view data source
   
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return entries.count;
   }
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! CollectionTableViewCell
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectionTableViewCell
     
-    let entry = entries[indexPath.row] as! NSDictionary
-    let embedded = entry["_embedded"] as! NSDictionary
-
-    if (entry["title"] !== NSNull()) {
-      setLabelHTML(cell.titleLabel, html: (entry["title"] as! String), fontName: "OpenSans-Bold")
-    } else {
-      setLabelHTML(cell.titleLabel, html: "", fontName: "OpenSans-Bold")
-    }
-    
-    if (entry["body_extended"] !== NSNull()) {
-      setLabelHTML(cell.bodyLabel, html: (entry["body_extended"] as! String), fontName: "OpenSans")
-    } else {
-      setLabelHTML(cell.titleLabel, html: "", fontName: "OpenSans")
-    }
-    
-    if (embedded["author"] !== NSNull()) {
-      let author = (embedded["author"] as! NSDictionary);
-      cell.userLabel?.text = (author["username"] as! String);
-      cell.profileImageView?.af_setImageWithURL(NSURL(string: author["profile_image_url"] as! String)!)
-      let imageLayer = (cell.profileImageView?.layer)! as CALayer;
-      imageLayer.cornerRadius = 5;
-      imageLayer.borderWidth = 0;
-      imageLayer.masksToBounds = true;
-      cell.profileImageView?.layer.cornerRadius = (cell.profileImageView?.frame.size.width)! / 2;
-      cell.profileImageView?.layer.masksToBounds = true;
-    } else {
-      cell.userLabel?.text = "";
-      cell.profileImageView?.image = nil
-    }
-    
-    if (entry["visible_comments_count"] !== NSNull()) {
-      // TODO: wire up comment count label
-      cell.commentsLabel?.text = (entry["visible_comments_count"] as! String);
-    } else {
-      cell.commentsLabel?.text = "0";
-    }
-    
-    cell.shareButton.tag = indexPath.row;
-    
-    renderImage(cell, entry: entry)
-
-    cell.selectionStyle = .None
+//    let entry = entries[indexPath.row] as! NSDictionary
+//    let embedded = entry["_embedded"] as! NSDictionary
+//
+//    if (entry["title"] !== NSNull()) {
+//      setLabelHTML(cell.titleLabel, html: (entry["title"] as! String), fontName: "OpenSans-Bold")
+//    } else {
+//      setLabelHTML(cell.titleLabel, html: "", fontName: "OpenSans-Bold")
+//    }
+//    
+//    if (entry["body_extended"] !== NSNull()) {
+//      setLabelHTML(cell.bodyLabel, html: (entry["body_extended"] as! String), fontName: "OpenSans")
+//    } else {
+//      setLabelHTML(cell.titleLabel, html: "", fontName: "OpenSans")
+//    }
+//    
+//    if (embedded["author"] !== NSNull()) {
+//      let author = (embedded["author"] as! NSDictionary);
+//      cell.userLabel?.text = (author["username"] as! String);
+//      cell.profileImageView?.af_setImageWithURL(URL(string: author["profile_image_url"] as! String)!)
+//      let imageLayer = (cell.profileImageView?.layer)! as CALayer;
+//      imageLayer.cornerRadius = 5;
+//      imageLayer.borderWidth = 0;
+//      imageLayer.masksToBounds = true;
+//      cell.profileImageView?.layer.cornerRadius = (cell.profileImageView?.frame.size.width)! / 2;
+//      cell.profileImageView?.layer.masksToBounds = true;
+//    } else {
+//      cell.userLabel?.text = "";
+//      cell.profileImageView?.image = nil
+//    }
+//    
+//    if (entry["visible_comments_count"] !== NSNull()) {
+//      // TODO: wire up comment count label
+//      cell.commentsLabel?.text = (entry["visible_comments_count"] as! String);
+//    } else {
+//      cell.commentsLabel?.text = "0";
+//    }
+//    
+//    cell.shareButton.tag = indexPath.row;
+//    
+//    renderImage(cell, entry: entry)
+//
+//    cell.selectionStyle = .none
     
     return cell;
   }
 
-  func setLabelHTML(label: UILabel, html: String, fontName: String) {
+  func setLabelHTML(_ label: UILabel, html: String, fontName: String) {
     let wrappedHTML = "<span style=\"font-family: \(fontName); font-size: 14\">\(html)</span>"
     
     let attrStr = try! NSAttributedString(
-      data: wrappedHTML.dataUsingEncoding(NSUnicodeStringEncoding, allowLossyConversion: true)!,
-      options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding],
+      data: wrappedHTML.data(using: String.Encoding.unicode, allowLossyConversion: true)!,
+      options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: String.Encoding.utf8],
       documentAttributes: nil)
     label.attributedText = attrStr
   }
 
-  func renderImage(cell: CollectionTableViewCell, entry: NSDictionary) {
-    let embedded = entry["_embedded"] as! NSDictionary
-    if (embedded["fan_shot_image"] === NSNull()) {
-      return;
-    }
-
-    let image = (embedded["fan_shot_image"] as! NSDictionary)
-
-
-    let string = (image["public_filename"] as! String)
-
-    if (string == NSNull()) {
-      return;
-    }
-
-    let url = NSURL(string: string)!
-    cell.bodyImageView?.af_setImageWithURL(url);
+  func renderImage(_ cell: CollectionTableViewCell, entry: NSDictionary) {
+//    let embedded = entry["_embedded"] as! NSDictionary
+//    if (embedded["fan_shot_image"] === NSNull()) {
+//      return;
+//    }
+//
+//    let image = (embedded["fan_shot_image"] as! NSDictionary)
+//
+//
+//    let string = (image["public_filename"] as! String)
+//
+//    if (string == NSNull()) {
+//      return;
+//    }
+//
+//    let url = URL(string: string)!
+//    cell.bodyImageView?.af_setImageWithURL(url);
   }
   
-  @IBAction func openActivityViewController(sender: UIButton) {
-    let cell = tableView.cellForRowAtIndexPath(NSIndexPath.init(forRow: sender.tag, inSection: 0)) as! CollectionTableViewCell;
-    let entry = entries.objectAtIndex(sender.tag);
-    
-    let title = cell.titleLabel.attributedText?.string;
-    let image = cell.bodyImageView?.image
-    let URL = entry["url"] as! String
-    
-    let activityViewController = UIActivityViewController(activityItems: [title!, image!, URL], applicationActivities: nil)
-    activityViewController.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypeAirDrop, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypePostToTencentWeibo, UIActivityTypePostToWeibo]
-    self.navigationController?.presentViewController(activityViewController, animated: true) {
-      // ...
-    }
+  @IBAction func openActivityViewController(_ sender: UIButton) {
+//    let cell = tableView.cellForRow(at: IndexPath.init(row: sender.tag, section: 0)) as! CollectionTableViewCell;
+//    let entry = entries.object(at: sender.tag);
+//    
+//    let title = cell.titleLabel.attributedText?.string;
+//    let image = cell.bodyImageView?.image
+//    //let URL = entry["url"] as! String
+//    
+//    let activityViewController = UIActivityViewController(activityItems: [title!, image!, URL()], applicationActivities: nil)
+//    activityViewController.excludedActivityTypes = [UIActivityType.print, UIActivityType.copyToPasteboard, UIActivityType.assignToContact, UIActivityType.saveToCameraRoll, UIActivityType.addToReadingList, UIActivityType.airDrop, UIActivityType.postToFlickr, UIActivityType.postToVimeo, UIActivityType.postToTencentWeibo, UIActivityType.postToWeibo]
+//    self.navigationController?.present(activityViewController, animated: true) {
+//      // ...
+//    }
+  }
+  
+  @IBAction func pressButton(_ sender: UIButton) {
+    print("hello!")
   }
 
   /*
