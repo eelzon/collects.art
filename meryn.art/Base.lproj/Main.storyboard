@@ -56,7 +56,7 @@
                                 <rect key="frame" x="0.0" y="28" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tP1-5i-c9Y" id="X1r-X1-CRh">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder" translatesAutoresizingMaskIntoConstraints="NO" id="O6C-an-Jmu">
@@ -128,8 +128,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MNr-bV-fDg">
-                                            <rect key="frame" x="8" y="12" width="304" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MNr-bV-fDg">
+                                            <rect key="frame" x="8" y="8" width="304" height="18"/>
                                             <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -137,14 +137,9 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="MNr-bV-fDg" secondAttribute="trailing" constant="8" id="2kK-kr-DH8"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="12" id="K0F-pg-5Y1"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="M5j-b5-Qvd"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="centerY" secondItem="qji-Fg-bVk" secondAttribute="centerY" id="OKe-mx-AX4"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="trailing" secondItem="qji-Fg-bVk" secondAttribute="trailingMargin" id="OeL-Hk-ovs"/>
-                                        <constraint firstAttribute="bottom" secondItem="MNr-bV-fDg" secondAttribute="bottom" constant="11" id="Yjm-nd-0GN"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leadingMargin" id="efh-sQ-RPE"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="12" id="vgf-KG-ybK"/>
+                                        <constraint firstAttribute="trailing" secondItem="MNr-bV-fDg" secondAttribute="trailing" constant="8" id="CqE-oL-dHn"/>
+                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="iGu-Hs-doM"/>
+                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="8" id="wal-Wg-ujG"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -152,7 +147,7 @@
                                         <rect key="frame" x="0.0" y="72" width="320" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" tableViewCell="DrI-0b-p9C" id="0qd-Cs-ggc">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="76.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-f5-tDb">

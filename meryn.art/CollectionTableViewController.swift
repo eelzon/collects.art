@@ -49,6 +49,14 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
 //    tableView.isHidden = true
   }
   
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews();
+
+    let height = tableView.tableHeaderView!.subviews.first!.frame.maxY;
+    tableView.tableHeaderView!.bounds = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: height);
+    tableView.tableHeaderView = self.tableView.tableHeaderView;
+  }
+
   override func viewWillAppear(_ animated: Bool) {
     // get entries
     getEntries();
