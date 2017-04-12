@@ -25,6 +25,9 @@ class CollectionsTableViewController: UITableViewController {
 
     let array = UserDefaults.standard.object(forKey: "collections") as! NSArray;
     collections = NSMutableArray(array: array)
+
+    tableView.estimatedRowHeight = 80
+    tableView.rowHeight = UITableViewAutomaticDimension
   }
   
   override func viewWillAppear(_ animated: Bool) {
