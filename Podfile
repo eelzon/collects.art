@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
+platform :ios, '8.0'
 use_frameworks!
 
 target 'meryn.art' do
@@ -7,4 +7,5 @@ target 'meryn.art' do
   pod 'Firebase/Storage'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
+  pod 'SDCAlertView', '~> 7.1'
 end

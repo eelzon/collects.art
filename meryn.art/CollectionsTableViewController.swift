@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SDCAlertView
 
 class CollectionsTableViewController: UITableViewController {
   
@@ -75,23 +76,23 @@ class CollectionsTableViewController: UITableViewController {
   }
   
   @IBAction func createCollection(_ button: UIButton) {
-    //1. Create the alert controller.
-    let alert = UIAlertController(title: "Add collect", message: "Enter a title", preferredStyle: .alert);
-    
-    //2. Add the text field. You can configure it however you need.
-    alert.addTextField(configurationHandler: { (textField) -> Void in
-      textField.text = ""
+    let alert = AlertController(title: "", message: "", preferredStyle: .alert)
+    alert.addTextField(withHandler: { (textField) -> Void in
+      textField.autocapitalizationType = UITextAutocapitalizationType.none;
     });
-    
-    //3. Grab the value from the text field, and print it when the user clicks OK.
-    alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (action) -> Void in
+    alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       self.createCollect(textField.text! as NSString)
       self.tableView.reloadData();
     }))
+    alert.add(AlertAction(title: "Cancel", style: .normal))
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 14)!
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.normalTextColor = UIColor.black
+    alert.visualStyle.backgroundColor = UIColor.white
+    alert.visualStyle.cornerRadius = 0
     
-    // 4. Present the alert.
-    self.present(alert, animated: true, completion: nil);
+    alert.present()
   }
   
   func createCollect(_ collect: NSString!) {
