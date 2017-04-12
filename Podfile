@@ -8,4 +8,5 @@ target 'meryn.art' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'SDCAlertView', '~> 7.1'
+  pod 'AlamofireImage'
 end

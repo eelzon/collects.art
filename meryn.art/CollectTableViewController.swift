@@ -9,6 +9,7 @@
 import QuartzCore
 import UIKit
 import Firebase
+import AlamofireImage
 
 class CollectTableViewCell: UITableViewCell {
   
@@ -41,10 +42,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
       openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
     }
     
-    // turn on loading animation
-    
-    // turn off loading animation
-    
     uid = UserDefaults.standard.string(forKey: "uid")!;
     collect = UserDefaults.standard.string(forKey: "collectName")!;
     titleLabel.text = collect
@@ -53,7 +50,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
 
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-//    tableView.isHidden = true
+    tableView.isHidden = true
   }
   
   override func viewDidLayoutSubviews() {
@@ -79,14 +76,18 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
   
   func getEntries() {
-//    activityIndicator.startAnimating()
-//    ref.child("users/\(uid)/collects/\(collect!)").observeSingleEvent(of: .value, with: { (snapshot) in
-//      let collect = snapshot.value as? NSDictionary
-//      self.entries = collect?["entries"] as? NSDictionary as! NSMutableDictionary
-//      print(self.entries)
-//    }) { (error) in
-//      print(error.localizedDescription)
-//    }
+    activityIndicator.startAnimating()
+    ref.child("users/\(uid)/collects/\(collect!)").observe(.value, with: { snapshot in
+      for child in snapshot.children {
+        self.entries.add(child)
+      }
+      self.activityIndicator.stopAnimating()
+      self.tableView.isHidden = false
+    }) { (error) in
+      self.activityIndicator.stopAnimating()
+      self.tableView.isHidden = false
+      print(error.localizedDescription)
+    }
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -110,25 +111,9 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     let entry = entries[indexPath.row] as! NSDictionary
     
     cell.titleLabel?.text = entry.value(forKey: "title") as? String;
-
-//    cell.imageView?.af_setImageWithURL(URL(string: author["profile_image_url"] as! String)!)
+    cell.entryImageView?.af_setImage(withURL: URL(string: entry.value(forKey: "image") as! String)!)
     
     return cell;
-  }
-  
-  @IBAction func openActivityViewController(_ sender: UIButton) {
-//    let cell = tableView.cellForRow(at: IndexPath.init(row: sender.tag, section: 0)) as! CollectTableViewCell;
-//    let entry = entries.object(at: sender.tag);
-//    
-//    let title = cell.titleLabel.attributedText?.string;
-//    let image = cell.bodyImageView?.image
-//    //let URL = entry["url"] as! String
-//    
-//    let activityViewController = UIActivityViewController(activityItems: [title!, image!, URL()], applicationActivities: nil)
-//    activityViewController.excludedActivityTypes = [UIActivityType.print, UIActivityType.copyToPasteboard, UIActivityType.assignToContact, UIActivityType.saveToCameraRoll, UIActivityType.addToReadingList, UIActivityType.airDrop, UIActivityType.postToFlickr, UIActivityType.postToVimeo, UIActivityType.postToTencentWeibo, UIActivityType.postToWeibo]
-//    self.navigationController?.present(activityViewController, animated: true) {
-//      // ...
-//    }
   }
   
   /*

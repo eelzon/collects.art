@@ -189,17 +189,18 @@
                                     <outlet property="delegate" destination="Tlv-7y-fsl" id="rgp-Qw-5cS"/>
                                 </connections>
                             </tableView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FCK-zU-ua4">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="FCK-zU-ua4">
                                 <rect key="frame" x="150" y="220" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Gjh-Wd-E6c" secondAttribute="trailing" id="96J-87-uEq"/>
                             <constraint firstItem="Ei8-Nw-Vd8" firstAttribute="top" secondItem="Gjh-Wd-E6c" secondAttribute="bottom" id="Azy-j3-yfH"/>
+                            <constraint firstItem="FCK-zU-ua4" firstAttribute="centerX" secondItem="Gjh-Wd-E6c" secondAttribute="centerX" id="LIe-lJ-2EB"/>
                             <constraint firstItem="Gjh-Wd-E6c" firstAttribute="top" secondItem="Phb-0O-wFd" secondAttribute="bottom" id="fiy-KJ-xd2"/>
                             <constraint firstItem="Gjh-Wd-E6c" firstAttribute="leading" secondItem="p8K-af-g2v" secondAttribute="leading" id="xNz-2j-0Ag"/>
+                            <constraint firstItem="FCK-zU-ua4" firstAttribute="centerY" secondItem="Gjh-Wd-E6c" secondAttribute="centerY" id="xWP-na-P9w"/>
                         </constraints>
                     </view>
                     <toolbarItems>

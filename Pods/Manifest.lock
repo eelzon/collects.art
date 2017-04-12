@@ -1,4 +1,7 @@
 PODS:
+  - Alamofire (4.4.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
   - Firebase (3.3.0):
     - Firebase/Core (= 3.3.0)
   - Firebase/Analytics (3.3.0):
@@ -43,6 +46,7 @@ PODS:
   - SDCAlertView (7.1.2)
 
 DEPENDENCIES:
+  - AlamofireImage
   - Firebase
   - Firebase/Auth
   - Firebase/Database
@@ -50,6 +54,8 @@ DEPENDENCIES:
   - SDCAlertView (~> 7.1)
 
 SPEC CHECKSUMS:
+  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
   Firebase: 6250071f0e2440a5c4c67b8cb6b868f868237ac3
   FirebaseAnalytics: 0fd6532cb2c3d03cd5cf26ad295ccb091efd3104
   FirebaseAuth: 5efddc3fae47042b73585f083f956462be4f5b8e
@@ -63,6 +69,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   SDCAlertView: c39fa91a3aeb5eeba58fe9cea648263b131ff2bf
 
-PODFILE CHECKSUM: 6e34f13da088662395cd19bab2ffa48a3f395663
+PODFILE CHECKSUM: a79072184b706d0709f44d71d5ca26423bda8cb8
 
 COCOAPODS: 1.2.0
