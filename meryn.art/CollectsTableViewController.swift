@@ -1,5 +1,5 @@
 //
-//  CollectionsTableViewController
+//  CollectsTableViewController
 //  meryn.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
@@ -10,9 +10,15 @@ import UIKit
 import Firebase
 import SDCAlertView
 
-class CollectionsTableViewController: UITableViewController {
+class CollectsTableViewCell: UITableViewCell {
   
-  var collections: NSMutableArray!
+  @IBOutlet var titleLabel: UILabel!
+  
+}
+
+class CollectsTableViewController: UITableViewController {
+  
+  var collects: NSMutableArray!
   var ref: FIRDatabaseReference!
   var uid: String!
   
@@ -23,8 +29,8 @@ class CollectionsTableViewController: UITableViewController {
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
 
-    let array = UserDefaults.standard.object(forKey: "collections") as! NSArray;
-    collections = NSMutableArray(array: array)
+    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
+    collects = NSMutableArray(array: array)
 
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -39,15 +45,15 @@ class CollectionsTableViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return collections.count;
+    return collects.count;
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let collection = collections[indexPath.row] as! NSDictionary
+    let collect = collects[indexPath.row] as! NSDictionary
 
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectionsTableViewCell;
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectsTableViewCell;
     
-    cell.titleLabel?.text = collection.value(forKey: "title") as? String;
+    cell.titleLabel?.text = collect.value(forKey: "title") as? String;
     
     return cell;
   }
@@ -67,10 +73,10 @@ class CollectionsTableViewController: UITableViewController {
   
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if (editingStyle == UITableViewCellEditingStyle.delete) {
-      let collection = collections[indexPath.row] as! NSDictionary
-      collections.removeObject(at: indexPath.row);
-      UserDefaults.standard.set(collections, forKey: "collections");
-      self.ref.child("users/\(uid)/collects/\(collection.value(forKey: "title") as! String)").removeValue()
+      let collect = collects[indexPath.row] as! NSDictionary
+      collects.removeObject(at: indexPath.row);
+      UserDefaults.standard.set(collects, forKey: "collects");
+      self.ref.child("users/\(uid)/collects/\(collect.value(forKey: "title") as! String)").removeValue()
       
       tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
       
@@ -78,7 +84,7 @@ class CollectionsTableViewController: UITableViewController {
     }
   }
   
-  @IBAction func createCollection(_ button: UIButton) {
+  @IBAction func createCollect(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
       textField.autocapitalizationType = UITextAutocapitalizationType.none;
@@ -86,7 +92,7 @@ class CollectionsTableViewController: UITableViewController {
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
-      self.createCollect(textField.text! as NSString)
+      self.initCollect(textField.text! as NSString)
       self.tableView.reloadData();
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
@@ -98,7 +104,7 @@ class CollectionsTableViewController: UITableViewController {
     alert.present()
   }
   
-  func createCollect(_ collect: NSString!) {
+  func initCollect(_ collect: NSString!) {
     // create blank file
     // upload blank file
     // store data in nsuserdefaults
@@ -109,11 +115,11 @@ class CollectionsTableViewController: UITableViewController {
     self.ref.child("users/\(uid)/collects/\(folder)").setValue(["readonly": false])
     self.ref.child("collects/\(folder)").setValue(["url": false, "template": false, "entries": false])
     
-    let collection: [String: Any] = ["title": collect!]
+    let collect: [String: Any] = ["title": collect!]
 
-    collections.add(collection);
+    collects.add(collect);
     
-    UserDefaults.standard.set(collections, forKey: "collections");
+    UserDefaults.standard.set(collects, forKey: "collects");
   }
   
   func sanitizeCollect(string : String) -> String {
@@ -125,8 +131,8 @@ class CollectionsTableViewController: UITableViewController {
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let indexPath = tableView.indexPathForSelectedRow {
-      let collection = collections[indexPath.row] as! NSDictionary
-      UserDefaults.standard.set(collection.value(forKey: "title") as! String, forKey: "collectName");
+      let collect = collects[indexPath.row] as! NSDictionary
+      UserDefaults.standard.set(collect.value(forKey: "title") as! String, forKey: "collectName");
     }
   }
   

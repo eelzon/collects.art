@@ -1,5 +1,5 @@
 //
-//  CollectionTableViewController.swift
+//  CollectTableViewController.swift
 //  meryn.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
@@ -10,7 +10,14 @@ import QuartzCore
 import UIKit
 import Firebase
 
-class CollectionTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CollectTableViewCell: UITableViewCell {
+  
+  @IBOutlet var titleLabel: UILabel!
+  @IBOutlet var entryImageView: UIImageView!
+  
+}
+
+class CollectTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var entries: NSMutableArray = [];
   var uid: String!
@@ -98,7 +105,7 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectionTableViewCell
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectTableViewCell
     
     let entry = entries[indexPath.row] as! NSDictionary
     
@@ -110,7 +117,7 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   }
   
   @IBAction func openActivityViewController(_ sender: UIButton) {
-//    let cell = tableView.cellForRow(at: IndexPath.init(row: sender.tag, section: 0)) as! CollectionTableViewCell;
+//    let cell = tableView.cellForRow(at: IndexPath.init(row: sender.tag, section: 0)) as! CollectTableViewCell;
 //    let entry = entries.object(at: sender.tag);
 //    
 //    let title = cell.titleLabel.attributedText?.string;
