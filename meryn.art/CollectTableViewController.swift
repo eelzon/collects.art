@@ -33,11 +33,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 28, height: 28))
-    imageView.contentMode = .scaleAspectFit
-    imageView.image = UIImage(named: "folder")
-    navigationItem.titleView = imageView
-
     if let font = UIFont(name: "Times New Roman", size: 16) {
       openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
     }

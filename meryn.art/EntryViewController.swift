@@ -30,7 +30,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       imagePicker.sourceType = .photoLibrary
     }
     
-    self.present(self.imagePicker, animated: false, completion: nil)
+//    self.present(self.imagePicker, animated: false, completion: nil)
     self.descView.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
     self.descView.layer.borderWidth = 1.0
     self.descView.layer.cornerRadius = 5
@@ -115,7 +115,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 //          debugPrint(encodingError)
 //        }
 //      })
-    self.navigationItem.rightBarButtonItem?.isEnabled = false
+    //self.navigationItem.rightBarButtonItem?.isEnabled = false
   }
 
   func publishEntry(_ title: String, description: String) {
