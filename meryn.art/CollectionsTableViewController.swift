@@ -80,12 +80,12 @@ class CollectionsTableViewController: UITableViewController {
     alert.addTextField(withHandler: { (textField) -> Void in
       textField.autocapitalizationType = UITextAutocapitalizationType.none;
     });
+    alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       self.createCollect(textField.text! as NSString)
       self.tableView.reloadData();
     }))
-    alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 14)!
     alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
     alert.visualStyle.normalTextColor = UIColor.black
