@@ -96,6 +96,7 @@ class CollectsTableViewController: UITableViewController {
       self.tableView.reloadData();
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldHeight = 30
     alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
@@ -105,12 +106,6 @@ class CollectsTableViewController: UITableViewController {
   }
   
   func initCollect(_ collect: NSString!) {
-    // create blank file
-    // upload blank file
-    // store data in nsuserdefaults
-    
-    //The answer to "Am I pissed that everyone is wearing bleu de travail-style jackets 2 years after I painstakingly sewed my own?" is "Yes" btw.
-
     let folder = sanitizeCollect(string: collect! as String)
     self.ref.child("users/\(uid)/collects/\(folder)").setValue(["readonly": false])
     self.ref.child("collects/\(folder)").setValue(["url": false, "template": false, "entries": false])
