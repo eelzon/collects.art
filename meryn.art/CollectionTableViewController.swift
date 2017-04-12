@@ -17,6 +17,8 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   var collect: String!
   var ref: FIRDatabaseReference!
   @IBOutlet weak var openCollectButton: UIBarButtonItem!
+  @IBOutlet weak var headerView: UIView!
+  @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
@@ -38,12 +40,13 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
     collect = UserDefaults.standard.string(forKey: "collectName")!;
+    titleLabel.text = collect
 
     ref = FIRDatabase.database().reference()
 
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-    tableView.isHidden = true
+//    tableView.isHidden = true
   }
   
   override func viewWillAppear(_ animated: Bool) {

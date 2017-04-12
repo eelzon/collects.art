@@ -100,8 +100,11 @@ class CollectionsTableViewController: UITableViewController {
     // upload blank file
     // store data in nsuserdefaults
     
-    self.ref.child("users/\(uid)/collects/\(collect!)").setValue(["readonly": false])
-    self.ref.child("collects/\(collect!)").setValue(["url": false, "template": false, "entries": false])
+    //The answer to "Am I pissed that everyone is wearing bleu de travail-style jackets 2 years after I painstakingly sewed my own?" is "Yes" btw.
+
+    let folder = sanitizeCollect(string: collect! as String)
+    self.ref.child("users/\(uid)/collects/\(folder)").setValue(["readonly": false])
+    self.ref.child("collects/\(folder)").setValue(["url": false, "template": false, "entries": false])
     
     let collection: [String: Any] = ["title": collect!]
 
@@ -110,6 +113,13 @@ class CollectionsTableViewController: UITableViewController {
     UserDefaults.standard.set(collections, forKey: "collections");
   }
   
+  func sanitizeCollect(string : String) -> String {
+    // put anything you dislike in that set ;-)
+    let blacklist = CharacterSet(charactersIn: ".$[]#")
+    let components = string.components(separatedBy: blacklist)
+    return components.joined(separator: "")
+  }
+
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let indexPath = tableView.indexPathForSelectedRow {
       let collection = collections[indexPath.row] as! NSDictionary
