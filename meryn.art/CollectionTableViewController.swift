@@ -12,15 +12,25 @@ import Firebase
 
 class CollectionTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
-  var entries: NSMutableDictionary!;
+  var entries: NSMutableArray = [];
   var uid: String!
   var collect: String!
   var ref: FIRDatabaseReference!
+  @IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 28, height: 28))
+    imageView.contentMode = .scaleAspectFit
+    imageView.image = UIImage(named: "folder")
+    navigationItem.titleView = imageView
+
+    if let font = UIFont(name: "Times New Roman", size: 16) {
+      openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
+    }
     
     // turn on loading animation
     
@@ -28,9 +38,9 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
     collect = UserDefaults.standard.string(forKey: "collectName")!;
-    
+
     ref = FIRDatabase.database().reference()
-    
+
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
     tableView.isHidden = true
@@ -39,23 +49,26 @@ class CollectionTableViewController: UIViewController, UITableViewDelegate, UITa
   override func viewWillAppear(_ animated: Bool) {
     // get entries
     getEntries();
+    
+    navigationController?.isToolbarHidden = false;
 
     super.viewWillAppear(animated)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    navigationController?.isToolbarHidden = true;
   }
   
   func getEntries() {
-    activityIndicator.startAnimating()
-    ref.child("users/\(uid)/collects/\(collect!)").observeSingleEvent(of: .value, with: { (snapshot) in
-      let collect = snapshot.value as? NSDictionary
-      self.entries = collect?["entries"] as? NSDictionary as! NSMutableDictionary
-      print(self.entries)
-    }) { (error) in
-      print(error.localizedDescription)
-    }
+//    activityIndicator.startAnimating()
+//    ref.child("users/\(uid)/collects/\(collect!)").observeSingleEvent(of: .value, with: { (snapshot) in
+//      let collect = snapshot.value as? NSDictionary
+//      self.entries = collect?["entries"] as? NSDictionary as! NSMutableDictionary
+//      print(self.entries)
+//    }) { (error) in
+//      print(error.localizedDescription)
+//    }
   }
   
   override func viewDidAppear(_ animated: Bool) {

@@ -86,9 +86,9 @@ class CollectionsTableViewController: UITableViewController {
       self.createCollect(textField.text! as NSString)
       self.tableView.reloadData();
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 14)!
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
     alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
-    alert.visualStyle.normalTextColor = UIColor.black
+    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
     
