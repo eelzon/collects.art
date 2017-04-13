@@ -68,18 +68,23 @@ class CollectsTableViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-    let readonlyAction = UITableViewRowAction(style: .normal, title: "✓") { (rowAction, indexPath) in
-      let collect = self.collects[indexPath.row] as! NSDictionary
-      let folder = collect.value(forKey: "title") as! String
-      collect.setValue(true, forKey: "readonly")
-      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(true)
-      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(true)
+    let dict = self.collects[indexPath.row] as! NSDictionary
+    let collect = NSMutableDictionary(dictionary: dict)
+
+    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "Close" : "Open"
+    
+    let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
+      let folder = self.sanitizeCollect(string: collect.value(forKey: "title") as! String)
+      let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0)
+      collect.setObject(readonly, forKey: "readonly" as NSCopying)
+      UserDefaults.standard.set(self.collects, forKey: "collects");
+      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(readonly)
+      self.ref.child("collects/\(folder)/readonly").setValue(readonly)
       tableView.reloadData();
     }
     readonlyAction.backgroundColor = .blue
 
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
-      let collect = self.collects[indexPath.row] as! NSDictionary
       self.collects.removeObject(at: indexPath.row);
       UserDefaults.standard.set(self.collects, forKey: "collects");
       self.ref.child("users/\(self.uid)/collects/\(collect.value(forKey: "title") as! String)").removeValue()
@@ -115,11 +120,12 @@ class CollectsTableViewController: UITableViewController {
   
   func initCollect(_ collect: NSString!) {
     let folder = sanitizeCollect(string: collect! as String)
-    self.ref.child("users/\(uid)/collects/\(folder)").setValue(["readonly": false])
-    // TODO: assign template and url
-    self.ref.child("collects/\(folder)").setValue(["url": "", "template": "", "readonly": false])
 
-    let collect: [String: Any] = ["title": collect!]
+    let collect: [String: Any] = ["title": collect!, "readonly": false]
+
+    self.ref.child("users/\(uid)/collects/\(folder)").setValue(collect)
+    // TODO: assign template and url
+    self.ref.child("collects/\(folder)").setValue(["title": collect, "url": "", "template": "", "readonly": false])
 
     collects.add(collect);
     self.tableView.reloadData();
