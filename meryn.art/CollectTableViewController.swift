@@ -38,7 +38,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
-    collect = UserDefaults.standard.string(forKey: "collectName")!;
     titleLabel.text = collect
 
     ref = FIRDatabase.database().reference()

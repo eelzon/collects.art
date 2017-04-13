@@ -93,7 +93,6 @@ class CollectsTableViewController: UITableViewController {
     alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       self.initCollect(textField.text! as NSString)
-      self.tableView.reloadData();
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
     alert.visualStyle.textFieldHeight = 30
@@ -114,8 +113,10 @@ class CollectsTableViewController: UITableViewController {
     let collect: [String: Any] = ["title": collect!]
 
     collects.add(collect);
+    self.tableView.reloadData();
     
     UserDefaults.standard.set(collects, forKey: "collects");
+    performSegue(withIdentifier: "segueToCollect", sender: collect)
   }
   
   func sanitizeCollect(string : String) -> String {
@@ -126,10 +127,14 @@ class CollectsTableViewController: UITableViewController {
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    var collect: NSDictionary;
     if let indexPath = tableView.indexPathForSelectedRow {
-      let collect = collects[indexPath.row] as! NSDictionary
-      UserDefaults.standard.set(collect.value(forKey: "title") as! String, forKey: "collectName");
+      collect = collects[indexPath.row] as! NSDictionary
+    } else {
+      collect = sender as! NSDictionary
     }
+    let destination = segue.destination as! CollectTableViewController
+    destination.collect = collect.value(forKey: "title") as! String
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {

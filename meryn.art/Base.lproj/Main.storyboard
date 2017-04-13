@@ -89,7 +89,7 @@
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
                                     <outlet property="titleLabel" destination="Drt-g4-VKj" id="how-nF-WGK"/>
-                                    <segue destination="Tlv-7y-fsl" kind="show" id="uPw-F6-SVS"/>
+                                    <segue destination="Tlv-7y-fsl" kind="show" identifier="segueToCollect" id="uPw-F6-SVS"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -99,6 +99,7 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
+                        <barButtonItem title="User" id="fm5-z6-Nh7"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QTI-1j-Um1"/>
                         <barButtonItem systemItem="add" id="v2j-9y-Wi9">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
