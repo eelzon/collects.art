@@ -22,9 +22,10 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   var entries: NSMutableArray = [];
   var uid: String!
-  var collect: String!
+  var folder: String!
+  var collect: NSDictionary!
   var ref: FIRDatabaseReference!
-  @IBOutlet weak var openCollectButton: UIBarButtonItem!
+  //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var headerView: UIView!
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var tableView: UITableView!
@@ -33,18 +34,20 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    if let font = UIFont(name: "Times New Roman", size: 16) {
-      openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
-    }
+//    if let font = UIFont(name: "Times New Roman", size: 16) {
+//      openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
+//    }
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
-    titleLabel.text = collect
+    titleLabel.text = folder
 
     ref = FIRDatabase.database().reference()
-
+    
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
     tableView.isHidden = true
+    
+    getEntries();
   }
   
   override func viewDidLayoutSubviews() {
@@ -56,9 +59,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    // get entries
-    getEntries();
-    
     super.viewWillAppear(animated)
   }
   
@@ -68,10 +68,18 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   func getEntries() {
     activityIndicator.startAnimating()
-    ref.child("users/\(uid)/collects/\(collect!)").observe(.value, with: { snapshot in
-      for child in snapshot.children {
-        self.entries.add(child)
+    ref.child("collects/\(folder!)").observeSingleEvent(of: .value, with: { (snapshot) in
+      if snapshot.exists() {
+        if let value = snapshot.value as? NSDictionary {
+          self.collect = value
+          if let allEntries = self.collect["entries"] as? NSDictionary {
+            for e in allEntries {
+              self.entries.add(e.value)
+            }
+          }
+        }
       }
+      self.tableView.reloadData()
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
     }) { (error) in
@@ -103,8 +111,9 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     let entry = entries[indexPath.row] as! NSDictionary
     
     cell.titleLabel?.text = entry.value(forKey: "title") as? String;
-    cell.entryImageView?.af_setImage(withURL: URL(string: entry.value(forKey: "image") as! String)!)
-    
+    if let imageURL = entry.value(forKey: "image") as? String {
+      cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
+    }
     return cell;
   }
 
@@ -114,6 +123,32 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   @IBAction func unwindToCollect(segue:UIStoryboardSegue) {
 
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "unwindToCollects" {
+      return
+    }
+    var timestamp: NSString;
+    if let indexPath = tableView.indexPathForSelectedRow {
+      let entry = entries[indexPath.row] as! NSDictionary
+      timestamp = entry.value(forKey: "timestamp") as! NSString
+    } else {
+      timestamp = sender as! NSString
+    }
+    let destination = segue.destination as! EntryViewController
+    destination.timestamp = timestamp
+  }
+  
+  @IBAction func createEntry(_ sender: Any) {
+    let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
+    print(timestamp)
+    let entry: NSDictionary = ["title": "", "image": false, "description": "", "timestamp": timestamp];
+    self.ref.child("entries/\(timestamp)").setValue(entry)
+    self.ref.child("collects/\(folder!)/entries/\(timestamp)").setValue(entry)
+    entries.add(entry)
+    self.tableView.reloadData()
+    performSegue(withIdentifier: "segueToEntry", sender: timestamp)
   }
 
   /*

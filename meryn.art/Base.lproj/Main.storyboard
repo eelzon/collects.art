@@ -184,7 +184,7 @@
                                         <connections>
                                             <outlet property="entryImageView" destination="Xzg-f5-tDb" id="jkA-Sp-7pM"/>
                                             <outlet property="titleLabel" destination="g0i-a3-Y4u" id="MaU-ad-egY"/>
-                                            <segue destination="w8q-3w-ZDX" kind="show" id="lIO-3V-g2B"/>
+                                            <segue destination="w8q-3w-ZDX" kind="show" identifier="segueToEntry" id="lIO-3V-g2B"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -226,7 +226,7 @@
                         <barButtonItem systemItem="add" id="rk1-8e-lkz">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <segue destination="w8q-3w-ZDX" kind="show" id="xiT-78-YBz"/>
+                                <action selector="createEntry:" destination="Tlv-7y-fsl" id="i44-zk-cXN"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -235,7 +235,6 @@
                     <connections>
                         <outlet property="activityIndicator" destination="FCK-zU-ua4" id="lXl-ve-FP4"/>
                         <outlet property="headerView" destination="qji-Fg-bVk" id="rer-Rs-JjL"/>
-                        <outlet property="openCollectButton" destination="rk1-8e-lkz" id="o0X-i1-GXp"/>
                         <outlet property="tableView" destination="Gjh-Wd-E6c" id="d8h-2R-5um"/>
                         <outlet property="titleLabel" destination="MNr-bV-fDg" id="2mg-s3-8a1"/>
                         <segue destination="X4V-qv-1z8" kind="unwind" identifier="unwindToCollects" unwindAction="unwindToCollectsWithSegue:" id="g09-hu-BU9"/>
@@ -310,6 +309,9 @@
                                     </mask>
                                 </variation>
                             </textView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="2TL-X6-vjc">
+                                <rect key="frame" x="150" y="140" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -328,6 +330,7 @@
                             <constraint firstItem="zab-nx-9U0" firstAttribute="top" secondItem="6pl-mW-nMc" secondAttribute="bottom" constant="8" id="KCN-c7-HdO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="zab-nx-9U0" secondAttribute="trailing" id="LFu-32-cxP"/>
                             <constraint firstItem="jv8-0i-mVD" firstAttribute="top" secondItem="8Rq-1t-aHL" secondAttribute="bottom" constant="23" id="Lp7-aR-q5j"/>
+                            <constraint firstItem="2TL-X6-vjc" firstAttribute="centerX" secondItem="leL-Z4-uJa" secondAttribute="centerX" id="PBy-o5-kmr"/>
                             <constraint firstItem="jv8-0i-mVD" firstAttribute="leading" secondItem="leL-Z4-uJa" secondAttribute="leading" id="Uio-bC-qHo"/>
                             <constraint firstItem="6pl-mW-nMc" firstAttribute="top" secondItem="jv8-0i-mVD" secondAttribute="bottom" constant="29" id="Urg-Md-jJr"/>
                             <constraint firstItem="leL-Z4-uJa" firstAttribute="top" secondItem="bFb-Xf-PfI" secondAttribute="topMargin" id="WLC-31-aKO"/>
@@ -335,6 +338,7 @@
                             <constraint firstItem="DNj-vd-Dtc" firstAttribute="top" secondItem="leL-Z4-uJa" secondAttribute="bottom" constant="13" id="ZLf-23-Fu0"/>
                             <constraint firstItem="leL-Z4-uJa" firstAttribute="top" secondItem="Rq2-mY-fpd" secondAttribute="bottom" id="ZLw-Em-45f"/>
                             <constraint firstItem="vuO-wB-jYo" firstAttribute="top" secondItem="zab-nx-9U0" secondAttribute="bottom" constant="20" id="cFt-ze-c4T"/>
+                            <constraint firstItem="2TL-X6-vjc" firstAttribute="centerY" secondItem="leL-Z4-uJa" secondAttribute="centerY" id="eyR-6W-EMu"/>
                             <constraint firstItem="8Rq-1t-aHL" firstAttribute="top" secondItem="leL-Z4-uJa" secondAttribute="bottom" constant="8" id="hKU-OG-gtT"/>
                             <constraint firstItem="6pl-mW-nMc" firstAttribute="leading" secondItem="bFb-Xf-PfI" secondAttribute="leadingMargin" id="kLY-jz-kkA"/>
                             <constraint firstItem="leL-Z4-uJa" firstAttribute="top" secondItem="Rq2-mY-fpd" secondAttribute="bottom" id="kig-zS-FMK"/>
@@ -378,6 +382,7 @@
                     </toolbarItems>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="2TL-X6-vjc" id="zNY-Io-B5z"/>
                         <outlet property="descView" destination="zab-nx-9U0" id="dVn-eL-CiK"/>
                         <outlet property="imageView" destination="leL-Z4-uJa" id="crx-xJ-cn4"/>
                         <outlet property="retakeButton" destination="DNj-vd-Dtc" id="9aN-bH-Flg"/>
@@ -395,7 +400,4 @@
         <image name="cameraIcon" width="40" height="40"/>
         <image name="folder" width="84" height="84"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="lIO-3V-g2B"/>
-    </inferredMetricsTieBreakers>
 </document>

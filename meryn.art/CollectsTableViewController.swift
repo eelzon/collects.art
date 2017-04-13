@@ -52,9 +52,9 @@ class CollectsTableViewController: UITableViewController {
     let collect = collects[indexPath.row] as! NSDictionary
 
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectsTableViewCell;
-    
+
     cell.titleLabel?.text = collect.value(forKey: "title") as? String;
-    
+
     return cell;
   }
   
@@ -62,26 +62,35 @@ class CollectsTableViewController: UITableViewController {
     cell.separatorInset = UIEdgeInsets.zero
     cell.layoutMargins = UIEdgeInsets.zero
   }
-
-//  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//
-//  }
   
-  override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-    return "X";
+  override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    return true;
   }
   
-  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-    if (editingStyle == UITableViewCellEditingStyle.delete) {
-      let collect = collects[indexPath.row] as! NSDictionary
-      collects.removeObject(at: indexPath.row);
-      UserDefaults.standard.set(collects, forKey: "collects");
-      self.ref.child("users/\(uid)/collects/\(collect.value(forKey: "title") as! String)").removeValue()
-      
-      tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
-      
+  override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    let readonlyAction = UITableViewRowAction(style: .normal, title: "✓") { (rowAction, indexPath) in
+      let collect = self.collects[indexPath.row] as! NSDictionary
+      let folder = collect.value(forKey: "title") as! String
+      collect.setValue(true, forKey: "readonly")
+      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(true)
+      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(true)
       tableView.reloadData();
     }
+    readonlyAction.backgroundColor = .blue
+
+    let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
+      let collect = self.collects[indexPath.row] as! NSDictionary
+      self.collects.removeObject(at: indexPath.row);
+      UserDefaults.standard.set(self.collects, forKey: "collects");
+      self.ref.child("users/\(self.uid)/collects/\(collect.value(forKey: "title") as! String)").removeValue()
+
+      tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
+
+      tableView.reloadData();
+    }
+    deleteAction.backgroundColor = .purple
+
+    return [deleteAction, readonlyAction]
   }
   
   @IBAction func createCollect(_ button: UIButton) {
@@ -106,10 +115,10 @@ class CollectsTableViewController: UITableViewController {
   
   func initCollect(_ collect: NSString!) {
     let folder = sanitizeCollect(string: collect! as String)
-    self.ref.child("users/\(uid)/collects/\(folder)").setValue(true)
+    self.ref.child("users/\(uid)/collects/\(folder)").setValue(["readonly": false])
     // TODO: assign template and url
-    self.ref.child("collects/\(folder)").setValue(["url": false, "template": false, "entries": false, "readonly": false])
-    
+    self.ref.child("collects/\(folder)").setValue(["url": "", "template": "", "readonly": false])
+
     let collect: [String: Any] = ["title": collect!]
 
     collects.add(collect);
@@ -134,7 +143,7 @@ class CollectsTableViewController: UITableViewController {
       collect = sender as! NSDictionary
     }
     let destination = segue.destination as! CollectTableViewController
-    destination.collect = collect.value(forKey: "title") as! String
+    destination.folder = collect.value(forKey: "title") as! String
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {

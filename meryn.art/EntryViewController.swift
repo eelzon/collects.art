@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
@@ -14,9 +15,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet var titleView: UITextField!
   @IBOutlet var descView: UITextView!
   @IBOutlet var retakeButton: UIButton!
+  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
   let imagePicker = UIImagePickerController()
-  var entryId: Int? = nil
+  var timestamp: NSString!
+  var entry: NSDictionary!
+  var ref: FIRDatabaseReference!
     
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -37,6 +41,22 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     retakeButton.layer.cornerRadius = 5
     retakeButton.layer.borderWidth = 1
+    
+    ref = FIRDatabase.database().reference()
+    
+    getEntry()
+  }
+  
+  func getEntry() {
+    activityIndicator.startAnimating()
+    ref.child("entries/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
+      if snapshot.exists() {
+        if let value = snapshot.value as? NSDictionary {
+          self.entry = value
+        }
+      }
+      self.activityIndicator.stopAnimating()
+    })
   }
 
   override func didReceiveMemoryWarning() {
@@ -45,7 +65,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    self.title = "";
     super.viewWillAppear(animated)
   }
   
