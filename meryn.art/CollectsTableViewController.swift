@@ -70,11 +70,12 @@ class CollectsTableViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
     let dict = self.collects[indexPath.row] as! NSDictionary
     let collect = NSMutableDictionary(dictionary: dict)
+    
+    let folder = self.sanitizeCollect(string: collect.value(forKey: "title") as! String)
 
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "Close" : "Open"
     
     let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
-      let folder = self.sanitizeCollect(string: collect.value(forKey: "title") as! String)
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
       UserDefaults.standard.set(self.collects, forKey: "collects");
@@ -87,7 +88,8 @@ class CollectsTableViewController: UITableViewController {
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
       self.collects.removeObject(at: indexPath.row);
       UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid)/collects/\(collect.value(forKey: "title") as! String)").removeValue()
+      self.ref.child("users/\(self.uid)/collects/\(folder)").removeValue()
+      self.ref.child("collects/\(folder)").removeValue()
 
       tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
 
