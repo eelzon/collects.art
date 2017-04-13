@@ -1,6 +1,6 @@
 //
 //  CollectsTableViewController
-//  meryn.art
+//  collects.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
 //  Copyright © 2017 Nozlee Samadzadeh and Bunny Rogers. All rights reserved.
@@ -27,7 +27,21 @@ class CollectsTableViewController: UITableViewController {
     
     ref = FIRDatabase.database().reference()
     
-    uid = UserDefaults.standard.string(forKey: "uid")!;
+    // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
+    // anonymous authentication.
+    if FIRAuth.auth()?.currentUser == nil {
+      FIRAuth.auth()?.signInAnonymously(completion: { (user: FIRUser?, error: Error?) in
+        if error != nil {
+          // TODO lock down app in some way
+        } else {
+          UserDefaults.standard.set(user!.uid, forKey: "uid");
+          self.uid = user!.uid
+        }
+      })
+    } else {
+      UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
+      uid = FIRAuth.auth()!.currentUser!.uid
+    }
 
     let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
     collects = NSMutableArray(array: array)
@@ -125,7 +139,7 @@ class CollectsTableViewController: UITableViewController {
 
     let collect: [String: Any] = ["title": collect!, "readonly": false]
 
-    self.ref.child("users/\(uid)/collects/\(folder)").setValue(collect)
+    self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
     // TODO: assign template and url
     self.ref.child("collects/\(folder)").setValue(["title": collect, "url": "", "template": "", "readonly": false])
 

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  meryn.art
+//  collects.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
 //  Copyright © 2017 Nozlee Samadzadeh and Bunny Rogers. All rights reserved.
@@ -25,20 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Use Firebase library to configure APIs
     FIRApp.configure()
     
-    // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
-    // anonymous authentication.
-    if FIRAuth.auth()?.currentUser == nil {
-      FIRAuth.auth()?.signInAnonymously(completion: { (user: FIRUser?, error: Error?) in
-        if error != nil {
-          // TODO lock down app in some way
-        } else {
-          UserDefaults.standard.set(user!.uid, forKey: "uid");
-        }
-      })
-    } else {
-      UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
-    }
-
     UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "Times New Roman", size:16)!];
 
     return true

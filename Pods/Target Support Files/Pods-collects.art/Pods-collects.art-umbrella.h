@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_meryn_artVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_meryn_artVersionString[];
+FOUNDATION_EXPORT double Pods_collects_artVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_collects_artVersionString[];
 

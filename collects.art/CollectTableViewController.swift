@@ -1,6 +1,6 @@
 //
 //  CollectTableViewController.swift
-//  meryn.art
+//  collects.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
 //  Copyright © 2017 Nozlee Samadzadeh and Bunny Rogers. All rights reserved.
