@@ -60,14 +60,11 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     // get entries
     getEntries();
     
-    navigationController?.isToolbarHidden = false;
-
     super.viewWillAppear(animated)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    navigationController?.isToolbarHidden = true;
   }
   
   func getEntries() {
@@ -111,7 +108,15 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     
     return cell;
   }
+
+  @IBAction func backToCollects(_ sender: Any) {
+    performSegue(withIdentifier: "unwindToCollects", sender: self)
+  }
   
+  @IBAction func unwindToCollect(segue:UIStoryboardSegue) {
+
+  }
+
   /*
   // Override to support conditional editing of the table view.
   override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {

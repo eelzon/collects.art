@@ -131,5 +131,9 @@ class CollectsTableViewController: UITableViewController {
       UserDefaults.standard.set(collect.value(forKey: "title") as! String, forKey: "collectName");
     }
   }
-  
+
+  @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
+
+  }
+
 }

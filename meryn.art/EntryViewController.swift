@@ -73,15 +73,19 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
     dismiss(animated: true, completion: nil)
   }
-  
+
   @IBAction func postEntry() {
     self.navigationItem.rightBarButtonItem?.title = "Posting..."
     self.navigationItem.rightBarButtonItem?.isEnabled = false
     publishEntry(self.titleView.text!, description: self.descView.text)
   }
-  
+
   @IBAction func returnToCamera() {
     self.present(self.imagePicker, animated: false, completion: nil)
+  }
+
+  @IBAction func backToCollect(_ sender: Any) {
+    performSegue(withIdentifier: "unwindToCollect", sender: self)
   }
 
   func uploadImage(_ image: UIImage) {
