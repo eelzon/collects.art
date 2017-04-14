@@ -46,8 +46,16 @@ class CollectsTableViewController: UITableViewController {
     let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
     collects = NSMutableArray(array: array)
 
+    NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
+    
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
+  }
+  
+  func defaultsChanged() {
+    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
+    collects = NSMutableArray(array: array)
+    tableView.reloadData()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -93,7 +101,7 @@ class CollectsTableViewController: UITableViewController {
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
       UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid)/collects/\(folder)/readonly").setValue(readonly)
+      self.ref.child("users/\(self.uid!)/collects/\(folder)/readonly").setValue(readonly)
       self.ref.child("collects/\(folder)/readonly").setValue(readonly)
       tableView.reloadData();
     }
@@ -102,7 +110,7 @@ class CollectsTableViewController: UITableViewController {
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
       self.collects.removeObject(at: indexPath.row);
       UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid)/collects/\(folder)").removeValue()
+      self.ref.child("users/\(self.uid!)/collects/\(folder)").removeValue()
       self.ref.child("collects/\(folder)").removeValue()
 
       tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
@@ -138,9 +146,9 @@ class CollectsTableViewController: UITableViewController {
     let folder = sanitizeCollect(string: title! as String)
 
     // TODO: assign template and url
-    let collect: [String: Any] = ["title": title!, "readonly": false]
+    let collect: [String: Any] = ["title": title!, "folder": folder, "readonly": false]
 
-    self.ref.child("collects/\(folder)").setValue(["title": title!, "url": "", "template": "", "readonly": false])
+    self.ref.child("collects/\(folder)").setValue(["title": title!, "folder": folder, "url": "", "template": "", "readonly": false])
     self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
 
     collects.add(collect);
@@ -159,13 +167,17 @@ class CollectsTableViewController: UITableViewController {
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     var collect: NSDictionary;
+    var index: Int;
     if let indexPath = tableView.indexPathForSelectedRow {
       collect = collects[indexPath.row] as! NSDictionary
+      index = indexPath.row
     } else {
       collect = sender as! NSDictionary
+      index = collects.count
     }
     let destination = segue.destination as! CollectTableViewController
     destination.folder = collect.value(forKey: "title") as! String
+    destination.index = index - 1
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {

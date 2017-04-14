@@ -22,12 +22,13 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   var entries: NSMutableArray = [];
   var uid: String!
+  var index: Int!
   var folder: String!
   var collect: NSDictionary!
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var headerView: UIView!
-  @IBOutlet weak var titleLabel: UILabel!
+  @IBOutlet weak var titleField: UITextField!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
@@ -39,7 +40,8 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
 //    }
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
-    titleLabel.text = folder
+    
+    titleField.layer.cornerRadius = 0;
 
     ref = FIRDatabase.database().reference()
     
@@ -80,7 +82,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
         }
       }
       
-      self.titleLabel.text = self.collect.value(forKey: "title") as? String
+      self.titleField.text = self.collect.value(forKey: "title") as? String
       self.tableView.reloadData()
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
@@ -99,6 +101,18 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  @IBAction func changeTitle (_ sender: Any) {
+    collect.setValue(titleField.text, forKey: "title")
+    
+    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray
+    let collects = NSMutableArray(array: array)
+    collects[index] = collect
+    UserDefaults.standard.set(collects, forKey: "collects");
+    
+    self.ref.child("users/\(uid!)/collects/\(folder!)/title").setValue(titleField.text)
+    self.ref.child("collects/\(folder!)/title").setValue(titleField.text)
   }
 
   // MARK: - Table view data source

@@ -130,18 +130,21 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MNr-bV-fDg">
-                                            <rect key="frame" x="8" y="8" width="304" height="18"/>
-                                            <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f5m-zT-9jg">
+                                            <rect key="frame" x="8" y="2" width="304" height="30"/>
                                             <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                            <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                            <connections>
+                                                <action selector="changeTitle:" destination="Tlv-7y-fsl" eventType="editingDidEnd" id="pGj-6Q-Q5t"/>
+                                            </connections>
+                                        </textField>
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="MNr-bV-fDg" secondAttribute="trailing" constant="8" id="CqE-oL-dHn"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="iGu-Hs-doM"/>
-                                        <constraint firstItem="MNr-bV-fDg" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="8" id="wal-Wg-ujG"/>
+                                        <constraint firstAttribute="trailing" secondItem="f5m-zT-9jg" secondAttribute="trailing" constant="8" id="1PW-59-nqF"/>
+                                        <constraint firstItem="f5m-zT-9jg" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="dWe-eF-5Nm"/>
+                                        <constraint firstItem="f5m-zT-9jg" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="2" id="mO4-CP-mzw"/>
                                     </constraints>
                                 </view>
                                 <prototypes>
@@ -231,7 +234,7 @@
                         <outlet property="activityIndicator" destination="FCK-zU-ua4" id="lXl-ve-FP4"/>
                         <outlet property="headerView" destination="qji-Fg-bVk" id="rer-Rs-JjL"/>
                         <outlet property="tableView" destination="Gjh-Wd-E6c" id="d8h-2R-5um"/>
-                        <outlet property="titleLabel" destination="MNr-bV-fDg" id="2mg-s3-8a1"/>
+                        <outlet property="titleField" destination="f5m-zT-9jg" id="rXv-GR-grI"/>
                         <segue destination="X4V-qv-1z8" kind="unwind" identifier="unwindToCollects" unwindAction="unwindToCollectsWithSegue:" id="g09-hu-BU9"/>
                     </connections>
                 </viewController>
