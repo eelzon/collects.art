@@ -173,6 +173,8 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     cell.titleLabel?.text = entry.value(forKey: "title") as? String;
     if let imageURL = entry.value(forKey: "image") as? String {
       cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
+    } else {
+      cell.entryImageView.isHidden = true
     }
     return cell;
   }

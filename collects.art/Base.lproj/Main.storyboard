@@ -181,7 +181,7 @@
                                         <connections>
                                             <outlet property="entryImageView" destination="Xzg-f5-tDb" id="jkA-Sp-7pM"/>
                                             <outlet property="titleLabel" destination="g0i-a3-Y4u" id="MaU-ad-egY"/>
-                                            <segue destination="w8q-3w-ZDX" kind="show" identifier="segueToEntry" id="lIO-3V-g2B"/>
+                                            <segue destination="9w7-w4-OsN" kind="show" id="uS6-UO-51h"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -231,6 +231,7 @@
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="createEntry:" destination="Tlv-7y-fsl" id="i44-zk-cXN"/>
+                                <segue destination="9w7-w4-OsN" kind="show" id="ggY-rV-cK6"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -254,76 +255,92 @@
             <point key="canvasLocation" x="1368.75" y="-919.0140845070423"/>
         </scene>
         <!--Entry View Controller-->
-        <scene sceneID="uWC-eA-gGc">
+        <scene sceneID="Y8F-yB-apt">
             <objects>
-                <viewController storyboardIdentifier="Entry" id="w8q-3w-ZDX" customClass="EntryViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="9w7-w4-OsN" customClass="EntryViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Z6e-D2-K7D"/>
-                        <viewControllerLayoutGuide type="bottom" id="Een-3q-suJ"/>
+                        <viewControllerLayoutGuide type="top" id="1oO-iS-KMB"/>
+                        <viewControllerLayoutGuide type="bottom" id="EUi-C2-TIx"/>
                     </layoutGuides>
-                    <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" id="XHs-aE-cRp">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                    <view key="view" contentMode="scaleToFill" id="ee6-dp-N9U">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ksh-WD-trd">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="z12-4v-7cq">
                                 <rect key="frame" x="16" y="20" width="288" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Qx-ye-nKN">
-                                <rect key="frame" x="16" y="66" width="288" height="200"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                            </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="A2W-Kh-w6W">
-                                <rect key="frame" x="16" y="282" width="288" height="234"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="3Zy-Hu-eEc">
+                                <rect key="frame" x="16" y="266" width="288" height="250"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="hxX-Of-MNZ">
-                                <rect key="frame" x="150" y="156" width="20" height="20"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="knW-PY-e3j">
+                                <rect key="frame" x="16" y="58" width="288" height="200"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" placeholder="YES" id="A79-Zs-3cP"/>
+                                </constraints>
+                            </imageView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
+                                <rect key="frame" x="150" y="148" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </scrollView>
+                        <constraints>
+                            <constraint firstItem="3Zy-Hu-eEc" firstAttribute="top" secondItem="knW-PY-e3j" secondAttribute="bottom" constant="8" id="8Jf-Ac-mL1"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="knW-PY-e3j" secondAttribute="leading" id="8re-G6-hIu"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="z12-4v-7cq" secondAttribute="leading" id="FLh-Mq-pye"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="knW-PY-e3j" secondAttribute="trailing" id="MDg-lM-WiK"/>
+                            <constraint firstItem="z12-4v-7cq" firstAttribute="top" secondItem="1oO-iS-KMB" secondAttribute="bottom" constant="20" id="MIu-Jt-Ymy"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3Zy-Hu-eEc" secondAttribute="trailing" id="Qj9-Ez-wM1"/>
+                            <constraint firstItem="EUi-C2-TIx" firstAttribute="top" secondItem="3Zy-Hu-eEc" secondAttribute="bottom" constant="8" placeholder="YES" id="UO0-5B-JH4"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="3Zy-Hu-eEc" secondAttribute="leading" id="o3g-dL-FDm"/>
+                            <constraint firstItem="knW-PY-e3j" firstAttribute="top" secondItem="z12-4v-7cq" secondAttribute="bottom" constant="8" id="wd6-B7-a3Q"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="z12-4v-7cq" secondAttribute="trailing" id="wuf-pa-bs8"/>
+                        </constraints>
+                    </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="reply" id="pnI-ki-qKh">
+                        <barButtonItem systemItem="reply" id="THw-c5-6hF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="backToCollect:" destination="w8q-3w-ZDX" id="HV2-zx-cp5"/>
+                                <action selector="backToCollect:" destination="9w7-w4-OsN" id="tsO-oC-DFt"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="bDy-tb-Bnv"/>
-                        <barButtonItem systemItem="camera" id="a9M-Bh-5fw">
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Sf2-ec-OcX"/>
+                        <barButtonItem systemItem="camera" id="uvv-Hq-ZUK">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="addImage:" destination="w8q-3w-ZDX" id="fk8-oH-bv7"/>
+                                <action selector="addImage:" destination="9w7-w4-OsN" id="5tW-2b-dS7"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="hxX-Of-MNZ" id="w4Q-Dl-gDa"/>
-                        <outlet property="cameraButton" destination="a9M-Bh-5fw" id="Sdr-v9-ujF"/>
-                        <outlet property="descView" destination="A2W-Kh-w6W" id="xc8-pb-5hg"/>
-                        <outlet property="imageView" destination="8Qx-ye-nKN" id="SZD-99-V0p"/>
-                        <outlet property="titleView" destination="ksh-WD-trd" id="LuJ-cz-51z"/>
-                        <segue destination="qos-z9-avt" kind="unwind" identifier="unwindToCollect" unwindAction="unwindToCollectWithSegue:" id="9Uu-hL-Kx8"/>
+                        <outlet property="activityIndicator" destination="EfL-z5-jnU" id="tdQ-4i-HLG"/>
+                        <outlet property="cameraButton" destination="uvv-Hq-ZUK" id="EEa-DE-rah"/>
+                        <outlet property="descView" destination="3Zy-Hu-eEc" id="852-7g-a4y"/>
+                        <outlet property="imageView" destination="knW-PY-e3j" id="MYx-4C-83Q"/>
+                        <outlet property="titleView" destination="z12-4v-7cq" id="F0X-iX-Vfe"/>
+                        <segue destination="dG0-z1-nFe" kind="unwind" identifier="unwindToCollect" unwindAction="unwindToCollectWithSegue:" id="Ped-N3-1F5"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="x0k-uQ-ChH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="qos-z9-avt" userLabel="Exit" sceneMemberID="exit"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Aft-ke-LyK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="dG0-z1-nFe" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2026.875" y="-919.0140845070423"/>
+            <point key="canvasLocation" x="2091" y="-919"/>
         </scene>
     </scenes>
     <resources>
         <image name="folder" width="84" height="84"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="uS6-UO-51h"/>
+    </inferredMetricsTieBreakers>
 </document>
