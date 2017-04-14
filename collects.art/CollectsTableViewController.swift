@@ -42,23 +42,17 @@ class CollectsTableViewController: UITableViewController {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
     }
-
-    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
-    collects = NSMutableArray(array: array)
-
-    NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
     
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
   }
-  
-  func defaultsChanged() {
+    
+  override func viewWillAppear(_ animated: Bool) {
     let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
     collects = NSMutableArray(array: array)
     tableView.reloadData()
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
+    print("reloaded")
+
     super.viewWillAppear(animated)
   }
   
@@ -130,7 +124,9 @@ class CollectsTableViewController: UITableViewController {
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
-      self.initCollect(textField.text! as NSString)
+      if (textField.text?.characters.count)! > 0 {
+        self.initCollect(textField.text! as NSString)
+      }
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
     alert.visualStyle.textFieldHeight = 30
@@ -146,9 +142,9 @@ class CollectsTableViewController: UITableViewController {
     let folder = sanitizeCollect(string: title! as String)
 
     // TODO: assign template and url
-    let collect: [String: Any] = ["title": title!, "folder": folder, "readonly": false]
+    let collect: [String: Any] = ["title": title!, "readonly": false]
 
-    self.ref.child("collects/\(folder)").setValue(["title": title!, "folder": folder, "url": "", "template": "", "readonly": false])
+    self.ref.child("collects/\(folder)").setValue(["title": title!, "url": "", "template": "", "readonly": false])
     self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
 
     collects.add(collect);
@@ -173,11 +169,11 @@ class CollectsTableViewController: UITableViewController {
       index = indexPath.row
     } else {
       collect = sender as! NSDictionary
-      index = collects.count
+      index = collects.count - 1
     }
     let destination = segue.destination as! CollectTableViewController
     destination.folder = collect.value(forKey: "title") as! String
-    destination.index = index - 1
+    destination.index = index
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {

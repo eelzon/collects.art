@@ -10,6 +10,7 @@ import QuartzCore
 import UIKit
 import Firebase
 import AlamofireImage
+import SDCAlertView
 
 class CollectTableViewCell: UITableViewCell {
   
@@ -28,7 +29,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var headerView: UIView!
-  @IBOutlet weak var titleField: UITextField!
+  @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
@@ -41,8 +42,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
     
-    titleField.layer.cornerRadius = 0;
-
     ref = FIRDatabase.database().reference()
     
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -82,7 +81,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
         }
       }
       
-      self.titleField.text = self.collect.value(forKey: "title") as? String
+      self.titleLabel.text = self.collect.value(forKey: "title") as? String
       self.tableView.reloadData()
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
@@ -103,16 +102,51 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     // Dispose of any resources that can be recreated.
   }
   
-  @IBAction func changeTitle (_ sender: Any) {
-    collect.setValue(titleField.text, forKey: "title")
+  @IBAction func renameCollect(_ button: UIButton) {
+    let alert = AlertController(title: "", message: "", preferredStyle: .alert)
+    alert.addTextField(withHandler: { (textField) -> Void in
+      textField.autocapitalizationType = UITextAutocapitalizationType.none;
+    });
+    alert.add(AlertAction(title: "Cancel", style: .normal))
+    alert.add(AlertAction(title: "Rename collect", style: .normal, handler: { [weak alert] (action) -> Void in
+      let textField = alert!.textFields![0] as UITextField
+      if (textField.text?.characters.count)! > 0 {
+        self.changeTitle(textField.text! as NSString)
+      }
+    }))
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldHeight = 30
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.backgroundColor = UIColor.white
+    alert.visualStyle.cornerRadius = 0
     
+    alert.present()
+  }
+  
+  func changeTitle (_ title: NSString!) {
+    self.ref.child("users/\(uid!)/collects/\(folder!)").removeValue()
+    self.ref.child("collects/\(folder!)").removeValue()
+    
+    folder = sanitizeCollect(string: title! as String)
+    collect.setValue(title, forKey: "title")
+    self.titleLabel.text = title as String;
+    
+    let localCollect: [String: Any] = ["title": title!, "readonly": collect.value(forKey: "readonly")!]
     let array = UserDefaults.standard.object(forKey: "collects") as! NSArray
     let collects = NSMutableArray(array: array)
-    collects[index] = collect
+    collects[index] = localCollect
     UserDefaults.standard.set(collects, forKey: "collects");
     
-    self.ref.child("users/\(uid!)/collects/\(folder!)/title").setValue(titleField.text)
-    self.ref.child("collects/\(folder!)/title").setValue(titleField.text)
+    self.ref.child("users/\(uid!)/collects/\(folder!)").setValue(localCollect)
+    self.ref.child("collects/\(folder!)").setValue(collect)
+  }
+  
+  func sanitizeCollect(string : String) -> String {
+    // put anything you dislike in that set ;-)
+    let blacklist = CharacterSet(charactersIn: ".$[]#")
+    let components = string.components(separatedBy: blacklist)
+    return components.joined(separator: "")
   }
 
   // MARK: - Table view data source
