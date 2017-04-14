@@ -79,6 +79,8 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
           }
         }
       }
+      
+      self.titleLabel.text = self.collect.value(forKey: "title") as? String
       self.tableView.reloadData()
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
@@ -142,7 +144,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   @IBAction func createEntry(_ sender: Any) {
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
-    print(timestamp)
     let entry: NSDictionary = ["title": "", "image": false, "description": "", "timestamp": timestamp];
     self.ref.child("entries/\(timestamp)").setValue(entry)
     self.ref.child("collects/\(folder!)/entries/\(timestamp)").setValue(entry)

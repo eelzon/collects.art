@@ -134,14 +134,14 @@ class CollectsTableViewController: UITableViewController {
     alert.present()
   }
   
-  func initCollect(_ collect: NSString!) {
-    let folder = sanitizeCollect(string: collect! as String)
+  func initCollect(_ title: NSString!) {
+    let folder = sanitizeCollect(string: title! as String)
 
-    let collect: [String: Any] = ["title": collect!, "readonly": false]
-
-    self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
     // TODO: assign template and url
-    self.ref.child("collects/\(folder)").setValue(["title": collect, "url": "", "template": "", "readonly": false])
+    let collect: [String: Any] = ["title": title!, "readonly": false]
+
+    self.ref.child("collects/\(folder)").setValue(["title": title!, "url": "", "template": "", "readonly": false])
+    self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
 
     collects.add(collect);
     self.tableView.reloadData();

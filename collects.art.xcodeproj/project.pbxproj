@@ -85,7 +85,6 @@
 				652CA7CD1E971A2900AA749F /* Info.plist */,
 				65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */,
 			);
-			name = collects.art;
 			path = collects.art;
 			sourceTree = "<group>";
 		};
