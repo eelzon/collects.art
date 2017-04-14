@@ -29,12 +29,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    
-    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-    view.addGestureRecognizer(tap)
-
     // Do any additional setup after loading the view.
     imagePicker.delegate = self
     imagePicker.allowsEditing = false
@@ -49,6 +43,9 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
+    
+    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+    view.addGestureRecognizer(tap)
     
     if readonly {
       cameraButton.isEnabled = false
@@ -83,6 +80,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+  }
+  
+  func dismissKeyboard() {
+    view.endEditing(true)
   }
   
   /*
@@ -213,24 +214,4 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 //      }
   }
   
-  func dismissKeyboard() {
-    view.endEditing(true)
-  }
-  
-  func keyboardWillShow(notification: NSNotification) {
-    if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-      if self.view.frame.origin.y == 0{
-        self.view.frame.origin.y -= keyboardSize.height
-      }
-    }
-  }
-  
-  func keyboardWillHide(notification: NSNotification) {
-    if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-      if self.view.frame.origin.y != 0{
-        self.view.frame.origin.y += keyboardSize.height
-      }
-    }
-  }
-
 }

@@ -9,4 +9,5 @@ target 'collects.art' do
   pod 'Firebase/Database'
   pod 'SDCAlertView', '~> 7.1'
   pod 'AlamofireImage'
+  pod 'IQKeyboardManagerSwift'
 end
