@@ -89,11 +89,13 @@ class CollectsTableViewController: UITableViewController {
     
     let folder = self.sanitizeCollect(string: collect.value(forKey: "title") as! String)
 
-    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "Close" : "Open"
+    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→readonly" : "→editable"
     
     let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
-      let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0)
+      let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
+      print(readonly)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
+      self.collects[indexPath.row] = collect
       UserDefaults.standard.set(self.collects, forKey: "collects");
       self.ref.child("users/\(self.uid!)/collects/\(folder)/readonly").setValue(readonly)
       self.ref.child("collects/\(folder)/readonly").setValue(readonly)

@@ -17,10 +17,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet var titleView: UITextField!
   @IBOutlet var descView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet weak var cameraButton: UIBarButtonItem!
 
   let imagePicker = UIImagePickerController()
   var timestamp: NSString!
   var entry: NSDictionary!
+  var readonly: Bool!
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
     
@@ -48,11 +50,18 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
     
+    if readonly {
+      cameraButton.isEnabled = false
+      titleView.isEnabled = false
+      descView.isEditable = false
+    }
+    
     getEntry()
   }
   
   func getEntry() {
     activityIndicator.startAnimating()
+    activityIndicator.isHidden = false
     ref.child("entries/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
@@ -63,6 +72,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.imageView.af_setImage(withURL: URL(string: imageURL)!)
       }
       self.activityIndicator.stopAnimating()
+      self.activityIndicator.isHidden = true
     })
   }
 

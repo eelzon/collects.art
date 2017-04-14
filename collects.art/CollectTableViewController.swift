@@ -31,6 +31,9 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   @IBOutlet weak var headerView: UIView!
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var renameButton: UIBarButtonItem!
+  @IBOutlet weak var remixButton: UIBarButtonItem!
+  @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
   override func viewDidLoad() {
@@ -79,6 +82,13 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
             }
           }
         }
+      }
+      
+      print(self.collect)
+      if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
+        self.addButton.isEnabled = false
+        self.remixButton.isEnabled = false
+        self.renameButton.isEnabled = false
       }
       
       self.titleLabel.text = self.collect.value(forKey: "title") as? String
@@ -188,6 +198,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     let destination = segue.destination as! EntryViewController
     destination.timestamp = timestamp
+    destination.readonly = self.collect.object(forKey: "readonly") as? NSNumber == 1 ? true : false
   }
   
   @IBAction func createEntry(_ sender: Any) {
