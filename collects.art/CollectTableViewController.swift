@@ -176,6 +176,10 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     }
     return cell;
   }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+  }
 
   @IBAction func backToCollects(_ sender: Any) {
     performSegue(withIdentifier: "unwindToCollects", sender: self)
