@@ -44,7 +44,10 @@
             Object.keys(collects).forEach((folder) => {
               var collect = collects[folder];
               var li = document.createElement("li");
-              li.appendChild(document.createTextNode(collect.title));
+              var a = document.createElement('a');
+              a.appendChild(document.createTextNode(collect.title));
+              a.href = collect.url;
+              li.appendChild(a);
               ul.appendChild(li);
             });
           });
