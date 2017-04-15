@@ -20,7 +20,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet weak var cameraButton: UIBarButtonItem!
 
   let imagePicker = UIImagePickerController()
-  var timestamp: NSString!
+  var timestamp: String!
+  var collectTimestamp: String!
   var entry: NSDictionary!
   var readonly: Bool!
   var ref: FIRDatabaseReference!
@@ -30,9 +31,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     super.viewDidLoad()
     
     // Do any additional setup after loading the view.
-    imagePicker.delegate = self
-    imagePicker.allowsEditing = false
-
+    
     titleView.layer.borderColor = UIColor.black.cgColor
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
@@ -53,24 +52,9 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       descView.isEditable = false
     }
     
-    getEntry()
-  }
-  
-  func getEntry() {
-    activityIndicator.startAnimating()
-    activityIndicator.isHidden = false
-    ref.child("entries/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
-      if snapshot.exists() {
-        if let value = snapshot.value as? NSDictionary {
-          self.entry = value
-        }
-      }
-      if let imageURL = self.entry.value(forKey: "image") as? String {
-        self.imageView.af_setImage(withURL: URL(string: imageURL)!)
-      }
-      self.activityIndicator.stopAnimating()
-      self.activityIndicator.isHidden = true
-    })
+    if let imageURL = entry.value(forKey: "image") as? String {
+      imageView.af_setImage(withURL: URL(string: imageURL)!)
+    }
   }
 
   override func didReceiveMemoryWarning() {
@@ -80,6 +64,13 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    let updatedEntry: [String: Any] = ["title": titleView.text!, "image": entry.value(forKey: "image")!, "description": descView.text];
+
+    self.ref.child("collects/\(collectTimestamp)/entries/\(timestamp)").setValue(updatedEntry)
+    super.viewWillDisappear(animated)
   }
   
   func dismissKeyboard() {
@@ -110,13 +101,9 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     dismiss(animated: true, completion: nil)
   }
 
-  @IBAction func postEntry() {
-    self.navigationItem.rightBarButtonItem?.title = "Posting..."
-    self.navigationItem.rightBarButtonItem?.isEnabled = false
-    publishEntry(self.titleView.text!, description: self.descView.text)
-  }
-
   @IBAction func returnToCamera() {
+    imagePicker.delegate = self
+    imagePicker.allowsEditing = false
     self.present(self.imagePicker, animated: false, completion: nil)
   }
 
@@ -127,6 +114,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBAction func addImage(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .actionSheet)
     alert.add(AlertAction(title: "Cancel", style: .preferred))
+    if (entry.value(forKey: "image") as? String) != nil {
+      alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
+        self.ref.child("collects/\(self.collectTimestamp)/entries/\(self.timestamp)/image").setValue(false)
+        self.imageView.image = nil
+      }))
+    }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
       alert.add(AlertAction(title: "Take photo", style: .normal, handler: { (action) -> Void in
         self.imagePicker.sourceType = .camera
@@ -161,57 +154,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       self.imageView?.af_setImage(withURL: URL(string: downloadURL)!)
       self.activityIndicator.stopAnimating()
     }
-    
-
-//    let headers = [
-//      "Authorization": "foo",
-//      "Accept": "application/json"
-//    ]
-//    let parameters = [
-//      "title": title
-//    ]
-//    let url = "http://google.com"
-//    Alamofire.upload(.POST, url,
-//      headers: headers,
-//      multipartFormData: { formData in
-//        formData.appendBodyPart(data: "ImageShot".dataUsingEncoding(NSUTF8StringEncoding)!, name: "entry_type")
-//        formData.appendBodyPart(data: UIImageJPEGRepresentation(image, 0.9)!, name: "image_data", fileName: "upload.jpg", mimeType: "image/jpeg")
-//      },
-//      encodingCompletion: { encodingResult in
-//        switch encodingResult {
-//        case .Success(let upload, _, _):
-//          upload.validate().responseJSON { response in
-//            if (response.result.isSuccess) {
-//              let dict = response.result.value as! NSDictionary
-//              self.entryId = (dict["id"] as! Int)
-//              self.navigationItem.rightBarButtonItem?.enabled = true
-//            } else {
-//              debugPrint(response)
-//            }
-//          }
-//        case .Failure(let encodingError):
-//          debugPrint(encodingError)
-//        }
-//      })
-    //self.navigationItem.rightBarButtonItem?.isEnabled = false
-  }
-
-  func publishEntry(_ title: String, description: String) {
-//    let headers = [
-//      "Authorization": "foo",
-//      "Accept": "application/json"
-//    ]
-//    let parameters = [
-//      "title": title
-//    ]
-//    let url = "http://google.com"
-//    Alamofire.request(.PUT, url, headers: headers, parameters: parameters)
-//      .validate()
-//      .responseJSON { response in
-//        if (response.result.isSuccess) {
-//          self.navigationController?.popViewControllerAnimated(true);
-//        }
-//      }
   }
   
 }

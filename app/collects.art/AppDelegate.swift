@@ -18,9 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
-    let collects = UserDefaults.standard.object(forKey: "collects") as? NSArray;
+    let collects = UserDefaults.standard.object(forKey: "collects") as? NSDictionary;
     if (collects == nil) {
-      UserDefaults.standard.set([], forKey: "collects");
+      UserDefaults.standard.set(NSDictionary(), forKey: "collects");
     }
     
     // Use Firebase library to configure APIs

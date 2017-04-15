@@ -23,8 +23,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   var entries: NSMutableArray = [];
   var uid: String!
-  var index: Int!
-  var folder: String!
+  var timestamp: String!
   var collect: NSDictionary!
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
@@ -72,7 +71,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   func getEntries() {
     activityIndicator.startAnimating()
-    ref.child("collects/\(folder!)").observeSingleEvent(of: .value, with: { (snapshot) in
+    ref.child("collects/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collect = value
@@ -135,30 +134,17 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
   
   func changeTitle (_ title: NSString!) {
-    self.ref.child("users/\(uid!)/collects/\(folder!)").removeValue()
-    self.ref.child("collects/\(folder!)").removeValue()
-    
-    folder = sanitizeCollect(string: title! as String)
     collect.setValue(title, forKey: "title")
     self.titleLabel.text = title as String;
     
-    let localCollect: [String: Any] = ["title": title!, "readonly": collect.value(forKey: "readonly")!]
-    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray
-    let collects = NSMutableArray(array: array)
-    collects[index] = localCollect
+    let collects = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
+    (collects[timestamp] as! NSDictionary).setValue(title, forKey: "title")
     UserDefaults.standard.set(collects, forKey: "collects");
     
-    self.ref.child("users/\(uid!)/collects/\(folder!)").setValue(localCollect)
-    self.ref.child("collects/\(folder!)").setValue(collect)
+    self.ref.child("users/\(uid!)/collects/\(timestamp!)/title").setValue(title)
+    self.ref.child("collects/\(timestamp!)/title").setValue(title)
   }
   
-  func sanitizeCollect(string : String) -> String {
-    // put anything you dislike in that set ;-)
-    let blacklist = CharacterSet(charactersIn: ".$[]#")
-    let components = string.components(separatedBy: blacklist)
-    return components.joined(separator: "")
-  }
-
   // MARK: - Table view data source
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -195,26 +181,29 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     if segue.identifier == "unwindToCollects" {
       return
     }
-    var timestamp: NSString;
+    var entryTimestamp: String;
+    var entry: NSDictionary;
     if let indexPath = tableView.indexPathForSelectedRow {
-      let entry = entries[indexPath.row] as! NSDictionary
-      timestamp = entry.value(forKey: "timestamp") as! NSString
+      entry = entries[indexPath.row] as! NSDictionary
+      entryTimestamp = entry.value(forKey: "timestamp") as! String
     } else {
-      timestamp = sender as! NSString
+      entry = entries[entries.count - 1] as! NSDictionary
+      entryTimestamp = sender as! String
     }
     let destination = segue.destination as! EntryViewController
-    destination.timestamp = timestamp
+    destination.entry = entry
+    destination.collectTimestamp = timestamp
+    destination.timestamp = entryTimestamp
     destination.readonly = self.collect.object(forKey: "readonly") as? NSNumber == 1 ? true : false
   }
   
   @IBAction func createEntry(_ sender: Any) {
-    let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
-    let entry: NSDictionary = ["title": "", "image": false, "description": "", "timestamp": timestamp];
-    self.ref.child("entries/\(timestamp)").setValue(entry)
-    self.ref.child("collects/\(folder!)/entries/\(timestamp)").setValue(entry)
+    let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
+    let entry: NSDictionary = ["title": "", "image": false, "description": ""];
+    self.ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     entries.add(entry)
     self.tableView.reloadData()
-    performSegue(withIdentifier: "segueToEntry", sender: timestamp)
+    performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
   }
 
   /*
@@ -249,16 +238,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
     // Return false if you do not want the item to be re-orderable.
     return true
-  }
-  */
-
-  /*
-  // MARK: - Navigation
-
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
   }
   */
   

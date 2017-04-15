@@ -181,7 +181,7 @@
                                         <connections>
                                             <outlet property="entryImageView" destination="Xzg-f5-tDb" id="jkA-Sp-7pM"/>
                                             <outlet property="titleLabel" destination="g0i-a3-Y4u" id="MaU-ad-egY"/>
-                                            <segue destination="9w7-w4-OsN" kind="show" id="uS6-UO-51h"/>
+                                            <segue destination="9w7-w4-OsN" kind="show" identifier="segueToEntry" id="bod-JV-wWy"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -231,7 +231,6 @@
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="createEntry:" destination="Tlv-7y-fsl" id="i44-zk-cXN"/>
-                                <segue destination="9w7-w4-OsN" kind="show" id="ggY-rV-cK6"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -285,7 +284,7 @@
                                     <constraint firstAttribute="height" constant="200" placeholder="YES" id="A79-Zs-3cP"/>
                                 </constraints>
                             </imageView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
                                 <rect key="frame" x="150" y="148" width="20" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
@@ -340,7 +339,4 @@
     <resources>
         <image name="folder" width="84" height="84"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="uS6-UO-51h"/>
-    </inferredMetricsTieBreakers>
 </document>

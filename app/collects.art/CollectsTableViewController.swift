@@ -18,7 +18,8 @@ class CollectsTableViewCell: UITableViewCell {
 
 class CollectsTableViewController: UITableViewController {
   
-  var collects: NSMutableArray!
+  var collects: NSMutableDictionary!
+  var timestamps: NSArray!
   var ref: FIRDatabaseReference!
   var uid: String!
   
@@ -48,8 +49,9 @@ class CollectsTableViewController: UITableViewController {
   }
     
   override func viewWillAppear(_ animated: Bool) {
-    let array = UserDefaults.standard.object(forKey: "collects") as! NSArray;
-    collects = NSMutableArray(array: array)
+    let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
+    collects = dict.mutableCopy() as! NSMutableDictionary
+    timestamps = collects.allKeys as NSArray
     tableView.reloadData()
     print("reloaded")
 
@@ -61,11 +63,12 @@ class CollectsTableViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return collects.count;
+    return timestamps.count;
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let collect = collects[indexPath.row] as! NSDictionary
+    let timestamp = timestamps[indexPath.row] as! String
+    let collect = collects[timestamp] as! NSDictionary
 
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectsTableViewCell;
 
@@ -84,30 +87,29 @@ class CollectsTableViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-    let dict = self.collects[indexPath.row] as! NSDictionary
-    let collect = NSMutableDictionary(dictionary: dict)
+    let timestamp = timestamps[indexPath.row] as! String
+    let dict = collects[timestamp] as! NSDictionary
+    let collect = dict.mutableCopy() as! NSMutableDictionary
     
-    let folder = self.sanitizeCollect(string: collect.value(forKey: "title") as! String)
-
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→readonly" : "→editable"
     
     let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
       print(readonly)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
-      self.collects[indexPath.row] = collect
+      self.collects[timestamp] = collect
       UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid!)/collects/\(folder)/readonly").setValue(readonly)
-      self.ref.child("collects/\(folder)/readonly").setValue(readonly)
+      self.ref.child("users/\(self.uid!)/collects/\(timestamp)/readonly").setValue(readonly)
+      self.ref.child("collects/\(timestamp)/readonly").setValue(readonly)
       tableView.reloadData();
     }
     readonlyAction.backgroundColor = .blue
 
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
-      self.collects.removeObject(at: indexPath.row);
+      self.collects.removeObject(forKey: timestamp);
       UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid!)/collects/\(folder)").removeValue()
-      self.ref.child("collects/\(folder)").removeValue()
+      self.ref.child("users/\(self.uid!)/collects/\(timestamp)").removeValue()
+      self.ref.child("collects/\(timestamp)").removeValue()
 
       tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
 
@@ -141,41 +143,30 @@ class CollectsTableViewController: UITableViewController {
   }
   
   func initCollect(_ title: NSString!) {
-    let folder = sanitizeCollect(string: title! as String)
+    let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
-    // TODO: assign template and url
+    // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
 
-    self.ref.child("collects/\(folder)").setValue(["title": title!, "url": "", "template": "", "readonly": false])
-    self.ref.child("users/\(uid!)/collects/\(folder)").setValue(collect)
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false])
+    self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
-    collects.add(collect);
+    collects.setValue(collect, forKey: timestamp)
     self.tableView.reloadData();
     
     UserDefaults.standard.set(collects, forKey: "collects");
-    performSegue(withIdentifier: "segueToCollect", sender: collect)
-  }
-  
-  func sanitizeCollect(string : String) -> String {
-    // put anything you dislike in that set ;-)
-    let blacklist = CharacterSet(charactersIn: ".$[]#")
-    let components = string.components(separatedBy: blacklist)
-    return components.joined(separator: "")
+    performSegue(withIdentifier: "segueToCollect", sender: timestamp)
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    var collect: NSDictionary;
-    var index: Int;
+    var timestamp: String;
     if let indexPath = tableView.indexPathForSelectedRow {
-      collect = collects[indexPath.row] as! NSDictionary
-      index = indexPath.row
+      timestamp = timestamps[indexPath.row] as! String
     } else {
-      collect = sender as! NSDictionary
-      index = collects.count - 1
+      timestamp = sender as! String
     }
     let destination = segue.destination as! CollectTableViewController
-    destination.folder = collect.value(forKey: "title") as! String
-    destination.index = index
+    destination.timestamp = timestamp
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
