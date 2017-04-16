@@ -4,10 +4,9 @@
   },
   "hosting": {
     "public": "public",
-    "redirects": [ {
-      "source": "/folder/:post*",
-      "destination": "/index.html?post=:post*",
-      "type": 301
+    "rewrites": [ {
+      "source": "**",
+      "destination": "/index.html"
     } ]
   }
 }
