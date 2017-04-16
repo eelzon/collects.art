@@ -150,7 +150,7 @@ class CollectsTableViewController: UITableViewController {
     // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
 
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false])
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false, "entries": {}])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
