@@ -13,7 +13,7 @@
         <!--Navigation Controller-->
         <scene sceneID="mvM-CR-lSz">
             <objects>
-                <navigationController navigationBarHidden="YES" toolbarHidden="NO" id="4CM-nU-Q2O" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="4CM-nU-Q2O" sceneMemberID="viewController">
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="3zX-IQ-gCb">
@@ -104,7 +104,7 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="n2d-iF-NnW"/>
+                    <navigationItem key="navigationItem" title="Collects" id="n2d-iF-NnW"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                 </tableViewController>
@@ -132,8 +132,15 @@
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OnO-Ct-JW9">
-                                            <rect key="frame" x="8" y="13" width="304" height="18"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder" translatesAutoresizingMaskIntoConstraints="NO" id="PGD-Ax-iFH">
+                                            <rect key="frame" x="8" y="8" width="28" height="28"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="28" id="Xnp-ff-U6M"/>
+                                                <constraint firstAttribute="width" constant="28" id="wXN-6k-pfZ"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OnO-Ct-JW9">
+                                            <rect key="frame" x="44" y="8" width="268" height="28"/>
                                             <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -141,9 +148,12 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
-                                        <constraint firstItem="OnO-Ct-JW9" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="13" id="kPE-cg-Q1a"/>
-                                        <constraint firstItem="OnO-Ct-JW9" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="q6W-6B-eUb"/>
-                                        <constraint firstAttribute="trailing" secondItem="OnO-Ct-JW9" secondAttribute="trailing" constant="8" id="xdS-kp-c8r"/>
+                                        <constraint firstItem="OnO-Ct-JW9" firstAttribute="leading" secondItem="PGD-Ax-iFH" secondAttribute="trailing" constant="8" id="0fV-gU-jgS"/>
+                                        <constraint firstAttribute="bottom" secondItem="OnO-Ct-JW9" secondAttribute="bottom" constant="8" id="3cR-0J-MSC"/>
+                                        <constraint firstItem="OnO-Ct-JW9" firstAttribute="top" secondItem="qji-Fg-bVk" secondAttribute="top" constant="8" id="Z3U-5O-ltB"/>
+                                        <constraint firstItem="PGD-Ax-iFH" firstAttribute="leading" secondItem="qji-Fg-bVk" secondAttribute="leading" constant="8" id="bZ3-LW-Ka6"/>
+                                        <constraint firstAttribute="trailing" secondItem="OnO-Ct-JW9" secondAttribute="trailing" constant="8" id="fLu-Ha-j9g"/>
+                                        <constraint firstItem="PGD-Ax-iFH" firstAttribute="centerY" secondItem="OnO-Ct-JW9" secondAttribute="centerY" id="p6S-BJ-qqV"/>
                                     </constraints>
                                 </view>
                                 <prototypes>

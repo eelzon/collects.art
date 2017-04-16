@@ -62,6 +62,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
 
   override func viewWillAppear(_ animated: Bool) {
+    self.navigationController?.setNavigationBarHidden(true, animated: false)
     super.viewWillAppear(animated)
   }
   
@@ -137,8 +138,9 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     collect.setValue(title, forKey: "title")
     self.titleLabel.text = title as String;
     
-    let collects = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
-    (collects[timestamp] as! NSDictionary).setValue(title, forKey: "title")
+    let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
+    let collects = dict.mutableCopy() as! NSMutableDictionary
+    collects.setObject(collect, forKey: timestamp as NSCopying)
     UserDefaults.standard.set(collects, forKey: "collects");
     
     self.ref.child("users/\(uid!)/collects/\(timestamp!)/title").setValue(title)
