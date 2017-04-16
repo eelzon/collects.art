@@ -43,7 +43,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     if readonly {
       cameraButton.isEnabled = false
-      titleView.isEnabled = false
+      titleView.isEditable = false
     }
     
     if let imageURL = entry.value(forKey: "image") as? String {
