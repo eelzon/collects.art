@@ -74,6 +74,7 @@
           var collectDiv = document.getElementById('collect');
           collectDiv.style.display = 'initial';
           window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
+          document.title = collect.title;
 
           // // NSDate's timeIntervalSince1970 is missing milliseconds
           // var date = new Date(timestamp * 1000);
@@ -84,7 +85,6 @@
           // `.replace(/\s/g, '');
         });
       }
-
     </script>
   </body>
 </html>
