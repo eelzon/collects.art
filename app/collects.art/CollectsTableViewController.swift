@@ -49,6 +49,8 @@ class CollectsTableViewController: UITableViewController {
   }
     
   override func viewWillAppear(_ animated: Bool) {
+    self.navigationController?.setNavigationBarHidden(false, animated: false)
+    
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
     collects = dict.mutableCopy() as! NSMutableDictionary
     timestamps = collects.allKeys as NSArray
@@ -70,7 +72,7 @@ class CollectsTableViewController: UITableViewController {
     let timestamp = timestamps[indexPath.row] as! String
     let collect = collects[timestamp] as! NSDictionary
 
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectsTableViewCell;
+    let cell = tableView.dequeueReusableCell(withIdentifier: "CollectsTableViewCell") as! CollectsTableViewCell;
 
     cell.titleLabel?.text = collect.value(forKey: "title") as? String;
 

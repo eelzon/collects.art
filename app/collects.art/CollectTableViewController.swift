@@ -12,6 +12,12 @@ import Firebase
 import AlamofireImage
 import SDCAlertView
 
+class CollectTitleTableViewCell: UITableViewCell {
+  
+  @IBOutlet var titleLabel: UILabel!
+  
+}
+
 class CollectTableViewCell: UITableViewCell {
   
   @IBOutlet var titleLabel: UILabel!
@@ -27,8 +33,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   var collect: NSDictionary!
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
-  @IBOutlet weak var headerView: UIView!
-  @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var renameButton: UIBarButtonItem!
   @IBOutlet weak var remixButton: UIBarButtonItem!
@@ -53,14 +57,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     getEntries();
   }
   
-  override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews();
-
-    let height = tableView.tableHeaderView!.subviews.first!.frame.maxY;
-    tableView.tableHeaderView!.bounds = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: height);
-    tableView.tableHeaderView = self.tableView.tableHeaderView;
-  }
-
   override func viewWillAppear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(true, animated: false)
     super.viewWillAppear(animated)
@@ -90,8 +86,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
         self.remixButton.isEnabled = false
         self.renameButton.isEnabled = false
       }
-      
-      self.titleLabel.text = self.collect.value(forKey: "title") as? String
+
       self.tableView.reloadData()
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
@@ -116,6 +111,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
       textField.autocapitalizationType = UITextAutocapitalizationType.none;
+      textField.text = self.collect.value(forKey: "title") as? String
     });
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Rename collect", style: .normal, handler: { [weak alert] (action) -> Void in
@@ -136,7 +132,8 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   
   func changeTitle (_ title: NSString!) {
     collect.setValue(title, forKey: "title")
-    self.titleLabel.text = title as String;
+    
+    refreshTitleCell()
     
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
     let collects = dict.mutableCopy() as! NSMutableDictionary
@@ -147,24 +144,47 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     self.ref.child("collects/\(timestamp!)/title").setValue(title)
   }
   
+  func refreshTitleCell() {
+    tableView.beginUpdates()
+    tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .automatic)
+    tableView.endUpdates()
+  }
+  
   // MARK: - Table view data source
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return entries.count;
+    if section == 0 {
+      return 1
+    } else {
+      return entries.count
+    }
+  }
+  
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return 2
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CollectTableViewCell
-    
-    let entry = entries[indexPath.row] as! NSDictionary
-    
-    cell.titleLabel?.text = entry.value(forKey: "title") as? String;
-    if let imageURL = entry.value(forKey: "image") as? String {
-      cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
+    if indexPath.section == 0 {
+      let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTitleTableViewCell") as! CollectTitleTableViewCell
+      
+      cell.titleLabel?.text = collect?.value(forKey: "title") as? String;
+      
+      return cell;
     } else {
-      cell.entryImageView.isHidden = true
+      let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
+      
+      let entry = entries[indexPath.row] as! NSDictionary
+      
+      cell.titleLabel?.text = entry.value(forKey: "title") as? String;
+      if let imageURL = entry.value(forKey: "image") as? String {
+        cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
+      } else {
+        cell.entryImageView.isHidden = true
+      }
+      
+      return cell;
     }
-    return cell;
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
