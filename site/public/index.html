@@ -83,7 +83,7 @@
               window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
             }
           }
-          load.remove();
+          load.style.display = 'none';
         }).catch((e) => {
           load.innerHTML = 'oops';
           console.error(e);
