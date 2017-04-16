@@ -75,14 +75,13 @@
           collectDiv.style.display = 'initial';
           window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
 
-          // NSDate's timeIntervalSince1970 is missing milliseconds
-          var date = new Date(timestamp * 1000);
-          var datestring = `
-            ${date.getFullYear()}
-            ${date.getMonth() < 9 ? '0' : ''}${date.getMonth() + 1}
-            ${date.getDate() < 10 ? '0' : ''}${date.getDate()}
-          `.replace(/\s/g, '');
-
+          // // NSDate's timeIntervalSince1970 is missing milliseconds
+          // var date = new Date(timestamp * 1000);
+          // var datestring = `
+          //   ${date.getFullYear()}
+          //   ${date.getMonth() < 9 ? '0' : ''}${date.getMonth() + 1}
+          //   ${date.getDate() < 10 ? '0' : ''}${date.getDate()}
+          // `.replace(/\s/g, '');
         });
       }
 
