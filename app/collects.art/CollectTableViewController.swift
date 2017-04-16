@@ -27,10 +27,11 @@ class CollectTableViewCell: UITableViewCell {
 
 class CollectTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
-  var entries: NSMutableArray = [];
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!
+  var entryTimestamps: NSArray! = []
+  var entries: NSDictionary!
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
@@ -72,24 +73,21 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collect = value
-          if let allEntries = self.collect["entries"] as? NSDictionary {
-            for e in allEntries {
-              self.entries.add(e.value)
-            }
+          self.entries = self.collect.value(forKey: "entries") as? NSDictionary
+          self.entryTimestamps = self.entries.allKeys as NSArray
+          
+          print(self.collect)
+          if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
+            self.addButton.isEnabled = false
+            self.remixButton.isEnabled = false
+            self.renameButton.isEnabled = false
           }
+          
+          self.tableView.reloadData()
+          self.activityIndicator.stopAnimating()
+          self.tableView.isHidden = false
         }
       }
-      
-      print(self.collect)
-      if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
-        self.addButton.isEnabled = false
-        self.remixButton.isEnabled = false
-        self.renameButton.isEnabled = false
-      }
-
-      self.tableView.reloadData()
-      self.activityIndicator.stopAnimating()
-      self.tableView.isHidden = false
     }) { (error) in
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
@@ -156,7 +154,7 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     if section == 0 {
       return 1
     } else {
-      return entries.count
+      return entryTimestamps.count
     }
   }
   
@@ -174,7 +172,8 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     } else {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
       
-      let entry = entries[indexPath.row] as! NSDictionary
+      let entryTimestamp = entryTimestamps[indexPath.row] as! String
+      let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
       
       cell.titleLabel?.text = entry.value(forKey: "title") as? String;
       if let imageURL = entry.value(forKey: "image") as? String {
@@ -206,12 +205,12 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
     var entryTimestamp: String;
     var entry: NSDictionary;
     if let indexPath = tableView.indexPathForSelectedRow {
-      entry = entries[indexPath.row] as! NSDictionary
-      entryTimestamp = entry.value(forKey: "timestamp") as! String
+      entryTimestamp = entryTimestamps[indexPath.row] as! String
     } else {
-      entry = entries[entries.count - 1] as! NSDictionary
       entryTimestamp = sender as! String
     }
+    entry = entries.value(forKey: entryTimestamp) as! NSDictionary
+    
     let destination = segue.destination as! EntryViewController
     destination.entry = entry
     destination.collectTimestamp = timestamp
@@ -222,9 +221,11 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   @IBAction func createEntry(_ sender: Any) {
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
     let entry: NSDictionary = ["title": "", "image": false, "description": ""];
-    self.ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
-    entries.add(entry)
-    self.tableView.reloadData()
+    ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
+    (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
+    entries.setValue(entry, forKey: entryTimestamp)
+    entryTimestamps = entries.allKeys as NSArray
+    tableView.reloadData()
     performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
   }
 
