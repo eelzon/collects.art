@@ -10,85 +10,82 @@
     <!-- include only the Firebase features as you need -->
     <script defer src="/__/firebase/3.7.8/firebase-auth.js"></script>
     <script defer src="/__/firebase/3.7.8/firebase-database.js"></script>
-    <script defer src="/__/firebase/3.7.8/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
 
-    <style media="screen">
-
-    </style>
+    <style media="screen"></style>
   </head>
-  <body>
+  <body onload="init()">
     <div id="collects" style="display:none">
       <h1>Collects</h1>
       <ul id ="list"></ul>
     </div>
     <div id="collect" style="display:none"></div>
-    <p id="load">...</p>
+    <h2 id="load">...</h2>
     <hr>
     <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('data', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-
+      function init() {
         var load = document.getElementById('load');
-        var collectsDiv = document.getElementById('collects');
-        var collectDiv = document.getElementById('collect');
+
         firebase.auth().signInAnonymously().then(() => {
-          var timestamp = window.location.pathname.slice(1);
+          var timestamp = window.location.pathname.slice(1).split('/')[0];
           if (!timestamp) {
-            firebase.database().ref('/collects').once('value').then(snapshot => {
-              var ul = document.getElementById('list');
-              var collects = snapshot.exportVal();
-              Object.keys(collects).forEach((timestamp) => {
-                var collect = collects[timestamp];
-                var li = document.createElement("li");
-                var a = document.createElement('a');
-                a.appendChild(document.createTextNode(collect.title));
-                a.href = '/' + timestamp + '/' + collect.title;
-                li.appendChild(a);
-                ul.appendChild(li);
-              });
-              collectsDiv.style.display = 'initial';
-            });
+            loadCollects();
           } else {
-            var index = timestamp.indexOf('/');
-            var hasTitle = timestamp.slice(index + 1).length > 0;
-            if (index > -1) {
-              timestamp = timestamp.slice(0, index);
-            }
-            firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
-              var collect = snapshot.exportVal();
-              var entries = collect.entries;
-              collectDiv.innerHTML = `
-                <h1>${collect.title}</h1>
-                <!-- template data -->
-              `;
-              collectDiv.style.display = 'initial';
-            });
-
-            // NSDate's timeIntervalSince1970 is missing milliseconds
-            var date = new Date(timestamp * 1000);
-            var datestring = `
-              ${date.getFullYear()}
-              ${date.getMonth() < 9 ? '0' : ''}${date.getMonth() + 1}
-              ${date.getDate() < 10 ? '0' : ''}${date.getDate()}
-            `.replace(/\s/g, '');
-
-            if (!hasTitle) {
-              window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
-            }
+            loadCollect(timestamp);
           }
           load.style.display = 'none';
         }).catch((e) => {
           load.innerHTML = 'oops';
           console.error(e);
         });
-      });
+      }
+
+      function loadCollects() {
+        firebase.database().ref('/collects').once('value').then(snapshot => {
+          var ul = document.getElementById('list');
+          var collects = snapshot.exportVal();
+          Object.keys(collects).forEach((timestamp) => {
+            var collect = collects[timestamp];
+            var li = document.createElement("li");
+            var a = document.createElement('a');
+            a.appendChild(document.createTextNode(collect.title));
+            a.href = '/' + timestamp + '/' + collect.title;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+
+          var collectsDiv = document.getElementById('collects');
+          collectsDiv.style.display = 'initial';
+        });
+      }
+
+      function loadCollect(timestamp) {
+        firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
+          var collect = snapshot.exportVal();
+          var entries = collect.entries;
+          collectDiv.innerHTML = `
+            <h1>${collect.title}</h1>
+            <!-- template data -->
+          `;
+
+          var collectDiv = document.getElementById('collect');
+          collectDiv.style.display = 'initial';
+          window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
+
+          // NSDate's timeIntervalSince1970 is missing milliseconds
+          var date = new Date(timestamp * 1000);
+          var datestring = `
+            ${date.getFullYear()}
+            ${date.getMonth() < 9 ? '0' : ''}${date.getMonth() + 1}
+            ${date.getDate() < 10 ? '0' : ''}${date.getDate()}
+          `.replace(/\s/g, '');
+
+        });
+      }
+
     </script>
   </body>
 </html>
