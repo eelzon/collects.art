@@ -19,11 +19,11 @@
     </style>
   </head>
   <body>
-    <div id="collects">
+    <div id="collects" style="display:none">
       <h1>Collects</h1>
       <ul id ="list"></ul>
     </div>
-    <div id="collect"></div>
+    <div id="collect" style="display:none"></div>
     <p id="load">...</p>
     <hr>
     <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
@@ -36,24 +36,24 @@
         // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
 
         var load = document.getElementById('load');
-        var collects = document.getElementById('collects');
-        var collect = document.getElementById('collect');
+        var collectsDiv = document.getElementById('collects');
+        var collectDiv = document.getElementById('collect');
         firebase.auth().signInAnonymously().then(() => {
           var timestamp = window.location.pathname.slice(1);
           if (!timestamp) {
             firebase.database().ref('/collects').once('value').then(snapshot => {
               var ul = document.getElementById('list');
               var collects = snapshot.exportVal();
-              Object.keys(collects).forEach((folder) => {
-                var collect = collects[folder];
+              Object.keys(collects).forEach((timestamp) => {
+                var collect = collects[timestamp];
                 var li = document.createElement("li");
                 var a = document.createElement('a');
                 a.appendChild(document.createTextNode(collect.title));
-                a.href = '/' + collect.timestamp + '/' + collect.title;
+                a.href = '/' + timestamp + '/' + collect.title;
                 li.appendChild(a);
                 ul.appendChild(li);
               });
-              collect.style.display = 'none';
+              collectsDiv.style.display = 'initial';
             });
           } else {
             var index = timestamp.indexOf('/');
@@ -64,12 +64,21 @@
             firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
               var collect = snapshot.exportVal();
               var entries = collect.entries;
-              collect.innerHTML = `
-              <h1>${collect.title}</h1>
-              <!-- template data -->
-            `;
-            collects.style.display = 'none';
+              collectDiv.innerHTML = `
+                <h1>${collect.title}</h1>
+                <!-- template data -->
+              `;
+              collectDiv.style.display = 'initial';
             });
+
+            // NSDate's timeIntervalSince1970 is missing milliseconds
+            var date = new Date(timestamp * 1000);
+            var datestring = `
+              ${date.getFullYear()}
+              ${date.getMonth() < 9 ? '0' : ''}${date.getMonth() + 1}
+              ${date.getDate() < 10 ? '0' : ''}${date.getDate()}
+            `.replace(/\s/g, '');
+
             if (!hasTitle) {
               window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
             }
