@@ -59,7 +59,6 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    self.navigationController?.setNavigationBarHidden(true, animated: false)
     super.viewWillAppear(animated)
   }
   
@@ -199,28 +198,27 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == "unwindToCollects" {
-      return
+    if segue.identifier == "segueToEntry" {
+      var entryTimestamp: String;
+      var entry: NSDictionary;
+      if let indexPath = tableView.indexPathForSelectedRow {
+        entryTimestamp = entryTimestamps[indexPath.row] as! String
+      } else {
+        entryTimestamp = sender as! String
+      }
+      entry = entries.value(forKey: entryTimestamp) as! NSDictionary
+      
+      let destination = segue.destination as! EntryViewController
+      destination.entry = entry
+      destination.collectTimestamp = timestamp
+      destination.timestamp = entryTimestamp
+      destination.readonly = self.collect.object(forKey: "readonly") as? NSNumber == 1 ? true : false
     }
-    var entryTimestamp: String;
-    var entry: NSDictionary;
-    if let indexPath = tableView.indexPathForSelectedRow {
-      entryTimestamp = entryTimestamps[indexPath.row] as! String
-    } else {
-      entryTimestamp = sender as! String
-    }
-    entry = entries.value(forKey: entryTimestamp) as! NSDictionary
-    
-    let destination = segue.destination as! EntryViewController
-    destination.entry = entry
-    destination.collectTimestamp = timestamp
-    destination.timestamp = entryTimestamp
-    destination.readonly = self.collect.object(forKey: "readonly") as? NSNumber == 1 ? true : false
   }
   
   @IBAction func createEntry(_ sender: Any) {
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
-    let entry: NSDictionary = ["title": "", "image": false, "description": ""];
+    let entry: NSDictionary = ["title": "", "image": false];
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)

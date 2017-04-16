@@ -14,8 +14,7 @@ import AlamofireImage
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
   @IBOutlet var imageView: UIImageView!
-  @IBOutlet var titleView: UITextField!
-  @IBOutlet var descView: UITextView!
+  @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var cameraButton: UIBarButtonItem!
 
@@ -36,10 +35,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
 
-    descView.layer.borderColor = UIColor.black.cgColor
-    descView.layer.borderWidth = 1.0
-    descView.layer.cornerRadius = 0
-    
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
     
@@ -49,7 +44,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     if readonly {
       cameraButton.isEnabled = false
       titleView.isEnabled = false
-      descView.isEditable = false
     }
     
     if let imageURL = entry.value(forKey: "image") as? String {
@@ -67,7 +61,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-    let updatedEntry: [String: Any] = ["title": titleView.text!, "image": entry.value(forKey: "image")!, "description": descView.text];
+    let updatedEntry: [String: Any] = ["title": titleView.text!, "image": entry.value(forKey: "image")!];
 
     self.ref.child("collects/\(collectTimestamp)/entries/\(timestamp)").setValue(updatedEntry)
     super.viewWillDisappear(animated)

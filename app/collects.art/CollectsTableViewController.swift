@@ -61,6 +61,7 @@ class CollectsTableViewController: UITableViewController {
   }
   
   override func viewWillDisappear(_ animated: Bool) {
+    self.navigationController?.setNavigationBarHidden(true, animated: false)
     super.viewWillDisappear(animated)
   }
   
@@ -161,14 +162,16 @@ class CollectsTableViewController: UITableViewController {
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    var timestamp: String;
-    if let indexPath = tableView.indexPathForSelectedRow {
-      timestamp = timestamps[indexPath.row] as! String
-    } else {
-      timestamp = sender as! String
+    if segue.identifier == "segueToCollect" {
+      var timestamp: String;
+      if let indexPath = tableView.indexPathForSelectedRow {
+        timestamp = timestamps[indexPath.row] as! String
+      } else {
+        timestamp = sender as! String
+      }
+      let destination = segue.destination as! CollectTableViewController
+      destination.timestamp = timestamp
     }
-    let destination = segue.destination as! CollectTableViewController
-    destination.timestamp = timestamp
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
