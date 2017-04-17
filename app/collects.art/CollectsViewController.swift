@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import SDCAlertView
+import AlamofireImage
 
 class CollectsTableViewCell: UITableViewCell {
   
@@ -16,12 +17,15 @@ class CollectsTableViewCell: UITableViewCell {
   
 }
 
-class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
   
   var collects: NSMutableDictionary!
   var timestamps: NSArray!
   var ref: FIRDatabaseReference!
+//  var storageRef: FIRStorageReference!
   var uid: String!
+  var ribbon: String!
+  @IBOutlet weak var userBarButtonItem: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   
@@ -32,6 +36,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     tableView.isHidden = true
     
     ref = FIRDatabase.database().reference()
+//    storageRef = FIRStorage.storage().reference()
     
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
@@ -43,18 +48,103 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
         }
-        self.activityIndicator.stopAnimating()
-        self.tableView.isHidden = false
+        self.getRibbons()
       })
     } else {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
-      activityIndicator.stopAnimating()
-      tableView.isHidden = false
+      getRibbons()
     }
     
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
+  }
+  
+  func setUserRibbon() {
+    ribbon = UserDefaults.standard.object(forKey: "ribbon") as? String
+    if ribbon == nil {
+      let ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
+      let index = Int(arc4random_uniform(UInt32(ribbons.count)))
+      ribbon = ribbons.object(at: index) as? String
+      UserDefaults.standard.set(ribbon, forKey: "ribbon")
+    }
+    let data = try! Data(contentsOf: URL(string: ribbon!)!)
+    let image = UIImage(data: data)
+    image?.af_inflate()
+    
+    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
+    button.setImage(image, for: UIControlState.normal)
+    button.imageView?.contentMode = .scaleAspectFit
+    button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
+    userBarButtonItem.customView = button
+  }
+  
+  func getRibbons() {
+    UserDefaults.standard.addObserver(self, forKeyPath: "ribbon", options: NSKeyValueObservingOptions.new, context: nil)
+    
+    UserDefaults.standard.removeObject(forKey: "ribbons")
+    if UserDefaults.standard.object(forKey: "ribbons") == nil {
+      ref.child("ribbons").observeSingleEvent(of: .value, with: { (snapshot) in
+        if snapshot.exists(), let value = snapshot.value as? NSDictionary {
+          let ribbons = NSMutableArray()
+          for ribbon in value {
+            ribbons.add((ribbon.value as! NSDictionary).value(forKey: "url")!)
+          }
+          UserDefaults.standard.set(ribbons, forKey: "ribbons");
+          self.showTable()
+        }
+      })
+    } else {
+      showTable()
+    }
+  }
+  
+  func openRibbons(_ sender:Any) {
+    performSegue(withIdentifier: "segueToRibbons", sender: self)
+  }
+  
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    if keyPath == "ribbon" {
+      self.dismiss(animated: true, completion: (() -> Void)? {
+        self.setUserRibbon()
+      })
+    } else {
+      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+    }
+  }
+  
+//  // proud of this lil script, so it gets to stay :)
+//  func uploadRibbons() {
+//    let fileManager = FileManager.default
+//    let path = "/Users/nozlee/Desktop/7on7/ribbons/pngs/"
+//    let files = fileManager.enumerator(atPath: path)
+//    let metadata = FIRStorageMetadata()
+//    metadata.contentType = "image/jpeg"
+//    while let file = files?.nextObject() as? String {
+//      let imagePath = (path as NSString).appendingPathComponent(file)
+//      if fileManager.fileExists(atPath: imagePath) {
+//        if let image = UIImage(contentsOfFile: imagePath) {
+//          let data: Data = UIImagePNGRepresentation(image)!
+//          storageRef.child("ribbons/\(file)").put(data, metadata: metadata).observe(.success) { (snapshot) in
+//            let downloadURL = snapshot.metadata?.downloadURL()?.absoluteString
+//            // Write the download URL to the Realtime Database
+//            self.ref.child("ribbons/\(self.sanitizeString(string: file))").setValue(["file": file, "url": downloadURL])
+//          }
+//        }
+//      }
+//    }
+//  }
+
+  func sanitizeString(string : String) -> String {
+    let blacklist = CharacterSet(charactersIn: ".$[]#")
+    let components = string.components(separatedBy: blacklist)
+    return components.joined(separator: "")
+  }
+  
+  func showTable() {
+    setUserRibbon()
+    activityIndicator.stopAnimating()
+    tableView.isHidden = false
   }
     
   override func viewWillAppear(_ animated: Bool) {
@@ -180,11 +270,25 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       }
       let destination = segue.destination as! CollectViewController
       destination.timestamp = timestamp
+    } else if segue.identifier == "segueToRibbons" {
+      if let destination = segue.destination as? RibbonCollectionViewController {
+        destination.popoverPresentationController!.delegate = self
+        destination.preferredContentSize = CGSize(width: 320, height: 320)
+        destination.ribbon = ribbon
+      }
     }
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
 
+  }
+  
+  func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    return UIModalPresentationStyle.none
+  }
+  
+  func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+    setUserRibbon()
   }
 
 }

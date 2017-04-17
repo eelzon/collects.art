@@ -244,7 +244,7 @@
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="backToCollects:" destination="Tlv-7y-fsl" id="VmF-q5-nav"/>
-                                <segue destination="w0j-YH-0KQ" kind="unwind" unwindAction="unwindToCollectsWithSegue:" id="qui-YA-bWA"/>
+                                <segue destination="w0j-YH-0KQ" kind="unwind" identifier="unwindToCollects" unwindAction="unwindToCollectsWithSegue:" id="qui-YA-bWA"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
@@ -406,13 +406,7 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="User" id="bpU-yN-o57">
-                            <connections>
-                                <segue destination="NlI-zy-vna" kind="popoverPresentation" identifier="segueToRibbons" popoverAnchorBarButtonItem="bpU-yN-o57" id="Dp6-Ux-h5A">
-                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                </segue>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem id="QmR-nH-Gma"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="87N-VY-IjK"/>
                         <barButtonItem systemItem="add" id="7fv-HH-02L">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
@@ -428,6 +422,10 @@
                     <connections>
                         <outlet property="activityIndicator" destination="mkJ-r8-bnt" id="0HK-HW-0aK"/>
                         <outlet property="tableView" destination="j7Y-hT-ZEk" id="3xc-UJ-TQJ"/>
+                        <outlet property="userBarButtonItem" destination="QmR-nH-Gma" id="h2C-d5-mV6"/>
+                        <segue destination="NlI-zy-vna" kind="popoverPresentation" identifier="segueToRibbons" popoverAnchorBarButtonItem="QmR-nH-Gma" id="j6D-qu-FOq">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnh-rC-dix" userLabel="First Responder" sceneMemberID="firstResponder"/>
