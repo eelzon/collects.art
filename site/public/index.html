@@ -21,7 +21,7 @@
       <ul id ="list"></ul>
     </div>
     <div id="collect" style="display:none"></div>
-    <h2 id="load">...</h2>
+    <p id="load">...</p>
     <hr>
     <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
 
@@ -32,9 +32,9 @@
         firebase.auth().signInAnonymously().then(() => {
           var timestamp = window.location.pathname.slice(1).split('/')[0];
           if (!timestamp) {
-            loadCollects();
+            return loadCollects();
           } else {
-            loadCollect(timestamp);
+            return loadCollect(timestamp);
           }
           load.style.display = 'none';
         }).catch((e) => {
@@ -44,7 +44,7 @@
       }
 
       function loadCollects() {
-        firebase.database().ref('/collects').once('value').then(snapshot => {
+        return firebase.database().ref('/collects').once('value').then(snapshot => {
           var ul = document.getElementById('list');
           var collects = snapshot.exportVal();
           Object.keys(collects).forEach((timestamp) => {
@@ -63,7 +63,7 @@
       }
 
       function loadCollect(timestamp) {
-        firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
+        return firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
           var collect = snapshot.exportVal();
           var entries = collect.entries;
           collectDiv.innerHTML = `
