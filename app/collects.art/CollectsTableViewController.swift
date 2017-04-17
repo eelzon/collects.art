@@ -61,7 +61,7 @@ class CollectsTableViewController: UITableViewController {
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-    self.navigationController?.setNavigationBarHidden(true, animated: false)
+    self.navigationController?.setNavigationBarHidden(true, animated: true)
     super.viewWillDisappear(animated)
   }
   
