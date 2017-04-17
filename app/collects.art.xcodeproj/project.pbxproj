@@ -10,8 +10,8 @@
 		2EFFC45162E129ECA73E8AFE /* Pods_collects_art.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 452ED41AF3B150920FCEDE01 /* Pods_collects_art.framework */; };
 		652839641E9726450060CFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 652839621E9726450060CFB7 /* Main.storyboard */; };
 		6528396F1E9726530060CFB7 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652839681E9726530060CFB7 /* EntryViewController.swift */; };
-		652839701E9726530060CFB7 /* CollectTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652839691E9726530060CFB7 /* CollectTableViewController.swift */; };
-		652839761E9737040060CFB7 /* CollectsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652839741E9737040060CFB7 /* CollectsTableViewController.swift */; };
+		652839701E9726530060CFB7 /* CollectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652839691E9726530060CFB7 /* CollectViewController.swift */; };
+		652839761E9737040060CFB7 /* CollectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652839741E9737040060CFB7 /* CollectsViewController.swift */; };
 		652CA7C21E971A2900AA749F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652CA7C11E971A2900AA749F /* AppDelegate.swift */; };
 		652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7C81E971A2900AA749F /* Assets.xcassets */; };
 		652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */; };
@@ -23,8 +23,8 @@
 		452ED41AF3B150920FCEDE01 /* Pods_collects_art.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_collects_art.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		652839631E9726450060CFB7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		652839681E9726530060CFB7 /* EntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
-		652839691E9726530060CFB7 /* CollectTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectTableViewController.swift; sourceTree = "<group>"; };
-		652839741E9737040060CFB7 /* CollectsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectsTableViewController.swift; sourceTree = "<group>"; };
+		652839691E9726530060CFB7 /* CollectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectViewController.swift; sourceTree = "<group>"; };
+		652839741E9737040060CFB7 /* CollectsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectsViewController.swift; sourceTree = "<group>"; };
 		652CA7BE1E971A2900AA749F /* collects.art.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = collects.art.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		652CA7C11E971A2900AA749F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		652CA7C81E971A2900AA749F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -78,8 +78,8 @@
 			isa = PBXGroup;
 			children = (
 				652CA7C11E971A2900AA749F /* AppDelegate.swift */,
-				652839741E9737040060CFB7 /* CollectsTableViewController.swift */,
-				652839691E9726530060CFB7 /* CollectTableViewController.swift */,
+				652839741E9737040060CFB7 /* CollectsViewController.swift */,
+				652839691E9726530060CFB7 /* CollectViewController.swift */,
 				652839681E9726530060CFB7 /* EntryViewController.swift */,
 				65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */,
 				652CA7C81E971A2900AA749F /* Assets.xcassets */,
@@ -225,8 +225,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				652839701E9726530060CFB7 /* CollectTableViewController.swift in Sources */,
-				652839761E9737040060CFB7 /* CollectsTableViewController.swift in Sources */,
+				652839701E9726530060CFB7 /* CollectViewController.swift in Sources */,
+				652839761E9737040060CFB7 /* CollectsViewController.swift in Sources */,
 				65489E051EA3D7A200D3B6FB /* RibbonCollectionViewController.swift in Sources */,
 				6528396F1E9726530060CFB7 /* EntryViewController.swift in Sources */,
 				652CA7C21E971A2900AA749F /* AppDelegate.swift in Sources */,

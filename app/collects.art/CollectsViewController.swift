@@ -1,5 +1,5 @@
 //
-//  CollectsTableViewController
+//  CollectsViewController.swift
 //  collects.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
@@ -16,15 +16,20 @@ class CollectsTableViewCell: UITableViewCell {
   
 }
 
-class CollectsTableViewController: UITableViewController {
+class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var collects: NSMutableDictionary!
   var timestamps: NSArray!
   var ref: FIRDatabaseReference!
   var uid: String!
+  @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    activityIndicator.startAnimating()
+    tableView.isHidden = true
     
     ref = FIRDatabase.database().reference()
     
@@ -38,10 +43,14 @@ class CollectsTableViewController: UITableViewController {
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
         }
+        self.activityIndicator.stopAnimating()
+        self.tableView.isHidden = false
       })
     } else {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
+      activityIndicator.stopAnimating()
+      tableView.isHidden = false
     }
     
     tableView.estimatedRowHeight = 80
@@ -65,11 +74,11 @@ class CollectsTableViewController: UITableViewController {
     super.viewWillDisappear(animated)
   }
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return timestamps.count;
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let timestamp = timestamps[indexPath.row] as! String
     let collect = collects[timestamp] as! NSDictionary
 
@@ -80,16 +89,16 @@ class CollectsTableViewController: UITableViewController {
     return cell;
   }
   
-  override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     cell.separatorInset = UIEdgeInsets.zero
     cell.layoutMargins = UIEdgeInsets.zero
   }
   
-  override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     return true;
   }
   
-  override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+  func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
     let timestamp = timestamps[indexPath.row] as! String
     let dict = collects[timestamp] as! NSDictionary
     let collect = dict.mutableCopy() as! NSMutableDictionary
@@ -151,7 +160,7 @@ class CollectsTableViewController: UITableViewController {
     // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
 
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false, "entries": {}])
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
@@ -169,7 +178,7 @@ class CollectsTableViewController: UITableViewController {
       } else {
         timestamp = sender as! String
       }
-      let destination = segue.destination as! CollectTableViewController
+      let destination = segue.destination as! CollectViewController
       destination.timestamp = timestamp
     }
   }

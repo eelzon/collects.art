@@ -1,5 +1,5 @@
 //
-//  CollectTableViewController.swift
+//  CollectViewController.swift
 //  collects.art
 //
 //  Created by Nozlee Samadzadeh on 4/6/17.
@@ -25,13 +25,13 @@ class CollectTableViewCell: UITableViewCell {
   
 }
 
-class CollectTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!
   var entryTimestamps: NSArray! = []
-  var entries: NSDictionary!
+  var entries: NSDictionary! = NSDictionary()
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
@@ -72,7 +72,9 @@ class CollectTableViewController: UIViewController, UITableViewDelegate, UITable
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collect = value
-          self.entries = self.collect.value(forKey: "entries") as? NSDictionary
+          if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
+            self.entries = entries
+          }
           self.entryTimestamps = self.entries.allKeys as NSArray
           
           print(self.collect)
