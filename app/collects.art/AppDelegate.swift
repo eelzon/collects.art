@@ -9,12 +9,13 @@
 import UIKit
 import Firebase
 import IQKeyboardManagerSwift
+import Alamofire
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-
+  let manager = NetworkReachabilityManager(host: "www.rhizome.org")
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
@@ -30,6 +31,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     IQKeyboardManager.sharedManager().enableAutoToolbar = false;
 
     UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "Times New Roman", size:16)!];
+    
+    manager?.listener = { status in
+      if status == .notReachable {
+        if let navigationController = self.window?.rootViewController as? UINavigationController {
+          navigationController.popToRootViewController(animated: true)
+        }
+      }
+    }
+    
+    manager?.startListening()
 
     return true
   }

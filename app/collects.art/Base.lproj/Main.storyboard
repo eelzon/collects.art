@@ -200,8 +200,8 @@
         <scene sceneID="TnL-S1-swh">
             <objects>
                 <collectionViewController id="NlI-zy-vna" customClass="RibbonCollectionViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="yXw-OR-5wn">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="yXw-OR-5wn">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Y7o-v9-EHW">
@@ -250,7 +250,7 @@
                     </toolbarItems>
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="480"/>
+                    <size key="freeformSize" width="320" height="320"/>
                     <connections>
                         <outlet property="collectionView" destination="yXw-OR-5wn" id="IMZ-bc-s1L"/>
                     </connections>
@@ -258,7 +258,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XzQ-qg-281" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="w0j-YH-0KQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="620.625" y="-220.77464788732394"/>
+            <point key="canvasLocation" x="621" y="-340"/>
         </scene>
         <!--Entry View Controller-->
         <scene sceneID="Y8F-yB-apt">
@@ -344,6 +344,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <webView hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Se7-dS-CaY">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="77" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="j7Y-hT-ZEk">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -353,7 +358,7 @@
                                         <rect key="frame" x="0.0" y="28" width="320" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mUm-R6-kkb" id="CbW-gA-Wr8">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="76.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder" translatesAutoresizingMaskIntoConstraints="NO" id="yAz-wH-Pia">
@@ -364,7 +369,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Collect" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nHe-WE-HPi">
-                                                    <rect key="frame" x="44" y="12" width="268" height="50.5"/>
+                                                    <rect key="frame" x="44" y="12" width="268" height="51"/>
                                                     <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
@@ -421,6 +426,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <connections>
                         <outlet property="activityIndicator" destination="mkJ-r8-bnt" id="0HK-HW-0aK"/>
+                        <outlet property="offlineView" destination="Se7-dS-CaY" id="ORP-mM-p9O"/>
                         <outlet property="tableView" destination="j7Y-hT-ZEk" id="3xc-UJ-TQJ"/>
                         <outlet property="userBarButtonItem" destination="QmR-nH-Gma" id="h2C-d5-mV6"/>
                         <segue destination="NlI-zy-vna" kind="popoverPresentation" identifier="segueToRibbons" popoverAnchorBarButtonItem="QmR-nH-Gma" id="j6D-qu-FOq">
@@ -430,7 +436,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnh-rC-dix" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="621" y="-919"/>
+            <point key="canvasLocation" x="620.625" y="-919.0140845070423"/>
         </scene>
     </scenes>
     <resources>

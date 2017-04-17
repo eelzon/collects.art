@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import SDCAlertView
+import Alamofire
 import AlamofireImage
 
 class CollectsTableViewCell: UITableViewCell {
@@ -19,6 +20,7 @@ class CollectsTableViewCell: UITableViewCell {
 
 class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
   
+  let manager = NetworkReachabilityManager(host: "www.rhizome.org")
   var collects: NSMutableDictionary!
   var timestamps: NSArray!
   var ref: FIRDatabaseReference!
@@ -33,12 +35,24 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    setReachability()
+    
+    let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
+    offlineView.loadHTMLString(html, baseURL: nil)
+    
+    setAuth()
+    
+    tableView.estimatedRowHeight = 80
+    tableView.rowHeight = UITableViewAutomaticDimension
+  }
+  
+  func setAuth() {
     activityIndicator.startAnimating()
     tableView.isHidden = true
-    
+
     ref = FIRDatabase.database().reference()
-//    storageRef = FIRStorage.storage().reference()
-    
+    //    storageRef = FIRStorage.storage().reference()
+
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
     if FIRAuth.auth()?.currentUser == nil {
@@ -56,9 +70,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       uid = FIRAuth.auth()!.currentUser!.uid
       getRibbons()
     }
-    
-    tableView.estimatedRowHeight = 80
-    tableView.rowHeight = UITableViewAutomaticDimension
   }
   
   func setUserRibbon() {
@@ -162,7 +173,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   
   override func viewWillDisappear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(true, animated: true)
+    
     UserDefaults.standard.removeObserver(self, forKeyPath: "ribbon")
+    
     super.viewWillDisappear(animated)
   }
   
@@ -292,5 +305,21 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
     setUserRibbon()
   }
-
+  
+  func setReachability() {
+    manager?.listener = { status in
+      if status == .notReachable {
+        self.activityIndicator.stopAnimating()
+        self.tableView.isHidden = true
+        self.dismiss(animated: true, completion: {})
+        self.offlineView.isHidden = false
+      } else {
+        self.offlineView.isHidden = true;
+        self.setAuth()
+      }
+    }
+    
+    manager?.startListening()
+  }
+  
 }
