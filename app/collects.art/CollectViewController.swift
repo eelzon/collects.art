@@ -92,7 +92,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     }) { (error) in
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
-      // TODO do something about offline mode
       print(error.localizedDescription)
     }
   }

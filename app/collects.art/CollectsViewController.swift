@@ -28,6 +28,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBOutlet weak var userBarButtonItem: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet weak var offlineView: UIWebView!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -161,6 +162,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   
   override func viewWillDisappear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(true, animated: true)
+    UserDefaults.standard.removeObserver(self, forKeyPath: "ribbon")
     super.viewWillDisappear(animated)
   }
   
