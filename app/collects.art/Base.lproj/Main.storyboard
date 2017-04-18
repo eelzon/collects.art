@@ -159,6 +159,9 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Ud2-Eq-B00"/>
                         <barButtonItem systemItem="action" id="gEc-QD-ovF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="openCollect:" destination="Tlv-7y-fsl" id="22I-NI-fhR"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="7z7-fv-dq5"/>
                         <barButtonItem systemItem="organize" id="Aya-l4-dKb">
@@ -200,8 +203,8 @@
         <scene sceneID="TnL-S1-swh">
             <objects>
                 <collectionViewController id="NlI-zy-vna" customClass="RibbonCollectionViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="yXw-OR-5wn">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="yXw-OR-5wn">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Y7o-v9-EHW">
@@ -250,7 +253,7 @@
                     </toolbarItems>
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="320"/>
+                    <size key="freeformSize" width="320" height="480"/>
                     <connections>
                         <outlet property="collectionView" destination="yXw-OR-5wn" id="IMZ-bc-s1L"/>
                     </connections>
