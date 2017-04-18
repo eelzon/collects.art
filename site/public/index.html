@@ -26,9 +26,9 @@
     <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
 
     <script>
-      function init() {
-        var load = document.getElementById('load');
+      var load = document.getElementById('load');
 
+      function init() {
         firebase.auth().signInAnonymously().then(() => {
           var timestamp = window.location.pathname.slice(1).split('/')[0];
           if (!timestamp) {
@@ -36,7 +36,6 @@
           } else {
             return loadCollect(timestamp);
           }
-          load.style.display = 'none';
         }).catch((e) => {
           load.innerHTML = 'oops';
           console.error(e);
@@ -59,22 +58,48 @@
 
           var collectsDiv = document.getElementById('collects');
           collectsDiv.style.display = 'initial';
+          load.style.display = 'none';
         });
       }
 
       function loadCollect(timestamp) {
         return firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
           var collect = snapshot.exportVal();
-          var entries = collect.entries;
-          collectDiv.innerHTML = `
-            <h1>${collect.title}</h1>
-            <!-- template data -->
-          `;
 
-          var collectDiv = document.getElementById('collect');
-          collectDiv.style.display = 'initial';
           window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
           document.title = collect.title;
+
+          return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            var headers = {
+              'Content-Type': 'application/json',
+              Accept: 'text/html'
+            };
+
+            var handleXhrError = (message) => {
+              var error = new Error(message);
+              return reject(error);
+            };
+
+            xhr.onerror = () => handleXhrError('An network error occurred.');
+            xhr.ontimeout = () => handleXhrError('The XMLHttpRequest timed out.');
+
+            xhr.onload = () => {
+              if (xhr.status < 200 || xhr.status >= 300) {
+                var error = new HttpStatusError(`Response status not within range: ${xhr.status}`, xhr);
+                return reject(error);
+              }
+              return resolve(xhr.response);
+            };
+
+            xhr.open('POST', 'https://us-central1-collectsart.cloudfunctions.net/helloWorld', true);
+            xhr.send(JSON.stringify(collect));
+          }).then((foo) => {
+            var collectDiv = document.getElementById('collect');
+            collectDiv.style.display = 'initial';
+            collectDiv.innerHTML = foo;
+            load.style.display = 'none';
+          });
 
           // // NSDate's timeIntervalSince1970 is missing milliseconds
           // var date = new Date(timestamp * 1000);
