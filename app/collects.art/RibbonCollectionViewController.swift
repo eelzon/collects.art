@@ -24,6 +24,11 @@ class RibbonCollectionViewController: UICollectionViewController {
 
     ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
   }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    self.view?.superview?.layer.cornerRadius = 0;
+    super.viewWillAppear(animated)
+  }
 
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
@@ -46,10 +51,12 @@ class RibbonCollectionViewController: UICollectionViewController {
     let url = ribbons.object(at: indexPath.row) as! String
     cell.ribbonView.af_setImage(withURL: URL.init(string: url)!)
 
+    cell.layer.borderWidth = 1.0
+    cell.layer.cornerRadius = 0
     if url == ribbon {
       cell.layer.borderColor = UIColor.black.cgColor
-      cell.layer.borderWidth = 1.0
-      cell.layer.cornerRadius = 0
+    } else {
+      cell.layer.borderColor = UIColor.clear.cgColor
     }
     
     return cell

@@ -288,7 +288,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     } else if segue.identifier == "segueToRibbons" {
       if let destination = segue.destination as? RibbonCollectionViewController {
         destination.popoverPresentationController!.delegate = self
-        destination.preferredContentSize = CGSize(width: 320, height: 320)
+        destination.preferredContentSize = CGSize(width: 300, height: 300)
         destination.ribbon = ribbon
       }
     }
