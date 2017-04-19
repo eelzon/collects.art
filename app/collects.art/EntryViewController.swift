@@ -23,7 +23,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
-  var entry: NSDictionary!
+  var entry: NSMutableDictionary!
   var readonly: Bool!
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
@@ -54,10 +54,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageButton.imageView!.contentMode = .scaleAspectFit
     imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    if let imageURL = entry.value(forKey: "image") as? String {
-      let data = try! Data(contentsOf: URL(string: imageURL)!)
-      let image = UIImage(data: data)
-      image?.af_inflate()
+    if let image = entry.object(forKey: "image") as? UIImage {
       imageButton.setImage(image, for: UIControlState.normal)
       imageButton.layer.borderColor = UIColor.clear.cgColor
       cameraImageView.isHidden = true
@@ -220,10 +217,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
         let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
-        self.entry.setValue(downloadURL, forKey: "image")
         let data = try! Data(contentsOf: URL(string: downloadURL!)!)
         let image = UIImage(data: data)
         image?.af_inflate()
+        self.entry.setObject(image!, forKey: "image" as NSCopying)
         self.imageButton.setImage(image, for: UIControlState.normal)
         self.imageButton.layer.borderColor = UIColor.clear.cgColor
         self.activityIndicator.stopAnimating()

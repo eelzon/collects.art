@@ -58,7 +58,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-    tableView.isHidden = true
     
 
     let rename = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
@@ -97,13 +96,24 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
   
   func getEntries() {
+    tableView.isHidden = true
     activityIndicator.startAnimating()
     ref.child("collects/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collect = value
           if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
-            self.entries = entries.mutableCopy() as! NSMutableDictionary
+            self.entries = NSMutableDictionary()
+            for entry in entries {
+              let dict = (entry.value as! NSDictionary).mutableCopy() as! NSMutableDictionary
+              if let imageURL = dict.value(forKey: "image") as? String {
+                let data = try! Data(contentsOf: URL(string: imageURL)!)
+                let image = UIImage(data: data)
+                image?.af_inflate()
+                dict.setObject(image!, forKey: "image" as NSCopying)
+              }
+              self.entries.setObject(dict, forKey: entry.key as! NSCopying)
+            }
           }
           self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
           
@@ -228,9 +238,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
       
       cell.titleLabel?.text = entry.value(forKey: "title") as? String;
-      if let imageURL = entry.value(forKey: "image") as? String {
-        cell.entryImageView.image = UIImage()
-        cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
+      if let image = entry.object(forKey: "image") as? UIImage {
+        cell.entryImageView.image = image
       }
       
       cell.layoutIfNeeded()
@@ -291,7 +300,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       entry = entries.value(forKey: entryTimestamp) as! NSDictionary
       
       let destination = segue.destination as! EntryViewController
-      destination.entry = entry
+      destination.entry = entry.mutableCopy() as! NSMutableDictionary
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
