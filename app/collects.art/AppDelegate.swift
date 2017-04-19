@@ -70,3 +70,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+class Toolbar: UIToolbar {
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    frame.size.height = 54
+  }
+  
+  override func sizeThatFits(_ size: CGSize) -> CGSize {
+    var size = super.sizeThatFits(size)
+    size.height = 54
+    return size
+  }
+}
+

@@ -14,6 +14,7 @@ import AnimatedGIFImageSerialization
 
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
+  @IBOutlet var cameraImageView: UIImageView!
   @IBOutlet var imageButton: UIButton!
   @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -59,9 +60,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       image?.af_inflate()
       imageButton.setImage(image, for: UIControlState.normal)
       imageButton.layer.borderColor = UIColor.clear.cgColor
+      cameraImageView.isHidden = true
     } else {
       imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
-      imageButton.setImage(UIImage(named: "camera"), for: UIControlState.normal)
+      cameraImageView.isHidden = false
     }
   }
 
@@ -126,7 +128,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     if (entry.value(forKey: "image") as? String) != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
-        self.imageButton.setImage(UIImage(named: "camera"), for: UIControlState.normal)
+        self.imageButton.setImage(nil, for: UIControlState.normal)
+        self.cameraImageView.isHidden = false
         self.imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       }))
     }
@@ -164,8 +167,16 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       if let url = URL.init(string: textField.text!) {
-        let data = try! Data(contentsOf: url)
-        self.uploadImage(data)
+        do {
+          let data = try Data(contentsOf: url)
+          self.uploadImage(data)
+        } catch {
+          let fail = AlertController(title: "", message: "", preferredStyle: .alert)
+          fail.add(AlertAction(title: "That didn't work", style: .normal))
+          fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+          fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+          fail.present()
+        }
       }
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
@@ -192,27 +203,37 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     case 0x49, 0x4D:
       return ("image/tiff", "tiff")
     default:
-      return ("image/jpeg", "jpg")
+      return ("", "")
     }
   }
 
   func uploadImage(_ data: Data) {
-    imageButton.setImage(nil, for: UIControlState.normal)
-    imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
-    activityIndicator.startAnimating()
     let (contentType, fileExt) = fileInfo(data)
-    let metadata = FIRStorageMetadata()
-    metadata.contentType = contentType
-    storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
-      let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
-      self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
-      self.entry.setValue(downloadURL, forKey: "image")
-      let data = try! Data(contentsOf: URL(string: downloadURL!)!)
-      let image = UIImage(data: data)
-      image?.af_inflate()
-      self.imageButton.setImage(image, for: UIControlState.normal)
-      self.imageButton.layer.borderColor = UIColor.clear.cgColor
-      self.activityIndicator.stopAnimating()
+    if fileExt != "" {
+      imageButton.setImage(nil, for: UIControlState.normal)
+      imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+      cameraImageView.isHidden = true
+      activityIndicator.startAnimating()
+
+      let metadata = FIRStorageMetadata()
+      metadata.contentType = contentType
+      storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
+        let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
+        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
+        self.entry.setValue(downloadURL, forKey: "image")
+        let data = try! Data(contentsOf: URL(string: downloadURL!)!)
+        let image = UIImage(data: data)
+        image?.af_inflate()
+        self.imageButton.setImage(image, for: UIControlState.normal)
+        self.imageButton.layer.borderColor = UIColor.clear.cgColor
+        self.activityIndicator.stopAnimating()
+      }
+    } else {
+      let fail = AlertController(title: "", message: "", preferredStyle: .alert)
+      fail.add(AlertAction(title: "That didn't work", style: .normal))
+      fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+      fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+      fail.present()
     }
   }
   

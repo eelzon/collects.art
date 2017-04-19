@@ -60,14 +60,31 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     tableView.estimatedRowHeight = 140
     tableView.isHidden = true
     
-    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
-    button.setImage(UIImage.init(named: "rename"), for: UIControlState.normal)
-    button.imageView?.contentMode = .scaleAspectFit
-    button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    button.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    button.addTarget(self, action: #selector(renameCollect(_:)), for:UIControlEvents.touchUpInside)
-    renameButton.customView = button
 
+    let rename = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    rename.setImage(UIImage.init(named: "rename"), for: UIControlState.normal)
+    rename.imageView?.contentMode = .scaleAspectFit
+    rename.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    rename.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    rename.addTarget(self, action: #selector(renameCollect(_:)), for:UIControlEvents.touchUpInside)
+    renameButton.customView = rename
+
+    let remix = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    remix.setImage(UIImage.init(named: "remix"), for: UIControlState.normal)
+    remix.imageView?.contentMode = .scaleAspectFit
+    remix.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    remix.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    remix.addTarget(self, action: #selector(remixTemplate(_:)), for:UIControlEvents.touchUpInside)
+    remixButton.customView = remix
+
+    let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    add.setImage(UIImage.init(named: "addEntry"), for: UIControlState.normal)
+    add.imageView?.contentMode = .scaleAspectFit
+    add.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    add.addTarget(self, action: #selector(createEntry(_:)), for:UIControlEvents.touchUpInside)
+    addButton.customView = add
+    
   }
   
   override func viewWillAppear(_ animated: Bool) {

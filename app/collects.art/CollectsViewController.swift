@@ -45,7 +45,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     
     setAuth()
     
-    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
+    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     button.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
     button.imageView?.contentMode = .scaleAspectFit
     button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
@@ -101,7 +101,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let image = UIImage(data: data)
     image?.af_inflate()
     
-    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
+    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     button.setImage(image, for: UIControlState.normal)
     button.imageView?.contentMode = .scaleAspectFit
     button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
