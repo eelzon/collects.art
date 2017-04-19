@@ -24,7 +24,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   var collects: NSMutableDictionary!
   var timestamps: NSArray!
   var ref: FIRDatabaseReference!
-//  var storageRef: FIRStorageReference!
+  var storageRef: FIRStorageReference!
   var uid: String!
   var ribbon: String!
   @IBOutlet weak var userBarButtonItem: UIBarButtonItem!
@@ -51,8 +51,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     tableView.isHidden = true
 
     ref = FIRDatabase.database().reference()
-    //    storageRef = FIRStorage.storage().reference()
-
+    storageRef = FIRStorage.storage().reference()
+    
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
     if FIRAuth.auth()?.currentUser == nil {
@@ -63,11 +63,14 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
         }
+        self.showTable()
         self.getRibbons()
       })
     } else {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
+      //uploadRibbons()
+      showTable()
       getRibbons()
     }
   }
@@ -103,11 +106,11 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
             ribbons.add((ribbon.value as! NSDictionary).value(forKey: "url")!)
           }
           UserDefaults.standard.set(ribbons, forKey: "ribbons");
-          self.showTable()
+          self.setUserRibbon()
         }
       })
     } else {
-      showTable()
+      setUserRibbon()
     }
   }
   
@@ -125,27 +128,29 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     }
   }
   
-//  // proud of this lil script, so it gets to stay :)
-//  func uploadRibbons() {
-//    let fileManager = FileManager.default
-//    let path = "/Users/nozlee/Desktop/7on7/ribbons/pngs/"
-//    let files = fileManager.enumerator(atPath: path)
-//    let metadata = FIRStorageMetadata()
-//    metadata.contentType = "image/jpeg"
-//    while let file = files?.nextObject() as? String {
-//      let imagePath = (path as NSString).appendingPathComponent(file)
-//      if fileManager.fileExists(atPath: imagePath) {
-//        if let image = UIImage(contentsOfFile: imagePath) {
-//          let data: Data = UIImagePNGRepresentation(image)!
-//          storageRef.child("ribbons/\(file)").put(data, metadata: metadata).observe(.success) { (snapshot) in
-//            let downloadURL = snapshot.metadata?.downloadURL()?.absoluteString
-//            // Write the download URL to the Realtime Database
-//            self.ref.child("ribbons/\(self.sanitizeString(string: file))").setValue(["file": file, "url": downloadURL])
-//          }
-//        }
-//      }
-//    }
-//  }
+  // proud of this lil script, so it gets to stay :)
+  func uploadRibbons() {
+    UserDefaults.standard.removeObject(forKey: "ribbons")
+    UserDefaults.standard.removeObject(forKey: "ribbon")
+
+    let fileManager = FileManager.default
+    let path = "/Users/nozlee/Desktop/7on7/ribbons/ribbons/"
+    let files = fileManager.enumerator(atPath: path)
+    let metadata = FIRStorageMetadata()
+    metadata.contentType = "image/gif"
+    while let file = files?.nextObject() as? String {
+      let imagePath = (path as NSString).appendingPathComponent(file)
+      if fileManager.fileExists(atPath: imagePath) {
+        if let data = NSData.init(contentsOfFile: imagePath) as Data? {
+          storageRef.child("ribbons").child(file).put(data, metadata: metadata).observe(.success) { (snapshot) in
+            let downloadURL = snapshot.metadata?.downloadURL()?.absoluteString
+            // Write the download URL to the Realtime Database
+            self.ref.child("ribbons/\(self.sanitizeString(string: file))").setValue(["file": file, "url": downloadURL])
+          }
+        }
+      }
+    }
+  }
 
   func sanitizeString(string : String) -> String {
     let blacklist = CharacterSet(charactersIn: ".$[]#")
@@ -154,7 +159,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
   
   func showTable() {
-    setUserRibbon()
     activityIndicator.stopAnimating()
     tableView.isHidden = false
   }
