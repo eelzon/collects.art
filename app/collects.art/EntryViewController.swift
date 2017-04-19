@@ -17,8 +17,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet var imageButton: UIButton!
   @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var cameraButton: UIBarButtonItem!
-
+  @IBOutlet weak var backButton: UIBarButtonItem!
+  
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
@@ -44,7 +44,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     view.addGestureRecognizer(tap)
     
     if readonly {
-      cameraButton.isEnabled = false
+      imageButton.isEnabled = false
       titleView.isEditable = false
     }
     
@@ -61,7 +61,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       imageButton.layer.borderColor = UIColor.clear.cgColor
     } else {
       imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
-      imageButton.setImage(UIImage(named: "folder"), for: UIControlState.normal)
+      imageButton.setImage(UIImage(named: "camera"), for: UIControlState.normal)
     }
   }
 
@@ -126,7 +126,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     if (entry.value(forKey: "image") as? String) != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
-        self.imageButton.setImage(UIImage(named: "folder"), for: UIControlState.normal)
+        self.imageButton.setImage(UIImage(named: "camera"), for: UIControlState.normal)
         self.imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       }))
     }

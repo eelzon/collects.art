@@ -27,6 +27,8 @@ class CollectTableViewCell: UITableViewCell {
 
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
+  let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
+  let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!
@@ -36,6 +38,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var backButton: UIBarButtonItem!
+  @IBOutlet weak var openButton: UIBarButtonItem!
   @IBOutlet weak var renameButton: UIBarButtonItem!
   @IBOutlet weak var remixButton: UIBarButtonItem!
   @IBOutlet weak var addButton: UIBarButtonItem!
@@ -55,6 +59,15 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
     tableView.isHidden = true
+    
+    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
+    button.setImage(UIImage.init(named: "rename"), for: UIControlState.normal)
+    button.imageView?.contentMode = .scaleAspectFit
+    button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    button.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    button.addTarget(self, action: #selector(renameCollect(_:)), for:UIControlEvents.touchUpInside)
+    renameButton.customView = button
+
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -225,15 +238,22 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       
       tableView.reloadData();
     }
-    deleteAction.backgroundColor = .purple
+    deleteAction.backgroundColor = purple
     
     return [deleteAction]
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
+    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
+    cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }
-
+  
+  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
+    cell.contentView.backgroundColor = UIColor.clear
+  }
+  
   @IBAction func backToCollects(_ sender: Any) {
     performSegue(withIdentifier: "unwindToCollects", sender: self)
   }

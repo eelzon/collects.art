@@ -20,6 +20,8 @@ class CollectsTableViewCell: UITableViewCell {
 
 class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
   
+  let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
+  let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let manager = NetworkReachabilityManager(host: "www.rhizome.org")
   var collects: NSMutableDictionary!
   var timestamps: NSMutableArray!
@@ -27,7 +29,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   var storageRef: FIRStorageReference!
   var uid: String!
   var ribbon: String!
-  @IBOutlet weak var userBarButtonItem: UIBarButtonItem!
+  @IBOutlet weak var addButton: UIBarButtonItem!
+  @IBOutlet weak var userButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var offlineView: UIWebView!
@@ -41,6 +44,14 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     offlineView.loadHTMLString(html, baseURL: nil)
     
     setAuth()
+    
+    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 28, height: 28))
+    button.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
+    button.imageView?.contentMode = .scaleAspectFit
+    button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    button.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    button.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
+    addButton.customView = button
     
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -94,7 +105,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     button.setImage(image, for: UIControlState.normal)
     button.imageView?.contentMode = .scaleAspectFit
     button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
-    userBarButtonItem.customView = button
+    userButton.customView = button
   }
   
   func getRibbons() {
@@ -223,7 +234,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       self.ref.child("collects/\(timestamp)/readonly").setValue(readonly)
       tableView.reloadData();
     }
-    readonlyAction.backgroundColor = .blue
+    readonlyAction.backgroundColor = blue
 
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
       self.ref.child("users/\(self.uid!)/collects/\(timestamp)").removeValue()
@@ -234,9 +245,19 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
       tableView.reloadData();
     }
-    deleteAction.backgroundColor = .purple
+    deleteAction.backgroundColor = purple
 
     return [deleteAction, readonlyAction]
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
+    cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
+  }
+  
+  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
+    cell.contentView.backgroundColor = UIColor.clear
   }
   
   @IBAction func createCollect(_ button: UIButton) {

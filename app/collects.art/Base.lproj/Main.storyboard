@@ -150,35 +150,32 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="reply" id="oyv-q1-ceZ">
+                        <barButtonItem title="back" id="oyv-q1-ceZ">
                             <color key="tintColor" red="0.33333333333333331" green="0.10196078431372549" blue="0.54509803921568623" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="backToCollects:" destination="Tlv-7y-fsl" id="4ae-lZ-ktj"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Ud2-Eq-B00"/>
-                        <barButtonItem systemItem="action" id="gEc-QD-ovF">
+                        <barButtonItem title="open" id="gEc-QD-ovF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="openCollect:" destination="Tlv-7y-fsl" id="22I-NI-fhR"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="7z7-fv-dq5"/>
-                        <barButtonItem systemItem="organize" id="Aya-l4-dKb">
+                        <barButtonItem id="Aya-l4-dKb">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="renameCollect:" destination="Tlv-7y-fsl" id="whz-qg-1mt"/>
-                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="88O-9O-Wlz"/>
-                        <barButtonItem systemItem="refresh" id="UX5-0d-5Mf">
+                        <barButtonItem title="remix" id="UX5-0d-5Mf">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="remixTemplate:" destination="Tlv-7y-fsl" id="zLl-QL-avp"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="tT2-b4-dGR"/>
-                        <barButtonItem systemItem="add" id="rk1-8e-lkz">
+                        <barButtonItem title="add" id="rk1-8e-lkz">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="createEntry:" destination="Tlv-7y-fsl" id="i44-zk-cXN"/>
@@ -191,6 +188,8 @@
                     <connections>
                         <outlet property="activityIndicator" destination="FCK-zU-ua4" id="lXl-ve-FP4"/>
                         <outlet property="addButton" destination="rk1-8e-lkz" id="5RE-gi-bEo"/>
+                        <outlet property="backButton" destination="oyv-q1-ceZ" id="Keh-zx-Ecs"/>
+                        <outlet property="openButton" destination="gEc-QD-ovF" id="xep-Ha-l9M"/>
                         <outlet property="remixButton" destination="UX5-0d-5Mf" id="qRh-mb-k9G"/>
                         <outlet property="renameButton" destination="Aya-l4-dKb" id="6jt-b6-kNg"/>
                         <outlet property="tableView" destination="Gjh-Wd-E6c" id="d8h-2R-5um"/>
@@ -264,7 +263,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XzQ-qg-281" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="w0j-YH-0KQ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="621" y="-340"/>
+            <point key="canvasLocation" x="621" y="-241"/>
         </scene>
         <!--Entry View Controller-->
         <scene sceneID="Y8F-yB-apt">
@@ -311,7 +310,7 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="reply" id="THw-c5-6hF">
+                        <barButtonItem title="back" id="THw-c5-6hF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
                                 <action selector="backToCollect:" destination="9w7-w4-OsN" id="tsO-oC-DFt"/>
@@ -324,6 +323,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="EfL-z5-jnU" id="tdQ-4i-HLG"/>
+                        <outlet property="backButton" destination="THw-c5-6hF" id="xet-3O-iUD"/>
                         <outlet property="imageButton" destination="mbk-ox-qEZ" id="y1H-X6-WVl"/>
                         <outlet property="titleView" destination="s9d-Ce-gYj" id="4RD-BZ-rjd"/>
                         <segue destination="dG0-z1-nFe" kind="unwind" identifier="unwindToCollect" unwindAction="unwindToCollectWithSegue:" id="Ped-N3-1F5"/>
@@ -415,11 +415,8 @@
                     <toolbarItems>
                         <barButtonItem id="QmR-nH-Gma"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="87N-VY-IjK"/>
-                        <barButtonItem systemItem="add" id="7fv-HH-02L">
+                        <barButtonItem id="7fv-HH-02L">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="createCollect:" destination="nKl-1W-rEm" id="ytj-1Y-hMj"/>
-                            </connections>
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Collects" id="lEP-hU-Zvh"/>
@@ -428,9 +425,10 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <connections>
                         <outlet property="activityIndicator" destination="mkJ-r8-bnt" id="0HK-HW-0aK"/>
+                        <outlet property="addButton" destination="7fv-HH-02L" id="V2v-ZS-r8B"/>
                         <outlet property="offlineView" destination="Se7-dS-CaY" id="ORP-mM-p9O"/>
                         <outlet property="tableView" destination="j7Y-hT-ZEk" id="3xc-UJ-TQJ"/>
-                        <outlet property="userBarButtonItem" destination="QmR-nH-Gma" id="h2C-d5-mV6"/>
+                        <outlet property="userButton" destination="QmR-nH-Gma" id="bBE-Gi-yt5"/>
                         <segue destination="NlI-zy-vna" kind="popoverPresentation" identifier="segueToRibbons" popoverAnchorBarButtonItem="QmR-nH-Gma" id="j6D-qu-FOq">
                             <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                         </segue>
@@ -442,6 +440,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="folder" width="84" height="84"/>
+        <image name="folder" width="14" height="14"/>
     </resources>
 </document>
