@@ -55,11 +55,10 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
     tableView.isHidden = true
-    
-    getEntries();
   }
   
   override func viewWillAppear(_ animated: Bool) {
+    getEntries();
     super.viewWillAppear(animated)
   }
   

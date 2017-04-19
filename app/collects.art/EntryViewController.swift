@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import SDCAlertView
 import AlamofireImage
+import AnimatedGIFImageSerialization
 
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
@@ -34,7 +35,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     titleView.layer.borderColor = UIColor.black.cgColor
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
-
+    titleView.text = entry.value(forKey: "title") as? String
+    
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
     
@@ -61,9 +63,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-    let updatedEntry: [String: Any] = ["title": titleView.text!, "image": entry.value(forKey: "image")!];
-
-    self.ref.child("collects/\(collectTimestamp)/entries/\(timestamp)").setValue(updatedEntry)
+    self.ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
     super.viewWillDisappear(animated)
   }
   
@@ -84,8 +84,17 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   // MARK: - UIImagePickerControllerDelegate Methods
   
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-    if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      uploadImage(pickedImage)
+    if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+      let (_, fileExt) = fileInfo(UIImagePNGRepresentation(image)!)
+      var data: Data
+      if fileExt == "gif" {
+        data = try! AnimatedGIFImageSerialization.animatedGIFData(with: image)
+      } else if fileExt == "jpg" {
+        data = UIImageJPEGRepresentation(image, 1.0)!
+      } else {
+        data = UIImagePNGRepresentation(image)!
+      }
+      uploadImage(data)
     }
     
     dismiss(animated: true, completion: nil)
@@ -93,12 +102,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
     dismiss(animated: true, completion: nil)
-  }
-
-  @IBAction func returnToCamera() {
-    imagePicker.delegate = self
-    imagePicker.allowsEditing = false
-    self.present(self.imagePicker, animated: false, completion: nil)
   }
 
   @IBAction func backToCollect(_ sender: Any) {
@@ -110,19 +113,24 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Cancel", style: .preferred))
     if (entry.value(forKey: "image") as? String) != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
-        self.ref.child("collects/\(self.collectTimestamp)/entries/\(self.timestamp)/image").setValue(false)
+        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
         self.imageView.image = nil
       }))
     }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
       alert.add(AlertAction(title: "Take photo", style: .normal, handler: { (action) -> Void in
+        self.imagePicker.delegate = self
         self.imagePicker.sourceType = .camera
         self.present(self.imagePicker, animated: false, completion: nil)
       }))
     }
     alert.add(AlertAction(title: "Photo library", style: .normal, handler: { (action) -> Void in
+      self.imagePicker.delegate = self
       self.imagePicker.sourceType = .photoLibrary
       self.present(self.imagePicker, animated: false, completion: nil)
+    }))
+    alert.add(AlertAction(title: "Upload from url", style: .normal, handler: { (action) -> Void in
+      self.promptUrl()
     }))
     
     alert.visualStyle.actionSheetPreferredFont = UIFont(name: "Times New Roman", size: 16)!
@@ -133,19 +141,59 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     alert.present()
   }
-
-  func uploadImage(_ image: UIImage) {
-    activityIndicator.startAnimating()
-    let data: Data = UIImagePNGRepresentation(image)!
-    storageRef.child("images/\(timestamp).jpg").put(data, metadata: nil) { (metadata, error) in
-      guard let metadata = metadata else {
-        // TODO offline / etc Uh-oh, an error occurred!
-        return
+  
+  func promptUrl() {
+    let alert = AlertController(title: "", message: "", preferredStyle: .alert)
+    alert.addTextField(withHandler: { (textField) -> Void in
+      textField.autocapitalizationType = UITextAutocapitalizationType.none;
+    });
+    alert.add(AlertAction(title: "Cancel", style: .normal))
+    alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
+      let textField = alert!.textFields![0] as UITextField
+      if let url = URL.init(string: textField.text!) {
+        let data = try! Data(contentsOf: url)
+        self.uploadImage(data)
       }
-      // Metadata contains file metadata such as size, content-type, and download URL.
-      let downloadURL = metadata.downloadURL()!.absoluteString
-      self.ref.child("entries/\(self.timestamp)/image").setValue(downloadURL)
-      self.imageView?.af_setImage(withURL: URL(string: downloadURL)!)
+    }))
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldHeight = 30
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.backgroundColor = UIColor.white
+    alert.visualStyle.cornerRadius = 0
+    
+    alert.present()
+  }
+  
+  func fileInfo(_ data: Data) -> (String, String) {
+    var values = [UInt8](repeating:0, count:1)
+    data.copyBytes(to: &values, count: 1)
+    
+    switch (values[0]) {
+    case 0xFF:
+      return ("image/jpeg", "jpg")
+    case 0x89:
+      return ("image/png", "png")
+    case 0x47:
+      return ("image/gif", "gif")
+    case 0x49, 0x4D:
+      return ("image/tiff", "tiff")
+    default:
+      return ("image/jpeg", "jpg")
+    }
+  }
+
+  func uploadImage(_ data: Data) {
+    activityIndicator.startAnimating()
+    let (contentType, fileExt) = fileInfo(data)
+    let metadata = FIRStorageMetadata()
+    metadata.contentType = contentType
+    print(metadata)
+    storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
+      let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
+      self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
+      self.entry.setValue(downloadURL, forKey: "image")
+      self.imageView?.af_setImage(withURL: URL(string: downloadURL!)!)
       self.activityIndicator.stopAnimating()
     }
   }

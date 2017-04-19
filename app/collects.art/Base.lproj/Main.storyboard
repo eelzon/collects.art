@@ -99,19 +99,19 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="76.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-f5-tDb">
-                                                    <rect key="frame" x="252" y="8" width="60" height="60"/>
-                                                    <color key="backgroundColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="60" id="Vg6-62-7xC"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g0i-a3-Y4u">
-                                                    <rect key="frame" x="8" y="28" width="236" height="20"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g0i-a3-Y4u">
+                                                    <rect key="frame" x="8" y="28" width="210" height="20"/>
                                                     <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-f5-tDb">
+                                                    <rect key="frame" x="226" y="8" width="86" height="60"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="86" id="Vg6-62-7xC"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="g0i-a3-Y4u" firstAttribute="leading" secondItem="0qd-Cs-ggc" secondAttribute="leadingMargin" id="F3Q-FR-JGy"/>
@@ -275,9 +275,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="knW-PY-e3j">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="knW-PY-e3j">
                                 <rect key="frame" x="16" y="8" width="288" height="200"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="prh-xm-vn2"/>
                                 </constraints>
@@ -288,15 +288,16 @@
                                 <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="16"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
                                 <rect key="frame" x="150" y="98" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="EfL-z5-jnU" firstAttribute="centerX" secondItem="knW-PY-e3j" secondAttribute="centerX" id="658-Rm-2XI"/>
                             <constraint firstAttribute="leadingMargin" secondItem="s9d-Ce-gYj" secondAttribute="leading" id="Rye-nE-a8b"/>
                             <constraint firstAttribute="leadingMargin" secondItem="knW-PY-e3j" secondAttribute="leading" id="V4E-jV-Z5X"/>
+                            <constraint firstItem="EfL-z5-jnU" firstAttribute="centerY" secondItem="knW-PY-e3j" secondAttribute="centerY" id="Ye2-Dt-1Ww"/>
                             <constraint firstItem="knW-PY-e3j" firstAttribute="top" secondItem="1oO-iS-KMB" secondAttribute="bottom" constant="8" id="bde-9r-CYl"/>
                             <constraint firstAttribute="trailingMargin" secondItem="knW-PY-e3j" secondAttribute="trailing" id="e4s-fo-ZFb"/>
                             <constraint firstItem="EUi-C2-TIx" firstAttribute="top" secondItem="s9d-Ce-gYj" secondAttribute="bottom" constant="8" id="ge2-gJ-fZs"/>
