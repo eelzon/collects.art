@@ -10,4 +10,5 @@ target 'collects.art' do
   pod 'SDCAlertView', '~> 7.1'
   pod 'AlamofireImage'
   pod 'IQKeyboardManagerSwift'
+  pod 'AnimatedGIFImageSerialization', '~> 0.2'
 end

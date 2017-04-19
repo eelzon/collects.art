@@ -2,6 +2,7 @@ PODS:
   - Alamofire (4.4.0)
   - AlamofireImage (3.2.0):
     - Alamofire (~> 4.1)
+  - AnimatedGIFImageSerialization (0.2.0)
   - Firebase (3.3.0):
     - Firebase/Core (= 3.3.0)
   - Firebase/Analytics (3.3.0):
@@ -48,6 +49,7 @@ PODS:
 
 DEPENDENCIES:
   - AlamofireImage
+  - AnimatedGIFImageSerialization (~> 0.2)
   - Firebase
   - Firebase/Auth
   - Firebase/Database
@@ -58,6 +60,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
   AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  AnimatedGIFImageSerialization: b0f0cfe71eac1ee45a3d57ae533c23b8e6f29501
   Firebase: 6250071f0e2440a5c4c67b8cb6b868f868237ac3
   FirebaseAnalytics: 0fd6532cb2c3d03cd5cf26ad295ccb091efd3104
   FirebaseAuth: 5efddc3fae47042b73585f083f956462be4f5b8e
@@ -72,6 +75,6 @@ SPEC CHECKSUMS:
   IQKeyboardManagerSwift: 2eefe6c429b86aa08bfbc1b5c891164d754adf91
   SDCAlertView: c39fa91a3aeb5eeba58fe9cea648263b131ff2bf
 
-PODFILE CHECKSUM: 00348e9f41057cb9cc36f1862ca23fb8b33546ab
+PODFILE CHECKSUM: 59bfb403441b215f3731856fb3fcaa0b0f39d060
 
 COCOAPODS: 1.2.0
