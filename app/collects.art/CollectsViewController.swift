@@ -58,7 +58,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     if FIRAuth.auth()?.currentUser == nil {
       FIRAuth.auth()?.signInAnonymously(completion: { (user: FIRUser?, error: Error?) in
         if error != nil {
-          // TODO lock down app in some way
+          self.lockDown()
         } else {
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
@@ -266,8 +266,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
-
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": "", "readonly": false, "entries": NSDictionary()])
+    let templateIndex = Int(arc4random_uniform(UInt32(7)))
+    
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
@@ -311,10 +312,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func setReachability() {
     manager?.listener = { status in
       if status == .notReachable {
-        self.activityIndicator.stopAnimating()
-        self.tableView.isHidden = true
-        self.dismiss(animated: true, completion: {})
-        self.offlineView.isHidden = false
+        self.lockDown()
       } else {
         self.offlineView.isHidden = true;
         self.setAuth()
@@ -322,6 +320,13 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     manager?.startListening()
+  }
+  
+  func lockDown() {
+    self.activityIndicator.stopAnimating()
+    self.tableView.isHidden = true
+    self.dismiss(animated: true, completion: {})
+    self.offlineView.isHidden = false
   }
   
 }

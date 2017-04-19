@@ -173,6 +173,9 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="88O-9O-Wlz"/>
                         <barButtonItem systemItem="refresh" id="UX5-0d-5Mf">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="remixTemplate:" destination="Tlv-7y-fsl" id="zLl-QL-avp"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="tT2-b4-dGR"/>
                         <barButtonItem systemItem="add" id="rk1-8e-lkz">

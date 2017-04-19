@@ -149,6 +149,21 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     self.ref.child("collects/\(timestamp!)/title").setValue(title)
   }
   
+  @IBAction func remixTemplate(_ sender: Any) {
+    let templateIndex = Int(arc4random_uniform(UInt32(7)))
+    
+    self.ref.child("collects/\(timestamp!)/template").setValue(templateIndex)
+    
+    let alert = AlertController(attributedTitle: NSAttributedString.init(string: "Template changed", attributes: [NSFontAttributeName: UIFont.init(name: "Times New Roman", size: 16)!, NSForegroundColorAttributeName: UIColor.black]), attributedMessage: nil, preferredStyle: .alert)
+    alert.add(AlertAction(title: "Ok", style: .normal))
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.backgroundColor = UIColor.white
+    alert.visualStyle.cornerRadius = 0
+    
+    alert.present()
+  }
+  
   func refreshTitleCell() {
     tableView.beginUpdates()
     tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .automatic)
@@ -188,7 +203,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
       }
       
-      cell.setNeedsLayout()
+      cell.layoutIfNeeded()
       
       return cell;
     }
