@@ -14,7 +14,7 @@ import AnimatedGIFImageSerialization
 
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
-  @IBOutlet var imageView: UIImageView!
+  @IBOutlet var imageButton: UIButton!
   @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var cameraButton: UIBarButtonItem!
@@ -48,8 +48,20 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       titleView.isEditable = false
     }
     
+    imageButton.layer.borderWidth = 1.0
+    imageButton.layer.cornerRadius = 0
+    imageButton.imageView!.contentMode = .scaleAspectFit
+    imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     if let imageURL = entry.value(forKey: "image") as? String {
-      imageView.af_setImage(withURL: URL(string: imageURL)!)
+      let data = try! Data(contentsOf: URL(string: imageURL)!)
+      let image = UIImage(data: data)
+      image?.af_inflate()
+      imageButton.setImage(image, for: UIControlState.normal)
+      imageButton.layer.borderColor = UIColor.clear.cgColor
+    } else {
+      imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+      imageButton.setImage(UIImage(named: "folder"), for: UIControlState.normal)
     }
   }
 
@@ -114,7 +126,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     if (entry.value(forKey: "image") as? String) != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
-        self.imageView.image = nil
+        self.imageButton.setImage(UIImage(named: "folder"), for: UIControlState.normal)
+        self.imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       }))
     }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
@@ -184,16 +197,22 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func uploadImage(_ data: Data) {
+    imageButton.setImage(nil, for: UIControlState.normal)
+    imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
     activityIndicator.startAnimating()
     let (contentType, fileExt) = fileInfo(data)
     let metadata = FIRStorageMetadata()
     metadata.contentType = contentType
-    print(metadata)
+    print(metadata, fileExt)
     storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
       let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
       self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
       self.entry.setValue(downloadURL, forKey: "image")
-      self.imageView?.af_setImage(withURL: URL(string: downloadURL!)!)
+      let data = try! Data(contentsOf: URL(string: downloadURL!)!)
+      let image = UIImage(data: data)
+      image?.af_inflate()
+      self.imageButton.setImage(image, for: UIControlState.normal)
+      self.imageButton.layer.borderColor = UIColor.clear.cgColor
       self.activityIndicator.stopAnimating()
     }
   }
