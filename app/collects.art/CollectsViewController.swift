@@ -181,8 +181,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewWillDisappear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(true, animated: true)
     
-    UserDefaults.standard.removeObserver(self, forKeyPath: "ribbon")
-    
     super.viewWillDisappear(animated)
   }
   

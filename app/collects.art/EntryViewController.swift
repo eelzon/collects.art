@@ -32,7 +32,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     // Do any additional setup after loading the view.
     
-    titleView.layer.borderColor = UIColor.black.cgColor
+    titleView.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
     titleView.text = entry.value(forKey: "title") as? String
