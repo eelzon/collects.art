@@ -30,8 +30,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!
-  var entryTimestamps: NSArray! = []
-  var entries: NSDictionary! = NSDictionary()
+  var entryTimestamps: NSMutableArray! = []
+  var entries: NSMutableDictionary! = NSMutableDictionary()
+  var readonly: Bool = false
   var ref: FIRDatabaseReference!
   //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
@@ -73,12 +74,13 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         if let value = snapshot.value as? NSDictionary {
           self.collect = value
           if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
-            self.entries = entries
+            self.entries = entries.mutableCopy() as! NSMutableDictionary
           }
-          self.entryTimestamps = self.entries.allKeys as NSArray
+          self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
           
           print(self.collect)
           if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
+            self.readonly = true
             self.addButton.isEnabled = false
             self.remixButton.isEnabled = false
             self.renameButton.isEnabled = false
@@ -193,6 +195,27 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
   }
   
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    if readonly || indexPath.section == 0 {
+      return false
+    }
+    return true
+  }
+  
+  func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
+      let entryTimestamp = self.entryTimestamps[indexPath.row] as! String
+      self.ref.child("collects/\(self.timestamp!)/entries/\(entryTimestamp)").removeValue()
+      self.entryTimestamps.removeObject(at: indexPath.row)
+      self.entries.removeObject(forKey: entryTimestamp)
+      
+      tableView.reloadData();
+    }
+    deleteAction.backgroundColor = .purple
+    
+    return [deleteAction]
+  }
+  
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
   }
@@ -220,7 +243,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.entry = entry
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
-      destination.readonly = self.collect.object(forKey: "readonly") as? NSNumber == 1 ? true : false
+      destination.readonly = readonly
     }
   }
   
@@ -230,44 +253,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)
-    entryTimestamps = entries.allKeys as NSArray
+    entryTimestamps = NSMutableArray.init(array: entries.allKeys)
     tableView.reloadData()
     performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
   }
-
-  /*
-  // Override to support conditional editing of the table view.
-  override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    // Return false if you do not want the specified item to be editable.
-    return true
-  }
-  */
-
-  /*
-  // Override to support editing the table view.
-  override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    if editingStyle == .Delete {
-      // Delete the row from the data source
-      tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-    } else if editingStyle == .Insert {
-      // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }  
-  }
-  */
-
-  /*
-  // Override to support rearranging the table view.
-  override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-  }
-  */
-
-  /*
-  // Override to support conditional rearranging of the table view.
-  override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    // Return false if you do not want the item to be re-orderable.
-    return true
-  }
-  */
   
 }

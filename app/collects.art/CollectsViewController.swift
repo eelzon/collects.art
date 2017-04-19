@@ -22,7 +22,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   
   let manager = NetworkReachabilityManager(host: "www.rhizome.org")
   var collects: NSMutableDictionary!
-  var timestamps: NSArray!
+  var timestamps: NSMutableArray!
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
   var uid: String!
@@ -171,7 +171,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
     collects = dict.mutableCopy() as! NSMutableDictionary
-    timestamps = collects.allKeys as NSArray
+    timestamps = NSMutableArray.init(array:collects.allKeys)
     tableView.reloadData()
     print("reloaded")
 
@@ -230,12 +230,11 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     readonlyAction.backgroundColor = .blue
 
     let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
-      self.collects.removeObject(forKey: timestamp);
-      UserDefaults.standard.set(self.collects, forKey: "collects");
       self.ref.child("users/\(self.uid!)/collects/\(timestamp)").removeValue()
       self.ref.child("collects/\(timestamp)").removeValue()
-
-      tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
+      self.timestamps.removeObject(at: indexPath.row)
+      self.collects.removeObject(forKey: timestamp);
+      UserDefaults.standard.set(self.collects, forKey: "collects");
 
       tableView.reloadData();
     }
