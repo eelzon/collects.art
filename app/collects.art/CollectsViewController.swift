@@ -83,6 +83,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       ribbon = ribbons.object(at: index) as? String
       UserDefaults.standard.set(ribbon, forKey: "ribbon")
     }
+    
+    self.ref.child("users/\(self.uid!)/ribbon").setValue(ribbon!)
+    
     let data = try! Data(contentsOf: URL(string: ribbon!)!)
     let image = UIImage(data: data)
     image?.af_inflate()
