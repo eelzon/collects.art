@@ -92,7 +92,7 @@
               return resolve(xhr.response);
             };
 
-            xhr.open('POST', 'https://us-central1-collectsart.cloudfunctions.net/helloWorld', true);
+            xhr.open('POST', 'https://us-central1-collectsart.cloudfunctions.net/template', true);
             xhr.send(JSON.stringify(collect));
           }).then((foo) => {
             var collectDiv = document.getElementById('collect');

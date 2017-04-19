@@ -20,6 +20,13 @@ exports.template = functions.https.onRequest((req, res) => {
       <!-- template data -->
     `, view);
 
+    collect.entries.forEach((entry) => {
+      template = template + `
+        <h4>${entry.title}</h4>
+        <div><img src="${entry.image}" /></div>
+      `;
+    });
+
     res.send(template);
   });
 });
