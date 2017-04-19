@@ -188,6 +188,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
       }
       
+      cell.setNeedsLayout()
+      
       return cell;
     }
   }

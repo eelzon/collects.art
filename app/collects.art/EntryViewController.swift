@@ -203,7 +203,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     let (contentType, fileExt) = fileInfo(data)
     let metadata = FIRStorageMetadata()
     metadata.contentType = contentType
-    print(metadata, fileExt)
     storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
       let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
       self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)

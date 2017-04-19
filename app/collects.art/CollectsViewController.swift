@@ -173,7 +173,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     collects = dict.mutableCopy() as! NSMutableDictionary
     timestamps = NSMutableArray.init(array:collects.allKeys)
     tableView.reloadData()
-    print("reloaded")
 
     super.viewWillAppear(animated)
   }
@@ -217,7 +216,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     
     let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
-      print(readonly)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
       self.collects[timestamp] = collect
       UserDefaults.standard.set(self.collects, forKey: "collects");
