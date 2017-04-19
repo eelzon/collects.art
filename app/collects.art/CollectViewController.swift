@@ -77,7 +77,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
           }
           self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
           
-          print(self.collect)
           if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
             self.readonly = true
             self.addButton.isEnabled = false
@@ -185,9 +184,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       
       cell.titleLabel?.text = entry.value(forKey: "title") as? String;
       if let imageURL = entry.value(forKey: "image") as? String {
+        cell.entryImageView.image = UIImage()
         cell.entryImageView?.af_setImage(withURL: URL(string: imageURL)!)
-      } else {
-        cell.entryImageView.isHidden = true
       }
       
       return cell;
