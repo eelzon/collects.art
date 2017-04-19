@@ -215,7 +215,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let dict = collects[timestamp] as! NSDictionary
     let collect = dict.mutableCopy() as! NSMutableDictionary
     
-    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→readonly" : "→editable"
+    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
     
     let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
