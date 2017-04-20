@@ -11,6 +11,7 @@ import UIKit
 import Firebase
 import AlamofireImage
 import SDCAlertView
+import SESlideTableViewCell
 
 class CollectTitleTableViewCell: UITableViewCell {
   
@@ -18,14 +19,14 @@ class CollectTitleTableViewCell: UITableViewCell {
   
 }
 
-class CollectTableViewCell: UITableViewCell {
+class CollectTableViewCell: SESlideTableViewCell {
   
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var entryImageView: UIImageView!
   
 }
 
-class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SESlideTableViewCellDelegate {
   
   let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -36,7 +37,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var entries: NSMutableDictionary! = NSMutableDictionary()
   var readonly: Bool = false
   var ref: FIRDatabaseReference!
-  //@IBOutlet weak var openCollectButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var backButton: UIBarButtonItem!
   @IBOutlet weak var openButton: UIBarButtonItem!
@@ -47,10 +47,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-//    if let font = UIFont(name: "Times New Roman", size: 16) {
-//      openCollectButton.setTitleTextAttributes([NSFontAttributeName:font], for: .normal)
-//    }
     
     uid = UserDefaults.standard.string(forKey: "uid")!;
     
@@ -259,11 +255,35 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       if let image = entry.object(forKey: "image") as? UIImage {
         cell.entryImageView.image = image
       }
+   
+      cell.removeAllRightButtons()
+      if !readonly {
+        cell.delegate = self
+        cell.showsRightSlideIndicator = false
+        let font = UIFont.init(name: "Times New Roman", size: 16)
+        cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+      }
       
       cell.layoutIfNeeded()
       
       return cell;
     }
+  }
+
+  func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
+    let indexPath = tableView.indexPath(for: cell)!
+    let entryTimestamp = entryTimestamps[indexPath.row] as! String
+    
+    ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").removeValue()
+    entryTimestamps.removeObject(at: indexPath.row)
+    entries.removeObject(forKey: entryTimestamp)
+    
+    tableView.reloadData();
+  }
+  
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    cell.separatorInset = UIEdgeInsets.zero
+    cell.layoutMargins = UIEdgeInsets.zero
   }
   
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -271,20 +291,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       return false
     }
     return true
-  }
-  
-  func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-    let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
-      let entryTimestamp = self.entryTimestamps[indexPath.row] as! String
-      self.ref.child("collects/\(self.timestamp!)/entries/\(entryTimestamp)").removeValue()
-      self.entryTimestamps.removeObject(at: indexPath.row)
-      self.entries.removeObject(forKey: entryTimestamp)
-      
-      tableView.reloadData();
-    }
-    deleteAction.backgroundColor = purple
-    
-    return [deleteAction]
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

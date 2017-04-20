@@ -46,6 +46,7 @@ PODS:
     - GoogleSymbolUtilities (~> 1.0)
   - IQKeyboardManagerSwift (4.0.9)
   - SDCAlertView (7.1.2)
+  - SESlideTableViewCell (0.7.1)
 
 DEPENDENCIES:
   - AlamofireImage
@@ -56,6 +57,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - IQKeyboardManagerSwift
   - SDCAlertView (~> 7.1)
+  - SESlideTableViewCell (~> 0.7)
 
 SPEC CHECKSUMS:
   Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
@@ -74,7 +76,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
   IQKeyboardManagerSwift: 2eefe6c429b86aa08bfbc1b5c891164d754adf91
   SDCAlertView: c39fa91a3aeb5eeba58fe9cea648263b131ff2bf
+  SESlideTableViewCell: 459c3ce79b760e8bc015dd83ca84196bd70c11ed
 
-PODFILE CHECKSUM: 59bfb403441b215f3731856fb3fcaa0b0f39d060
+PODFILE CHECKSUM: 3bb2b007f7b87c3c304e3059e438e7d8e0c32dea
 
 COCOAPODS: 1.2.0

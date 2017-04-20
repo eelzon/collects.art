@@ -11,14 +11,15 @@ import Firebase
 import SDCAlertView
 import Alamofire
 import AlamofireImage
+import SESlideTableViewCell
 
-class CollectsTableViewCell: UITableViewCell {
+class CollectsTableViewCell: SESlideTableViewCell {
   
   @IBOutlet var titleLabel: UILabel!
   
 }
 
-class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
+class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate {
   
   let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -202,10 +203,18 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let timestamp = timestamps[indexPath.row] as! String
     let collect = collects[timestamp] as! NSDictionary
 
-    let cell = tableView.dequeueReusableCell(withIdentifier: "CollectsTableViewCell") as! CollectsTableViewCell;
-
+    let cell = tableView.dequeueReusableCell(withIdentifier: "CollectsTableViewCell") as! CollectsTableViewCell
+    
     cell.titleLabel?.text = collect.value(forKey: "title") as? String;
 
+    cell.removeAllRightButtons()
+    cell.delegate = self
+    cell.showsRightSlideIndicator = false
+    let font = UIFont.init(name: "Times New Roman", size: 16)
+    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
+    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
+    cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+    
     return cell;
   }
   
@@ -218,36 +227,29 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     return true;
   }
   
-  func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+  func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
+    let indexPath = tableView.indexPath(for: cell)!
     let timestamp = timestamps[indexPath.row] as! String
     let dict = collects[timestamp] as! NSDictionary
     let collect = dict.mutableCopy() as! NSMutableDictionary
     
-    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
-    
-    let readonlyAction = UITableViewRowAction(style: .normal, title: readonlyTitle) { (rowAction, indexPath) in
+    if buttonIndex == 0 {
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
-      self.collects[timestamp] = collect
-      UserDefaults.standard.set(self.collects, forKey: "collects");
-      self.ref.child("users/\(self.uid!)/collects/\(timestamp)/readonly").setValue(readonly)
-      self.ref.child("collects/\(timestamp)/readonly").setValue(readonly)
+      collects[timestamp] = collect
+      UserDefaults.standard.set(collects, forKey: "collects");
+      ref.child("users/\(uid!)/collects/\(timestamp)/readonly").setValue(readonly)
+      ref.child("collects/\(timestamp)/readonly").setValue(readonly)
+      tableView.reloadData();
+    } else {
+      ref.child("users/\(uid!)/collects/\(timestamp)").removeValue()
+      ref.child("collects/\(timestamp)").removeValue()
+      timestamps.removeObject(at: indexPath.row)
+      collects.removeObject(forKey: timestamp);
+      UserDefaults.standard.set(collects, forKey: "collects");
+      
       tableView.reloadData();
     }
-    readonlyAction.backgroundColor = blue
-
-    let deleteAction = UITableViewRowAction(style: .normal, title: "x") { (rowAction, indexPath) in
-      self.ref.child("users/\(self.uid!)/collects/\(timestamp)").removeValue()
-      self.ref.child("collects/\(timestamp)").removeValue()
-      self.timestamps.removeObject(at: indexPath.row)
-      self.collects.removeObject(forKey: timestamp);
-      UserDefaults.standard.set(self.collects, forKey: "collects");
-
-      tableView.reloadData();
-    }
-    deleteAction.backgroundColor = purple
-
-    return [deleteAction, readonlyAction]
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
