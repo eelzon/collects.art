@@ -114,7 +114,7 @@
               return resolve(xhr.response);
             };
 
-            xhr.open('POST', 'https://us-central1-collectsart.cloudfunctions.net/template', true);
+            xhr.open('POST', 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template', true);
             xhr.send(JSON.stringify(collect));
           }).then((html) => {
             var collectDiv = document.getElementById('collect');
