@@ -75,8 +75,6 @@
               tr.appendChild(entriesTd);
               table.appendChild(tr);
             }
-
-            collectsDiv.appendChild(table);
           });
 
           collectsDiv.style.display = 'initial';
@@ -88,7 +86,6 @@
         return firebase.database().ref('/collects/' + timestamp).once('value').then(snapshot => {
           var collect = snapshot.exportVal();
 
-          window.history.replaceState(window.history.state, document.title, '/' + timestamp + '/' + collect.title);
           document.title = collect.title;
 
           return new Promise((resolve, reject) => {

@@ -7,7 +7,7 @@ var Handlebars = require('handlebars');
 exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     var collect = JSON.parse(req.body);
-    res.send(template1(collect));
+    res.send(template3(collect));
   });
 });
 
@@ -20,19 +20,22 @@ function template1(collect) {
       body {
           background-image: url("http://meryn.ru/rhizome/harlequin.png");
       }
+      p {
+        width: 50%;
+      }
     </style>
     <h1>{{collect.title}}</h1>
     <hr>
     {{#each collect.entries}}
       {{#ifThird @index}}
-        <p style="width: 50%; text-align: center; margin: 0 auto;">{{this.title}}</p>
+        <p style="text-align: center; margin: 0 auto;">{{this.title}}</p>
         <hr>
       {{else}}
         {{#ifSecond @index}}
-          <p style="width: 50%; text-align: left; margin-right: auto;">{{this.title}}</p>
+          <p style="text-align: left; margin-right: auto;">{{this.title}}</p>
           <hr>
         {{else}}
-          <p style="width: 50%; text-align: right; margin-left: auto;">{{this.title}}</p>
+          <p style="text-align: right; margin-left: auto;">{{this.title}}</p>
           <hr>
         {{/ifSecond}}
       {{/ifThird}}
@@ -58,4 +61,45 @@ function template1(collect) {
   });
 
   return template({ collect });
+}
+
+function template3(collect) {
+  var html = `
+    <style type="text/css">
+      h1 {
+        text-align: center;
+      }
+
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 8px;
+        background-image: url("http://meryn.ru/rhizome/bow-bg2.png");
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      .description {
+        width: 460px;
+        margin: 40px auto;
+        background-color: rgba(150,135,165,1);
+        color: white;
+        padding: 10px;
+        font-style: italic;
+      }
+
+      img {
+        max-width: 200px;
+        max-height: 250px;
+      }
+    </style>
+    <img src="{{entry.image}}">
+    <p class="description">{{entry.title}}</p>
+    <hr>
+  `;
+
+  var template = Handlebars.compile(html);
+
+  var first = Object.keys(collect.entries || {})[0];
+
+  return template({ entry: collect.entries[first] });
 }
