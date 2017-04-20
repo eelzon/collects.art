@@ -135,7 +135,7 @@
 				TargetAttributes = {
 					652CA7BD1E971A2900AA749F = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = J7QY785J5L;
+						DevelopmentTeam = M96YZM7CWC;
 						LastSwiftMigration = 0830;
 					};
 				};
@@ -349,9 +349,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = M96YZM7CWC;
 				INFOPLIST_FILE = collects.art/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = art.collects.app;
+				PRODUCT_BUNDLE_IDENTIFIER = art.collects.collects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -363,9 +365,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = M96YZM7CWC;
 				INFOPLIST_FILE = collects.art/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = art.collects.app;
+				PRODUCT_BUNDLE_IDENTIFIER = art.collects.collects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
