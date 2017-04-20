@@ -116,10 +116,10 @@
 
             xhr.open('POST', 'https://us-central1-collectsart.cloudfunctions.net/template', true);
             xhr.send(JSON.stringify(collect));
-          }).then((foo) => {
+          }).then((html) => {
             var collectDiv = document.getElementById('collect');
             collectDiv.style.display = 'initial';
-            collectDiv.innerHTML = foo;
+            collectDiv.innerHTML = html;
             load.style.display = 'none';
           });
 

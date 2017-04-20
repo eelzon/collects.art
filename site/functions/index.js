@@ -20,7 +20,7 @@ exports.template = functions.https.onRequest((req, res) => {
       <!-- template data -->
     `, view);
 
-    Object.keys(collect.entries).forEach((timestamp) => {
+    Object.keys(collect.entries || {}).forEach((timestamp) => {
       var entry = collect.entries[timestamp];
       template = template + `
         <h4>${entry.title}</h4>
