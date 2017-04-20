@@ -331,6 +331,10 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.readonly = readonly
       
       saveCollect()
+    } else if segue.identifier == "unwindToCollects" {
+      let defaults = UserDefaults.standard
+      defaults.removeObject(forKey: "collect")
+      defaults.removeObject(forKey: "entries")
     }
   }
   
