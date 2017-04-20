@@ -21,8 +21,8 @@ class CollectsTableViewCell: SESlideTableViewCell {
 
 class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate {
 
-  let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
-  let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+  let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
+  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let manager = NetworkReachabilityManager(host: "www.rhizome.org")
   var collects: NSMutableDictionary!
   var timestamps: NSMutableArray!

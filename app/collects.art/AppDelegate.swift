@@ -30,7 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     IQKeyboardManager.sharedManager().enable = true
     IQKeyboardManager.sharedManager().enableAutoToolbar = false;
 
+    let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!];
+    UINavigationBar.appearance().tintColor = purple
+    UINavigationBar.appearance().setTitleVerticalPositionAdjustment(4, for: .default)
+
+    UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName : UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple], for: UIControlState.normal)
+    UIBarButtonItem.appearance().tintColor = purple
 
     manager?.listener = { status in
       if status == .notReachable {
@@ -68,6 +74,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 
 
+}
+
+class NavigationBar: UINavigationBar {
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    frame.size.height = 54
+  }
+
+  override func sizeThatFits(_ size: CGSize) -> CGSize {
+    var size = super.sizeThatFits(size)
+    size.height = 54
+    return size
+  }
 }
 
 class Toolbar: UIToolbar {

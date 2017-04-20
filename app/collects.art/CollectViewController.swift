@@ -28,8 +28,8 @@ class CollectTableViewCell: SESlideTableViewCell {
 
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SESlideTableViewCellDelegate {
 
-  let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
-  let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+  let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
+  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!

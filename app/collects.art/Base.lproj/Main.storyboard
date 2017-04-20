@@ -16,7 +16,7 @@
                 <navigationController toolbarHidden="NO" id="4CM-nU-Q2O" sceneMemberID="viewController">
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
-                    <navigationBar key="navigationBar" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="3zX-IQ-gCb">
+                    <navigationBar key="navigationBar" clipsSubviews="YES" contentMode="scaleToFill" translucent="NO" id="3zX-IQ-gCb" customClass="NavigationBar" customModule="collects_art" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -431,7 +431,7 @@
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Collects" prompt="     " id="lEP-hU-Zvh"/>
+                    <navigationItem key="navigationItem" title="Collects" id="lEP-hU-Zvh"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
