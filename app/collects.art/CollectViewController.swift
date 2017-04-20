@@ -237,7 +237,12 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       let entryTimestamp = entryTimestamps[indexPath.row] as! String
       let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
       
-      cell.titleLabel?.text = entry.value(forKey: "title") as? String;
+      if let title = entry.value(forKey: "title") as? String, title.characters.count > 0 {
+        cell.titleLabel?.text = title;
+      } else {
+        cell.titleLabel?.text = "untitled"
+      }
+      
       if let image = entry.object(forKey: "image") as? UIImage {
         cell.entryImageView.image = image
       }
