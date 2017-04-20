@@ -162,7 +162,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       textField.text = self.collect.value(forKey: "title") as? String
     });
     alert.add(AlertAction(title: "Cancel", style: .normal))
-    alert.add(AlertAction(title: "Rename collect", style: .normal, handler: { [weak alert] (action) -> Void in
+    alert.add(AlertAction(title: "Rename", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       if (textField.text?.characters.count)! > 0 {
         self.changeTitle(textField.text! as NSString)
