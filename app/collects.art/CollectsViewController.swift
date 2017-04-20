@@ -179,7 +179,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
     
   override func viewWillAppear(_ animated: Bool) {
-    self.navigationController?.setNavigationBarHidden(false, animated: false)
+    self.navigationController?.setNavigationBarHidden(false, animated: true)
     
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
     collects = dict.mutableCopy() as! NSMutableDictionary
@@ -210,7 +210,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.removeAllRightButtons()
     cell.delegate = self
     cell.showsRightSlideIndicator = false
-    let font = UIFont.init(name: "Times New Roman", size: 16)
+    let font = UIFont.init(name: "Times New Roman", size: 18)
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
     cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
     cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
@@ -274,9 +274,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         self.initCollect(textField.text! as NSString)
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0

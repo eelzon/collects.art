@@ -89,6 +89,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
         entryTimestamps = NSMutableArray.init(array: entries.allKeys)
       }
+      tableView.reloadData()
       setReadonly()
     } else {
       getEntries();
@@ -167,9 +168,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.changeTitle(textField.text! as NSString)
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
@@ -203,9 +204,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     self.ref.child("collects/\(timestamp!)/template").setValue(templateIndex)
     
-    let alert = AlertController(attributedTitle: NSAttributedString.init(string: "Template changed", attributes: [NSFontAttributeName: UIFont.init(name: "Times New Roman", size: 16)!, NSForegroundColorAttributeName: UIColor.black]), attributedMessage: nil, preferredStyle: .alert)
+    let alert = AlertController(attributedTitle: NSAttributedString.init(string: "Template changed", attributes: [NSFontAttributeName: UIFont.init(name: "Times New Roman", size: 18)!, NSForegroundColorAttributeName: UIColor.black]), attributedMessage: nil, preferredStyle: .alert)
     alert.add(AlertAction(title: "Ok", style: .normal))
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
@@ -260,7 +261,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       if !readonly {
         cell.delegate = self
         cell.showsRightSlideIndicator = false
-        let font = UIFont.init(name: "Times New Roman", size: 16)
+        let font = UIFont.init(name: "Times New Roman", size: 18)
         cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
       }
       

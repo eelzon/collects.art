@@ -74,23 +74,23 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
   
   override func viewWillDisappear(_ animated: Bool) {
-    self.ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
+    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
+    
+    let defaults = UserDefaults.standard
+    if let entriesData = defaults.data(forKey: "entries") {
+      let entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
+      entry.setValue(titleView.text!, forKey: "title")
+      entries.setValue(entry, forKey: timestamp)
+      let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
+      defaults.set(encodedEntries, forKey: "entries")
+    }
+    
     super.viewWillDisappear(animated)
   }
   
   func dismissKeyboard() {
     view.endEditing(true)
   }
-  
-  /*
-  // MARK: - Navigation
-
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
-  }
-  */
   
   // MARK: - UIImagePickerControllerDelegate Methods
   
@@ -146,8 +146,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       self.promptUrl()
     }))
     
-    alert.visualStyle.actionSheetPreferredFont = UIFont(name: "Times New Roman", size: 16)!
-    alert.visualStyle.actionSheetNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.actionSheetPreferredFont = UIFont(name: "Times New Roman", size: 18)!
+    alert.visualStyle.actionSheetNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
@@ -170,15 +170,15 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         } catch {
           let fail = AlertController(title: "", message: "", preferredStyle: .alert)
           fail.add(AlertAction(title: "That didn't work", style: .normal))
-          fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+          fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
           fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
           fail.present()
         }
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
@@ -228,7 +228,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     } else {
       let fail = AlertController(title: "", message: "", preferredStyle: .alert)
       fail.add(AlertAction(title: "That didn't work", style: .normal))
-      fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 16)!
+      fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
       fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
       fail.present()
     }

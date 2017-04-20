@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     IQKeyboardManager.sharedManager().enable = true
     IQKeyboardManager.sharedManager().enableAutoToolbar = false;
 
-    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "Times New Roman", size:16)!];
+    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!];
     
     manager?.listener = { status in
       if status == .notReachable {
