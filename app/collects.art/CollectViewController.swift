@@ -19,10 +19,16 @@ class CollectTitleTableViewCell: UITableViewCell {
 
 }
 
-class CollectTableViewCell: SESlideTableViewCell {
+class CollectWithImageTableViewCell: SESlideTableViewCell {
 
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var entryImageView: UIImageView!
+
+}
+
+class CollectTableViewCell: SESlideTableViewCell {
+
+  @IBOutlet var titleLabel: UILabel!
 
 }
 
@@ -257,32 +263,45 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
       return cell;
     } else {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
-
       let entryTimestamp = entryTimestamps[indexPath.row] as! String
       let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
-
+      var entryTitle: String;
       if let title = entry.value(forKey: "title") as? String, title.characters.count > 0 {
-        cell.titleLabel?.text = title;
+        entryTitle = title;
       } else {
-        cell.titleLabel?.text = "untitled"
+        entryTitle = "untitled"
       }
 
       if let image = entry.object(forKey: "image") as? UIImage {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
         cell.entryImageView.image = image
+        cell.titleLabel?.text = entryTitle;
+        cell.removeAllRightButtons()
+        if !readonly {
+          cell.delegate = self
+          cell.showsRightSlideIndicator = false
+          let font = UIFont.init(name: "Times New Roman", size: 18)
+          cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+        }
+
+        cell.layoutIfNeeded()
+
+        return cell;
+      } else {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
+        cell.titleLabel?.text = entryTitle;
+        cell.removeAllRightButtons()
+        if !readonly {
+          cell.delegate = self
+          cell.showsRightSlideIndicator = false
+          let font = UIFont.init(name: "Times New Roman", size: 18)
+          cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+        }
+
+        cell.layoutIfNeeded()
+
+        return cell;
       }
-
-      cell.removeAllRightButtons()
-      if !readonly {
-        cell.delegate = self
-        cell.showsRightSlideIndicator = false
-        let font = UIFont.init(name: "Times New Roman", size: 18)
-        cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
-      }
-
-      cell.layoutIfNeeded()
-
-      return cell;
     }
   }
 
