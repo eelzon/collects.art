@@ -14,13 +14,13 @@ import AlamofireImage
 import SESlideTableViewCell
 
 class CollectsTableViewCell: SESlideTableViewCell {
-  
+
   @IBOutlet var titleLabel: UILabel!
-  
+
 }
 
 class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate {
-  
+
   let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let manager = NetworkReachabilityManager(host: "www.rhizome.org")
@@ -35,17 +35,17 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var offlineView: UIWebView!
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     setReachability()
-    
+
     let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
     offlineView.loadHTMLString(html, baseURL: nil)
-    
+
     setAuth()
-    
+
     let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     button.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
     button.imageView?.contentMode = .scaleAspectFit
@@ -53,18 +53,18 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     button.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     button.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
     addButton.customView = button
-    
+
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
   }
-  
+
   func setAuth() {
     activityIndicator.startAnimating()
     tableView.isHidden = true
 
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
-    
+
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
     if FIRAuth.auth()?.currentUser == nil {
@@ -86,7 +86,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       getRibbons()
     }
   }
-  
+
   func setUserRibbon() {
     ribbon = UserDefaults.standard.object(forKey: "ribbon") as? String
     if ribbon == nil {
@@ -95,23 +95,23 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       ribbon = ribbons.object(at: index) as? String
       UserDefaults.standard.set(ribbon, forKey: "ribbon")
     }
-    
+
     self.ref.child("users/\(self.uid!)/ribbon").setValue(ribbon!)
-    
+
     let data = try! Data(contentsOf: URL(string: ribbon!)!)
     let image = UIImage(data: data)
     image?.af_inflate()
-    
+
     let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     button.setImage(image, for: UIControlState.normal)
     button.imageView?.contentMode = .scaleAspectFit
     button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
     userButton.customView = button
   }
-  
+
   func getRibbons() {
     UserDefaults.standard.addObserver(self, forKeyPath: "ribbon", options: NSKeyValueObservingOptions.new, context: nil)
-    
+
     UserDefaults.standard.removeObject(forKey: "ribbons")
     if UserDefaults.standard.object(forKey: "ribbons") == nil {
       ref.child("ribbons").observeSingleEvent(of: .value, with: { (snapshot) in
@@ -128,21 +128,21 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       setUserRibbon()
     }
   }
-  
+
   func openRibbons(_ sender:Any) {
     performSegue(withIdentifier: "segueToRibbons", sender: self)
   }
-  
+
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     if keyPath == "ribbon" {
       self.dismiss(animated: true, completion: (() -> Void)? {
         self.setUserRibbon()
-      })
+        })
     } else {
       super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
     }
   }
-  
+
   // proud of this lil script, so it gets to stay :)
   func uploadRibbons() {
     UserDefaults.standard.removeObject(forKey: "ribbons")
@@ -172,15 +172,15 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let components = string.components(separatedBy: blacklist)
     return components.joined(separator: "")
   }
-  
+
   func showTable() {
     activityIndicator.stopAnimating()
     tableView.isHidden = false
   }
-    
+
   override func viewWillAppear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(false, animated: true)
-    
+
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
     collects = dict.mutableCopy() as! NSMutableDictionary
     timestamps = NSMutableArray.init(array:collects.allKeys)
@@ -188,23 +188,23 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     super.viewWillAppear(animated)
   }
-  
+
   override func viewWillDisappear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(true, animated: true)
-    
+
     super.viewWillDisappear(animated)
   }
-  
+
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return timestamps.count;
   }
-  
+
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let timestamp = timestamps[indexPath.row] as! String
     let collect = collects[timestamp] as! NSDictionary
 
     let cell = tableView.dequeueReusableCell(withIdentifier: "CollectsTableViewCell") as! CollectsTableViewCell
-    
+
     cell.titleLabel?.text = collect.value(forKey: "title") as? String;
 
     cell.removeAllRightButtons()
@@ -214,25 +214,25 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
     cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
     cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
-    
+
     return cell;
   }
-  
+
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     cell.separatorInset = UIEdgeInsets.zero
     cell.layoutMargins = UIEdgeInsets.zero
   }
-  
+
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     return true;
   }
-  
+
   func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
     let indexPath = tableView.indexPath(for: cell)!
     let timestamp = timestamps[indexPath.row] as! String
     let dict = collects[timestamp] as! NSDictionary
     let collect = dict.mutableCopy() as! NSMutableDictionary
-    
+
     if buttonIndex == 0 {
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
@@ -247,21 +247,21 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       timestamps.removeObject(at: indexPath.row)
       collects.removeObject(forKey: timestamp);
       UserDefaults.standard.set(collects, forKey: "collects");
-      
+
       tableView.reloadData();
     }
   }
-  
+
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }
-  
+
   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor.clear
   }
-  
+
   @IBAction func createCollect(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
@@ -280,23 +280,23 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
-    
+
     alert.present()
   }
-  
+
   func initCollect(_ title: NSString!) {
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
     // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
     let templateIndex = Int(arc4random_uniform(UInt32(7)))
-    
+
     self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
     self.tableView.reloadData();
-    
+
     UserDefaults.standard.set(collects, forKey: "collects");
     performSegue(withIdentifier: "segueToCollect", sender: timestamp)
   }
@@ -321,17 +321,17 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
-    
+
   }
-  
+
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
     return UIModalPresentationStyle.none
   }
-  
+
   func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
     setUserRibbon()
   }
-  
+
   func setReachability() {
     manager?.listener = { status in
       if status == .notReachable {
@@ -341,10 +341,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         self.setAuth()
       }
     }
-    
+
     manager?.startListening()
   }
-  
+
   func lockDown() {
     self.activityIndicator.stopAnimating()
     self.tableView.isHidden = true

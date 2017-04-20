@@ -9,22 +9,22 @@
 import UIKit
 
 class RibbonCollectionViewCell: UICollectionViewCell {
-  
+
   @IBOutlet var ribbonView: UIImageView!
-  
+
 }
 
 class RibbonCollectionViewController: UICollectionViewController {
 
   var ribbon: String!
   var ribbons: NSArray!
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
     ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     self.view?.superview?.layer.cornerRadius = 0;
     super.viewWillAppear(animated)
@@ -58,7 +58,7 @@ class RibbonCollectionViewController: UICollectionViewController {
     } else {
       cell.layer.borderColor = UIColor.clear.cgColor
     }
-    
+
     return cell
   }
 

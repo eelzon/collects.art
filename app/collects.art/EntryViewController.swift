@@ -19,7 +19,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var backButton: UIBarButtonItem!
-  
+
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
@@ -27,28 +27,28 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   var readonly: Bool!
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
-    
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     // Do any additional setup after loading the view.
-    
+
     titleView.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
     titleView.text = entry.value(forKey: "title") as? String
-    
+
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
-    
+
     let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
     view.addGestureRecognizer(tap)
-    
+
     if readonly {
       imageButton.isEnabled = false
       titleView.isEditable = false
     }
-    
+
     imageButton.layer.borderWidth = 1.0
     imageButton.layer.cornerRadius = 0
     imageButton.imageView!.contentMode = .scaleAspectFit
@@ -68,14 +68,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
   }
-  
+
   override func viewWillDisappear(_ animated: Bool) {
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
-    
+
     let defaults = UserDefaults.standard
     if let entriesData = defaults.data(forKey: "entries") {
       let entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
@@ -84,16 +84,16 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
       defaults.set(encodedEntries, forKey: "entries")
     }
-    
+
     super.viewWillDisappear(animated)
   }
-  
+
   func dismissKeyboard() {
     view.endEditing(true)
   }
-  
+
   // MARK: - UIImagePickerControllerDelegate Methods
-  
+
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
       let (_, fileExt) = fileInfo(UIImagePNGRepresentation(image)!)
@@ -107,10 +107,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       }
       uploadImage(data)
     }
-    
+
     dismiss(animated: true, completion: nil)
   }
-  
+
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
     dismiss(animated: true, completion: nil)
   }
@@ -118,7 +118,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBAction func backToCollect(_ sender: Any) {
     performSegue(withIdentifier: "unwindToCollect", sender: self)
   }
-  
+
   @IBAction func addImage(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .actionSheet)
     alert.add(AlertAction(title: "Cancel", style: .preferred))
@@ -145,16 +145,16 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Upload from url", style: .normal, handler: { (action) -> Void in
       self.promptUrl()
     }))
-    
+
     alert.visualStyle.actionSheetPreferredFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.actionSheetNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
-    
+
     alert.present()
   }
-  
+
   func promptUrl() {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
@@ -178,14 +178,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
-    
+
     alert.present()
   }
-  
+
   func fileInfo(_ data: Data) -> (String, String) {
     var values = [UInt8](repeating:0, count:1)
     data.copyBytes(to: &values, count: 1)
-    
+
     switch (values[0]) {
     case 0xFF:
       return ("image/jpeg", "jpg")
@@ -199,7 +199,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       return ("", "")
     }
   }
-  
+
   func imageFailure() {
     let fail = AlertController(title: "", message: "", preferredStyle: .alert)
     fail.add(AlertAction(title: "That didn't work", style: .normal))

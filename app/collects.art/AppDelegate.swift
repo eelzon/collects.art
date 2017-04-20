@@ -23,15 +23,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if (collects == nil) {
       UserDefaults.standard.set(NSDictionary(), forKey: "collects");
     }
-    
+
     // Use Firebase library to configure APIs
     FIRApp.configure()
-    
+
     IQKeyboardManager.sharedManager().enable = true
     IQKeyboardManager.sharedManager().enableAutoToolbar = false;
 
     UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!];
-    
+
     manager?.listener = { status in
       if status == .notReachable {
         if let navigationController = self.window?.rootViewController as? UINavigationController {
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
       }
     }
-    
+
     manager?.startListening()
 
     return true
@@ -75,7 +75,7 @@ class Toolbar: UIToolbar {
     super.layoutSubviews()
     frame.size.height = 54
   }
-  
+
   override func sizeThatFits(_ size: CGSize) -> CGSize {
     var size = super.sizeThatFits(size)
     size.height = 54

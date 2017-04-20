@@ -14,20 +14,20 @@ import SDCAlertView
 import SESlideTableViewCell
 
 class CollectTitleTableViewCell: UITableViewCell {
-  
+
   @IBOutlet var titleLabel: UILabel!
-  
+
 }
 
 class CollectTableViewCell: SESlideTableViewCell {
-  
+
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var entryImageView: UIImageView!
-  
+
 }
 
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SESlideTableViewCellDelegate {
-  
+
   let purple = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let blue = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   var uid: String!
@@ -47,11 +47,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     uid = UserDefaults.standard.string(forKey: "uid")!;
-    
+
     ref = FIRDatabase.database().reference()
-    
+
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
 
@@ -78,9 +78,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     add.addTarget(self, action: #selector(createEntry(_:)), for:UIControlEvents.touchUpInside)
     addButton.customView = add
-    
+
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     let defaults = UserDefaults.standard
     if let collectData = defaults.data(forKey: "collect") {
@@ -96,11 +96,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     super.viewWillAppear(animated)
   }
-  
+
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
   }
-  
+
   func getEntries() {
     tableView.isHidden = true
     activityIndicator.startAnimating()
@@ -122,9 +122,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
           }
           self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
-          
+
           self.setReadonly()
-          
+
           self.tableView.reloadData()
           self.activityIndicator.stopAnimating()
           self.tableView.isHidden = false
@@ -136,7 +136,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       print(error.localizedDescription)
     }
   }
-  
+
   func setReadonly() {
     if (collect.object(forKey: "readonly") as? NSNumber) == 1 {
       readonly = true
@@ -145,7 +145,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       renameButton.isEnabled = false
     }
   }
-  
+
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
   }
@@ -154,7 +154,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
-  
+
   @IBAction func renameCollect(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
@@ -174,54 +174,54 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
-    
+
     alert.present()
   }
-  
+
   @IBAction func openCollect(_ sender: Any) {
     if timestamp != nil, let title = collect.value(forKey: "title") {
       let url = ("https://collectsart.firebaseapp.com/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
       UIApplication.shared.openURL(URL.init(string: url)!)
     }
   }
-  
+
   func changeTitle (_ title: NSString!) {
     collect.setValue(title, forKey: "title")
-    
+
     refreshTitleCell()
-    
+
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
     let collects = dict.mutableCopy() as! NSMutableDictionary
     collects.setObject(collect, forKey: timestamp as NSCopying)
     UserDefaults.standard.set(collects, forKey: "collects");
-    
+
     self.ref.child("users/\(uid!)/collects/\(timestamp!)/title").setValue(title)
     self.ref.child("collects/\(timestamp!)/title").setValue(title)
   }
-  
+
   @IBAction func remixTemplate(_ sender: Any) {
     let templateIndex = Int(arc4random_uniform(UInt32(7)))
-    
+
     self.ref.child("collects/\(timestamp!)/template").setValue(templateIndex)
-    
+
     let alert = AlertController(attributedTitle: NSAttributedString.init(string: "Template changed", attributes: [NSFontAttributeName: UIFont.init(name: "Times New Roman", size: 18)!, NSForegroundColorAttributeName: UIColor.black]), attributedMessage: nil, preferredStyle: .alert)
     alert.add(AlertAction(title: "Ok", style: .normal))
     alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
     alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
-    
+
     alert.present()
   }
-  
+
   func refreshTitleCell() {
     tableView.beginUpdates()
     tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .automatic)
     tableView.endUpdates()
   }
-  
+
   // MARK: - Table view data source
-  
+
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
@@ -229,7 +229,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       return entryTimestamps.count
     }
   }
-  
+
   func numberOfSections(in tableView: UITableView) -> Int {
     return 2
   }
@@ -237,26 +237,26 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTitleTableViewCell") as! CollectTitleTableViewCell
-      
+
       cell.titleLabel?.text = collect?.value(forKey: "title") as? String;
-      
+
       return cell;
     } else {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
-      
+
       let entryTimestamp = entryTimestamps[indexPath.row] as! String
       let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
-      
+
       if let title = entry.value(forKey: "title") as? String, title.characters.count > 0 {
         cell.titleLabel?.text = title;
       } else {
         cell.titleLabel?.text = "untitled"
       }
-      
+
       if let image = entry.object(forKey: "image") as? UIImage {
         cell.entryImageView.image = image
       }
-   
+
       cell.removeAllRightButtons()
       if !readonly {
         cell.delegate = self
@@ -264,9 +264,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         let font = UIFont.init(name: "Times New Roman", size: 18)
         cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
       }
-      
+
       cell.layoutIfNeeded()
-      
+
       return cell;
     }
   }
@@ -274,45 +274,45 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
     let indexPath = tableView.indexPath(for: cell)!
     let entryTimestamp = entryTimestamps[indexPath.row] as! String
-    
+
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").removeValue()
     entryTimestamps.removeObject(at: indexPath.row)
     entries.removeObject(forKey: entryTimestamp)
-    
+
     tableView.reloadData();
   }
-  
+
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     cell.separatorInset = UIEdgeInsets.zero
     cell.layoutMargins = UIEdgeInsets.zero
   }
-  
+
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     if readonly || indexPath.section == 0 {
       return false
     }
     return true
   }
-  
+
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }
-  
+
   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor.clear
   }
-  
+
   @IBAction func backToCollects(_ sender: Any) {
     performSegue(withIdentifier: "unwindToCollects", sender: self)
   }
-  
+
   @IBAction func unwindToCollect(segue:UIStoryboardSegue) {
 
   }
-  
+
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "segueToEntry" {
       var entryTimestamp: String;
@@ -323,13 +323,13 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         entryTimestamp = sender as! String
       }
       entry = entries.value(forKey: entryTimestamp) as! NSDictionary
-      
+
       let destination = segue.destination as! EntryViewController
       destination.entry = entry.mutableCopy() as! NSMutableDictionary
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
-      
+
       saveCollect()
     } else if segue.identifier == "unwindToCollects" {
       let defaults = UserDefaults.standard
@@ -337,7 +337,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       defaults.removeObject(forKey: "entries")
     }
   }
-  
+
   func saveCollect() {
     let defaults = UserDefaults.standard
     let encodedCollect = NSKeyedArchiver.archivedData(withRootObject: collect)
@@ -345,7 +345,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
     defaults.set(encodedEntries, forKey: "entries")
   }
-  
+
   @IBAction func createEntry(_ sender: Any) {
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
     let entry: NSDictionary = ["title": "", "image": false];
