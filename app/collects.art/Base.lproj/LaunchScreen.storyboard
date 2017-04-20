@@ -42,6 +42,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="folder" width="14" height="14"/>
+        <image name="folder" width="20" height="20"/>
     </resources>
 </document>

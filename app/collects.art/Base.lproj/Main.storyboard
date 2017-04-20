@@ -287,11 +287,11 @@
                                     <action selector="addImage:" destination="9w7-w4-OsN" eventType="touchUpInside" id="fAW-H0-UFJ"/>
                                 </connections>
                             </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="s9d-Ce-gYj">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="s9d-Ce-gYj">
                                 <rect key="frame" x="16" y="216" width="288" height="300"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="18"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="go"/>
                             </textView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="EfL-z5-jnU">
                                 <rect key="frame" x="150" y="98" width="20" height="20"/>
@@ -424,7 +424,7 @@
                         </constraints>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="user" id="QmR-nH-Gma">
+                        <barButtonItem id="QmR-nH-Gma">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="87N-VY-IjK"/>

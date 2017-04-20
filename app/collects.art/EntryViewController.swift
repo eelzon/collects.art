@@ -49,6 +49,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       titleView.isEditable = false
     }
 
+    let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
+    back.imageView?.contentMode = .scaleAspectFit
+    back.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    back.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    back.addTarget(self, action: #selector(backToCollect(_:)), for:UIControlEvents.touchUpInside)
+    backButton.customView = back
+
     imageButton.layer.borderWidth = 1.0
     imageButton.layer.cornerRadius = 0
     imageButton.imageView!.contentMode = .scaleAspectFit
