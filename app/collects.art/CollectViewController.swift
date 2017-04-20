@@ -70,15 +70,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     remix.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     remix.addTarget(self, action: #selector(remixTemplate(_:)), for:UIControlEvents.touchUpInside)
     remixButton.customView = remix
-
-    let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    add.setImage(UIImage.init(named: "addEntry"), for: UIControlState.normal)
-    add.imageView?.contentMode = .scaleAspectFit
-    add.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    add.addTarget(self, action: #selector(createEntry(_:)), for:UIControlEvents.touchUpInside)
-    addButton.customView = add
-
   }
 
   override func viewWillAppear(_ animated: Bool) {

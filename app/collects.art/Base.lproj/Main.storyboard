@@ -100,7 +100,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g0i-a3-Y4u">
-                                                    <rect key="frame" x="8" y="28" width="210" height="20"/>
+                                                    <rect key="frame" x="8" y="8" width="210" height="60"/>
                                                     <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="18"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
@@ -109,18 +109,19 @@
                                                     <rect key="frame" x="226" y="8" width="86" height="60"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="86" id="Vg6-62-7xC"/>
+                                                        <constraint firstAttribute="height" constant="60" id="CaW-lI-Rbm"/>
+                                                        <constraint firstAttribute="width" constant="86" id="F5d-Ze-Fme"/>
                                                     </constraints>
                                                 </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="g0i-a3-Y4u" firstAttribute="leading" secondItem="0qd-Cs-ggc" secondAttribute="leadingMargin" id="F3Q-FR-JGy"/>
-                                                <constraint firstItem="Xzg-f5-tDb" firstAttribute="top" secondItem="0qd-Cs-ggc" secondAttribute="topMargin" id="Jjm-UL-vwI"/>
-                                                <constraint firstItem="Xzg-f5-tDb" firstAttribute="leading" secondItem="g0i-a3-Y4u" secondAttribute="trailing" constant="8" symbolic="YES" id="YKd-Wk-OFV"/>
-                                                <constraint firstItem="g0i-a3-Y4u" firstAttribute="top" secondItem="0qd-Cs-ggc" secondAttribute="topMargin" constant="20" id="ac5-U8-sHR"/>
-                                                <constraint firstItem="g0i-a3-Y4u" firstAttribute="centerY" secondItem="Xzg-f5-tDb" secondAttribute="centerY" id="cuF-Jc-G2t"/>
-                                                <constraint firstItem="Xzg-f5-tDb" firstAttribute="centerY" secondItem="0qd-Cs-ggc" secondAttribute="centerY" id="pYz-i3-Guz"/>
-                                                <constraint firstItem="Xzg-f5-tDb" firstAttribute="trailing" secondItem="0qd-Cs-ggc" secondAttribute="trailingMargin" id="sqW-uI-ESo"/>
+                                                <constraint firstAttribute="leadingMargin" secondItem="g0i-a3-Y4u" secondAttribute="leading" id="6Fx-B8-ny0"/>
+                                                <constraint firstAttribute="topMargin" secondItem="g0i-a3-Y4u" secondAttribute="top" id="Cne-s1-Cgc"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Xzg-f5-tDb" secondAttribute="trailing" id="PXd-uV-7ss"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Xzg-f5-tDb" secondAttribute="bottom" constant="0.5" id="T1v-a7-aAP"/>
+                                                <constraint firstAttribute="topMargin" secondItem="Xzg-f5-tDb" secondAttribute="top" id="d5l-rf-Qgj"/>
+                                                <constraint firstItem="Xzg-f5-tDb" firstAttribute="leading" secondItem="g0i-a3-Y4u" secondAttribute="trailing" constant="8" id="e6V-b3-pX7"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="g0i-a3-Y4u" secondAttribute="bottom" constant="0.5" id="hcB-DF-1I2"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -452,7 +453,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="camera" width="14" height="14"/>
-        <image name="folder" width="14" height="14"/>
+        <image name="camera" width="20" height="20"/>
+        <image name="folder" width="20" height="20"/>
     </resources>
 </document>
