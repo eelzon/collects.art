@@ -319,7 +319,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   @IBAction func unwindToCollects(segue:UIStoryboardSegue) {
-
+    let defaults = UserDefaults.standard
+    defaults.removeObject(forKey: "collect")
+    defaults.removeObject(forKey: "entries")
   }
   
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {

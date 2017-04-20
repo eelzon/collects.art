@@ -58,7 +58,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-    
 
     let rename = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     rename.setImage(UIImage.init(named: "rename"), for: UIControlState.normal)
@@ -87,7 +86,17 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    getEntries();
+    let defaults = UserDefaults.standard
+    if let collectData = defaults.data(forKey: "collect") {
+      collect = NSKeyedUnarchiver.unarchiveObject(with: collectData) as? NSDictionary
+      if let entriesData = defaults.data(forKey: "entries") {
+        entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
+        entryTimestamps = NSMutableArray.init(array: entries.allKeys)
+      }
+      setReadonly()
+    } else {
+      getEntries();
+    }
     super.viewWillAppear(animated)
   }
   
@@ -117,12 +126,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
           }
           self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
           
-          if (self.collect.object(forKey: "readonly") as? NSNumber) == 1 {
-            self.readonly = true
-            self.addButton.isEnabled = false
-            self.remixButton.isEnabled = false
-            self.renameButton.isEnabled = false
-          }
+          self.setReadonly()
           
           self.tableView.reloadData()
           self.activityIndicator.stopAnimating()
@@ -133,6 +137,15 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       self.activityIndicator.stopAnimating()
       self.tableView.isHidden = false
       print(error.localizedDescription)
+    }
+  }
+  
+  func setReadonly() {
+    if (collect.object(forKey: "readonly") as? NSNumber) == 1 {
+      readonly = true
+      addButton.isEnabled = false
+      remixButton.isEnabled = false
+      renameButton.isEnabled = false
     }
   }
   
@@ -309,7 +322,17 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
+      
+      saveCollect()
     }
+  }
+  
+  func saveCollect() {
+    let defaults = UserDefaults.standard
+    let encodedCollect = NSKeyedArchiver.archivedData(withRootObject: collect)
+    defaults.set(encodedCollect, forKey: "collect")
+    let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
+    defaults.set(encodedEntries, forKey: "entries")
   }
   
   @IBAction func createEntry(_ sender: Any) {
