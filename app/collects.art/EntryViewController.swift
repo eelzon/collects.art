@@ -122,7 +122,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBAction func addImage(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .actionSheet)
     alert.add(AlertAction(title: "Cancel", style: .preferred))
-    if (entry.value(forKey: "image") as? String) != nil {
+    if entry.value(forKey: "image") != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
         self.imageButton.setImage(nil, for: UIControlState.normal)
@@ -168,11 +168,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
           let data = try Data(contentsOf: url)
           self.uploadImage(data)
         } catch {
-          let fail = AlertController(title: "", message: "", preferredStyle: .alert)
-          fail.add(AlertAction(title: "That didn't work", style: .normal))
-          fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-          fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-          fail.present()
+          self.imageFailure()
         }
       }
     }))
@@ -203,34 +199,50 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       return ("", "")
     }
   }
+  
+  func imageFailure() {
+    let fail = AlertController(title: "", message: "", preferredStyle: .alert)
+    fail.add(AlertAction(title: "That didn't work", style: .normal))
+    fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
+    fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    fail.present()
+  }
 
   func uploadImage(_ data: Data) {
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
-      imageButton.setImage(nil, for: UIControlState.normal)
+      imageButton.imageView?.isHidden = true
       imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       cameraImageView.isHidden = true
+      backButton.isEnabled = false
       activityIndicator.startAnimating()
 
-      let metadata = FIRStorageMetadata()
-      metadata.contentType = contentType
-      storageRef.child("images/\(timestamp!).\(fileExt)").put(data, metadata: metadata).observe(.success) { (snapshot) in
-        let downloadURL = snapshot.metadata?.downloadURL()!.absoluteString
-        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
-        let data = try! Data(contentsOf: URL(string: downloadURL!)!)
-        let image = UIImage(data: data)
-        image?.af_inflate()
-        self.entry.setObject(image!, forKey: "image" as NSCopying)
-        self.imageButton.setImage(image, for: UIControlState.normal)
-        self.imageButton.layer.borderColor = UIColor.clear.cgColor
+      let imageMetadata = FIRStorageMetadata()
+      imageMetadata.contentType = contentType
+      let task = storageRef.child("images/\(timestamp!).\(fileExt)")
+      task.put(data, metadata: imageMetadata, completion: { (_ metadata: FIRStorageMetadata?, _ error: Error?) in
         self.activityIndicator.stopAnimating()
-      }
+        self.backButton.isEnabled = true
+        if error != nil {
+          self.imageButton.imageView?.isHidden = false
+          if self.imageButton.imageView?.image != nil {
+            self.imageButton.layer.borderColor = UIColor.clear.cgColor
+          } else {
+            self.cameraImageView.isHidden = false
+          }
+        } else {
+          let downloadURL = metadata?.downloadURL()!.absoluteString
+          self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
+          let data = try! Data(contentsOf: URL(string: downloadURL!)!)
+          let image = UIImage(data: data)
+          image?.af_inflate()
+          self.entry.setObject(image!, forKey: "image" as NSCopying)
+          self.imageButton.setImage(image, for: UIControlState.normal)
+          self.imageButton.layer.borderColor = UIColor.clear.cgColor
+        }
+      })
     } else {
-      let fail = AlertController(title: "", message: "", preferredStyle: .alert)
-      fail.add(AlertAction(title: "That didn't work", style: .normal))
-      fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-      fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-      fail.present()
+      imageFailure()
     }
   }
   
