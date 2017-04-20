@@ -75,15 +75,31 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
         }
-        self.showTable()
+        self.getCollects()
         self.getRibbons()
       })
     } else {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
       //uploadRibbons()
-      showTable()
+      self.getCollects()
       getRibbons()
+    }
+  }
+
+  func getCollects() {
+    ref.child("users/\(uid!)/collects").observeSingleEvent(of: .value, with: { (snapshot) in
+      if snapshot.exists() {
+        if let value = snapshot.value as? NSDictionary {
+          self.collects = value.mutableCopy() as! NSMutableDictionary
+          self.timestamps = NSMutableArray.init(array: self.collects.allKeys)
+          UserDefaults.standard.set(self.collects, forKey: "collects");
+          self.showTable()
+        }
+      }
+    }) { (error) in
+      self.showTable()
+      print(error.localizedDescription)
     }
   }
 
@@ -176,6 +192,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func showTable() {
     activityIndicator.stopAnimating()
     tableView.isHidden = false
+    tableView.reloadData()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -183,7 +200,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
     collects = dict.mutableCopy() as! NSMutableDictionary
-    timestamps = NSMutableArray.init(array:collects.allKeys)
+    timestamps = NSMutableArray.init(array: collects.allKeys)
     tableView.reloadData()
 
     super.viewWillAppear(animated)
