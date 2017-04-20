@@ -24,6 +24,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let manager = NetworkReachabilityManager(host: "www.rhizome.org")
+  var previousStatus: String = "reachable"
   var collects: NSMutableDictionary!
   var timestamps: NSMutableArray!
   var ref: FIRDatabaseReference!
@@ -74,15 +75,16 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         } else {
           UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
+          self.ref.child("users/\(self.uid!)/collects").setValue(NSDictionary())
+          self.getCollects()
+          self.getRibbons()
         }
-        self.getCollects()
-        self.getRibbons()
       })
     } else {
       UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
       //uploadRibbons()
-      self.getCollects()
+      getCollects()
       getRibbons()
     }
   }
@@ -95,7 +97,11 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           self.timestamps = NSMutableArray.init(array: self.collects.allKeys)
           UserDefaults.standard.set(self.collects, forKey: "collects");
           self.showTable()
+        } else {
+          self.showTable()
         }
+      } else {
+        self.showTable()
       }
     }) { (error) in
       self.showTable()
@@ -352,10 +358,14 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func setReachability() {
     manager?.listener = { status in
       if status == .notReachable {
+        self.previousStatus = "notReachable"
         self.lockDown()
       } else {
-        self.offlineView.isHidden = true;
-        self.setAuth()
+        if (self.previousStatus == "notReachable") {
+          self.offlineView.isHidden = true;
+          self.setAuth()
+        }
+        self.previousStatus = "reachable"
       }
     }
 
