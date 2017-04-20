@@ -49,31 +49,33 @@
           Object.keys(users).forEach((uid) => {
             var user = users[uid];
 
-            var ribbon = document.createElement('img');
-            ribbon.src = user.ribbon;
-            ribbon.style.height = '50px';
+            if (user.collects && Object.keys(user.collects)) {
+              var ribbon = document.createElement('img');
+              ribbon.src = user.ribbon;
+              ribbon.style.height = '50px';
 
-            var userTd = document.createElement('td');
-            userTd.appendChild(ribbon)
+              var userTd = document.createElement('td');
+              userTd.appendChild(ribbon)
 
-            var entriesTd = document.createElement('td');
-            var ul = document.createElement('ul');
-            Object.keys(user.collects).forEach((timestamp) => {
-              var collect = user.collects[timestamp];
-              console.log(collect);
-              var li = document.createElement("li");
-              var a = document.createElement('a');
-              a.appendChild(document.createTextNode(collect.title));
-              a.href = '/' + timestamp + '/' + collect.title;
-              li.appendChild(a);
-              ul.appendChild(li);
-            });
-            entriesTd.appendChild(ul);
-            
-            var tr = document.createElement('tr');
-            tr.appendChild(userTd);
-            tr.appendChild(entriesTd);
-            table.appendChild(tr);
+              var entriesTd = document.createElement('td');
+              var ul = document.createElement('ul');
+              Object.keys(user.collects).forEach((timestamp) => {
+                var collect = user.collects[timestamp];
+                var li = document.createElement("li");
+                var a = document.createElement('a');
+                a.appendChild(document.createTextNode(collect.title));
+                a.href = '/' + timestamp + '/' + collect.title;
+                li.appendChild(a);
+                ul.appendChild(li);
+              });
+              entriesTd.appendChild(ul);
+
+              var tr = document.createElement('tr');
+              tr.appendChild(userTd);
+              tr.appendChild(entriesTd);
+              table.appendChild(tr);
+            }
+
             collectsDiv.appendChild(table);
           });
 
