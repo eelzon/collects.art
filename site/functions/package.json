@@ -5,7 +5,7 @@
     "cors": "^2.8.3",
     "firebase-admin": "~4.1.2",
     "firebase-functions": "^0.5",
-    "mustache": "^2.3.0"
+    "handlebars": "^4.0.6"
   },
   "private": true
 }

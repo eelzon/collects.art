@@ -18,12 +18,12 @@
   <body onload="init()">
     <div id="collects" style="display:none">
       <h1>Collects</h1>
+      <table id="table"></table>
+      <hr>
+      <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
     </div>
     <div id="collect" style="display:none"></div>
     <p id="load">...</p>
-    <hr>
-    <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
-
     <script>
       var load = document.getElementById('load');
 
@@ -44,7 +44,7 @@
       function loadCollects() {
         return firebase.database().ref('/users').once('value').then(snapshot => {
           var collectsDiv = document.getElementById('collects');
-          var table = document.createElement('table');
+          var table = document.getElementById('table');
           var users = snapshot.exportVal();
           Object.keys(users).forEach((uid) => {
             var user = users[uid];
@@ -114,7 +114,8 @@
               return resolve(xhr.response);
             };
 
-            xhr.open('POST', 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template', true);
+            var url = 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template';
+            xhr.open('POST', url + '/template', true);
             xhr.send(JSON.stringify(collect));
           }).then((html) => {
             var collectDiv = document.getElementById('collect');
