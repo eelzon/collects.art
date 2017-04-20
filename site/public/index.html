@@ -44,14 +44,19 @@
       function loadCollects() {
         return firebase.database().ref('/users').once('value').then(snapshot => {
           var collectsDiv = document.getElementById('collects');
+          var table = document.createElement('table');
           var users = snapshot.exportVal();
           Object.keys(users).forEach((uid) => {
             var user = users[uid];
-            console.log(user);
+
             var ribbon = document.createElement('img');
             ribbon.src = user.ribbon;
             ribbon.style.height = '50px';
-            collectsDiv.appendChild(ribbon);
+
+            var userTd = document.createElement('td');
+            userTd.appendChild(ribbon)
+
+            var entriesTd = document.createElement('td');
             var ul = document.createElement('ul');
             Object.keys(user.collects).forEach((timestamp) => {
               var collect = user.collects[timestamp];
@@ -63,7 +68,13 @@
               li.appendChild(a);
               ul.appendChild(li);
             });
-            collectsDiv.appendChild(ul);
+            entriesTd.appendChild(ul);
+            
+            var tr = document.createElement('tr');
+            tr.appendChild(userTd);
+            tr.appendChild(entriesTd);
+            table.appendChild(tr);
+            collectsDiv.appendChild(table);
           });
 
           collectsDiv.style.display = 'initial';
