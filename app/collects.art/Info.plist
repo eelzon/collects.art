@@ -29,8 +29,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo for your collect.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app will look at your photos to find art.</string>
+	<string>Add an image for your collect.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
