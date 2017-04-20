@@ -57,6 +57,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     back.addTarget(self, action: #selector(backToCollect(_:)), for:UIControlEvents.touchUpInside)
     backButton.customView = back
 
+    imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
     imageButton.layer.borderWidth = 1.0
     imageButton.layer.cornerRadius = 0
     imageButton.imageView!.contentMode = .scaleAspectFit
@@ -64,10 +65,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     if let image = entry.object(forKey: "image") as? UIImage {
       imageButton.setImage(image, for: UIControlState.normal)
-      imageButton.layer.borderColor = UIColor.clear.cgColor
       cameraImageView.isHidden = true
     } else {
-      imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       cameraImageView.isHidden = false
     }
   }
@@ -135,7 +134,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(false)
         self.imageButton.setImage(nil, for: UIControlState.normal)
         self.cameraImageView.isHidden = false
-        self.imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       }))
     }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
@@ -220,7 +218,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
       imageButton.imageView?.isHidden = true
-      imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
       cameraImageView.isHidden = true
       backButton.isEnabled = false
       activityIndicator.startAnimating()
@@ -233,9 +230,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.backButton.isEnabled = true
         if error != nil {
           self.imageButton.imageView?.isHidden = false
-          if self.imageButton.imageView?.image != nil {
-            self.imageButton.layer.borderColor = UIColor.clear.cgColor
-          } else {
+          if self.imageButton.imageView?.image == nil {
             self.cameraImageView.isHidden = false
           }
         } else {
@@ -246,7 +241,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
           image?.af_inflate()
           self.entry.setObject(image!, forKey: "image" as NSCopying)
           self.imageButton.setImage(image, for: UIControlState.normal)
-          self.imageButton.layer.borderColor = UIColor.clear.cgColor
         }
       })
     } else {
