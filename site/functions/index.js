@@ -91,9 +91,10 @@ function template1(collect) {
     }
   });
 
-  var keys = Object.keys(collect.entries || {});
+  var entries = collect.entries || {}
+  var keys = Object.keys(entries);
   var links = keys.map((key) => {
-    var entry = collect.entries[key];
+    var entry = entries[key];
     if (entry.title && entry.image) {
       return `<a href="${entry.image}">${entry.title}</a>`;
     } else if (entry.title) {
@@ -143,6 +144,7 @@ function template3(collect) {
         max-height: 250px;
       }
     </style>
+    <h1>{{title}}</h1>
     {{#if entry.image}}
       <img src="{{entry.image}}">
     {{/if}}
@@ -154,10 +156,11 @@ function template3(collect) {
 
   var template = Handlebars.compile(html);
 
-  var keys = Object.keys(collect.entries || {});
+  var entries = collect.entries || {}
+  var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
-  return template({ entry: collect.entries[keys[index]] });
+  return template({ title: collect.title, entry: entries[keys[index]] });
 }
 
 function template4(collect) {
@@ -337,16 +340,17 @@ function template6(collect) {
 
   var template = Handlebars.compile(html);
 
-  var keys = Object.keys(collect.entries || {});
+  var entries = collect.entries || {};
+  var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
   var rest = [];
   var random;
   keys.forEach((key, i) => {
     if (i !== index) {
-      rest.push(collect.entries[key]);
+      rest.push(entries[key]);
     } else {
-      random = collect.entries[key];
+      random = entries[key];
     }
   });
 
@@ -381,10 +385,11 @@ function template7(collect) {
 
   var template = Handlebars.compile(html);
 
-  var keys = Object.keys(collect.entries || {});
+  var entries = collect.entries || {};
+  var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
-  return template({ title: collect.title, entry: collect.entries[keys[index]] });
+  return template({ title: collect.title, entry: entries[keys[index]] });
 }
 
 function template8(collect) {
@@ -437,7 +442,9 @@ function template8(collect) {
 
   var template = Handlebars.compile(html);
 
-  return template({ title: collect.title, entries: collect.entries });
+  var entries = collect.entries || {};
+
+  return template({ title: collect.title, entries: entries });
 }
 
 // function template9(collect) {
