@@ -106,15 +106,32 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       var data: Data
       if fileExt == "gif" {
         data = try! AnimatedGIFImageSerialization.animatedGIFData(with: image)
-      } else if fileExt == "jpg" {
-        data = UIImageJPEGRepresentation(image, 1.0)!
       } else {
-        data = UIImagePNGRepresentation(image)!
+        let orientedImage = normalizedImage(image)
+        if fileExt == "jpg" {
+          data = UIImageJPEGRepresentation(orientedImage, 1.0)!
+        } else {
+          data = UIImagePNGRepresentation(orientedImage)!
+        }
       }
       uploadImage(data)
     }
 
     dismiss(animated: true, completion: nil)
+  }
+
+  func normalizedImage(_ image: UIImage) -> UIImage {
+    if (image.imageOrientation == UIImageOrientation.up) {
+      return image;
+    }
+
+    UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale);
+    let rect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+    image.draw(in: rect)
+
+    let normalizedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+    UIGraphicsEndImageContext();
+    return normalizedImage;
   }
 
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
