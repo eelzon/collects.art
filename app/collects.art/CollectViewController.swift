@@ -201,7 +201,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   @IBAction func openCollect(_ sender: Any) {
     if timestamp != nil, let title = collect.value(forKey: "title") {
-      let url = ("https://collectsart.firebaseapp.com/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+      let url = ("https://collectable-99baf.firebaseapp.com/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
       UIApplication.shared.openURL(URL.init(string: url)!)
     }
   }

@@ -132,6 +132,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     if entry.value(forKey: "image") != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
         self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
+        self.entry.removeObject(forKey: "image")
         self.imageButton.setImage(nil, for: UIControlState.normal)
         self.cameraImageView.isHidden = false
       }))
