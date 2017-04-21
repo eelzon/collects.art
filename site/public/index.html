@@ -26,6 +26,8 @@
     <p id="load">...</p>
     <script>
       var load = document.getElementById('load');
+      var collectsDiv = document.getElementById('collects');
+      var collectDiv = document.getElementById('collect');
 
       function init() {
         firebase.auth().signInAnonymously().then(() => {
@@ -43,7 +45,6 @@
 
       function loadCollects() {
         return firebase.database().ref('/users').once('value').then(snapshot => {
-          var collectsDiv = document.getElementById('collects');
           var table = document.getElementById('table');
           var users = snapshot.exportVal();
           Object.keys(users).forEach((uid) => {
@@ -77,8 +78,10 @@
             }
           });
 
-          collectsDiv.style.display = 'initial';
+          collectsDiv.style.display = '';
           load.style.display = 'none';
+          load.remove();
+          collectDiv.remove();
         });
       }
 
@@ -115,10 +118,11 @@
             xhr.open('POST', url + '/template', true);
             xhr.send(JSON.stringify(collect));
           }).then((html) => {
-            var collectDiv = document.getElementById('collect');
-            collectDiv.style.display = 'initial';
+            collectDiv.style.display = '';
             collectDiv.innerHTML = html;
             load.style.display = 'none';
+            load.remove();
+            collectsDiv.remove();
           });
 
           // // NSDate's timeIntervalSince1970 is missing milliseconds
