@@ -310,9 +310,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func initCollect(_ title: NSString!) {
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
-    // TODO: assign template
     let collect: [String: Any] = ["title": title!, "readonly": false]
-    let templateIndex = Int(arc4random_uniform(UInt32(7)))
+    let templateIndex = Int(arc4random_uniform(UInt32(7))) + 1
 
     self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
