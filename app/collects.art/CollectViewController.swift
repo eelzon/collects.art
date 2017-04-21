@@ -382,7 +382,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   @IBAction func createEntry(_ sender: Any) {
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
-    let entry: NSDictionary = ["title": "", "image": false];
+    let entry: NSDictionary = ["title": ""];
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)

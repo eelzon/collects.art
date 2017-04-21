@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let keyboardManager = IQKeyboardManager.sharedManager()
     keyboardManager.toolbarTintColor = purple
     keyboardManager.enable = true
+    keyboardManager.shouldPlayInputClicks = false
     IQBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple], for: UIControlState.normal)
     IQBarButtonItem.appearance().tintColor = purple
 
