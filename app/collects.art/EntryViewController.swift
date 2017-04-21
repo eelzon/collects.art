@@ -45,7 +45,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     view.addGestureRecognizer(tap)
 
     if readonly {
-      imageButton.isEnabled = false
       titleView.isEditable = false
     }
 
@@ -127,6 +126,9 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   @IBAction func addImage(_ button: UIButton) {
+    if (readonly) {
+      return
+    }
     let alert = AlertController(title: "", message: "", preferredStyle: .actionSheet)
     alert.add(AlertAction(title: "Cancel", style: .preferred))
     if entry.value(forKey: "image") != nil {
