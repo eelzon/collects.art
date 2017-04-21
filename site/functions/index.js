@@ -47,19 +47,23 @@ function template1(collect) {
       p {
         width: 50%;
       }
+      a {
+        text-decoration: none;
+        color: black;
+      }
     </style>
-    <h1>{{collect.title}}</h1>
+    <h1>{{title}}</h1>
     <hr>
-    {{#each collect.entries}}
+    {{#each entries}}
       {{#ifThird @index}}
-        <p style="text-align: center; margin: 0 auto;">{{this.title}}</p>
+        <p style="text-align: center; margin: 0 auto;">{{{this}}}</p>
         <hr>
       {{else}}
         {{#ifSecond @index}}
-          <p style="text-align: left; margin-right: auto;">{{this.title}}</p>
+          <p style="text-align: left; margin-right: auto;">{{{this}}}</p>
           <hr>
         {{else}}
-          <p style="text-align: right; margin-left: auto;">{{this.title}}</p>
+          <p style="text-align: right; margin-left: auto;">{{{this}}}</p>
           <hr>
         {{/ifSecond}}
       {{/ifThird}}
@@ -84,7 +88,30 @@ function template1(collect) {
     }
   });
 
-  return template({ collect });
+  var keys = Object.keys(collect.entries || {});
+  var links = keys.map((key) => {
+    var entry = collect.entries[key];
+    if (entry.title && entry.image) {
+      return `<a href="${entry.image}">${entry.title}</a>`;
+    } else if (entry.title) {
+      return entry.title;
+    } else if (entry.image) {
+      return `<a href="${entry.image}">untitled</a>`;
+    }
+    return '';
+  });
+
+  return template({ title: collect.title, entries: links });
+}
+
+function template2(collect) {
+  var html = `
+
+  `;
+
+  var template = Handlebars.compile(html);
+
+  return template({});
 }
 
 function template3(collect) {
