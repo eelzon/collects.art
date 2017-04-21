@@ -38,7 +38,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   var uid: String!
   var timestamp: String!
-  var project: String!
   var collect: NSDictionary!
   var entryTimestamps: NSMutableArray! = []
   var entries: NSMutableDictionary! = NSMutableDictionary()
@@ -58,14 +57,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     uid = UserDefaults.standard.string(forKey: "uid")!;
 
     ref = FIRDatabase.database().reference()
-
-    if let fileUrl = Bundle.main.url(forResource: "GoogleService-Info", withExtension: "plist"),
-      let data = try? Data(contentsOf: fileUrl) {
-      if let result = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) {
-        project = (result as! NSDictionary).value(forKey: "PROJECT_ID") as! String
-        print(project)
-      }
-    }
 
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
@@ -210,7 +201,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   @IBAction func openCollect(_ sender: Any) {
     if timestamp != nil, let title = collect.value(forKey: "title") {
-      let url = ("https://\(project!).firebaseapp.com/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+      let url = ("https://collectable.art/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
       UIApplication.shared.openURL(URL.init(string: url)!)
     }
   }
