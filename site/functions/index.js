@@ -7,33 +7,36 @@ var Handlebars = require('handlebars');
 exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     var collect = JSON.parse(req.body);
-    var template = collect.template;
-    switch(template) {
-    case 1:
-      res.send(template1(collect));
-    // case 2:
-    //   res.send(template2(collect));
-    case 2:
-      res.send(template3(collect));
-    case 3:
-      res.send(template4(collect));
-    case 4:
-      res.send(template5(collect));
-    case 5:
-      res.send(template6(collect));
-    case 6:
-      res.send(template7(collect));
-    case 7:
-      res.send(template8(collect));
-    // case 9:
-    //   res.send(template9(collect));
-    // case 10:
-    //   res.send(template10(collect));
-    // case 11:
-    //   res.send(template11(collect));
-    }
+    res.send(getTemplate(collect));
   });
 });
+
+function getTemplate(collect) {
+  switch(collect.template) {
+  case 1:
+    return template1(collect);
+  // case 2:
+  //   return template2(collect);
+  case 3, 11:
+    return template3(collect);
+  case 4, 2:
+    return template4(collect);
+  case 5, 9:
+    return template5(collect);
+  case 6:
+    return template6(collect);
+  case 7:
+    return template7(collect);
+  case 8, 10:
+    return template8(collect);
+  // case 9:
+  //   return template9(collect);
+  // case 10:
+  //   return template10(collect);
+  // case 11:
+  //   return template11(collect);
+  }
+}
 
 function template1(collect) {
   var html = `

@@ -221,7 +221,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   @IBAction func remixTemplate(_ sender: Any) {
-    let templateIndex = Int(arc4random_uniform(UInt32(7))) + 1
+    let templateIndex = Int(arc4random_uniform(UInt32(11))) + 1
 
     self.ref.child("collects/\(timestamp!)/template").setValue(templateIndex)
 
