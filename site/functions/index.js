@@ -7,7 +7,7 @@ var Handlebars = require('handlebars');
 exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     var collect = JSON.parse(req.body);
-    res.send(template4(collect));
+    res.send(template5(collect));
   });
 });
 
@@ -150,7 +150,7 @@ function template4(collect) {
     var group = '';
     // Do your work with array[i], array[i+1]...array[i+N-1]
     [i, i + 1, i + 2].forEach((index) => {
-      if (index === keys.length) {
+      if (index >= keys.length) {
         return;
       }
       var entry = entries[keys[index]];
@@ -166,6 +166,89 @@ function template4(collect) {
   }
 
   return template({ title: collect.title, content: content });
+}
+
+function template5(collect) {
+  var html = `
+  <style type="text/css">
+    h1 {
+      text-align: center;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      margin: 8px;
+      background-image: url("http://meryn.ru/rhizome/flag-bg2.gif");
+    }
+    table {
+      margin: 0 auto;
+      text-align: center;
+    }
+    table, td, th {
+      border-collapse: collapse;
+      border: 4px ridge;
+    }
+    td, th {
+      margin:0;
+      padding: 6px 6px 1px 6px;
+      max-width: 170px;
+    }
+    img {
+      max-width: 150px;
+      max-height: 150px;
+    }
+  </style>
+  <h1>{{title}}</h1>
+  <hr>
+  <table cellspacing="0" cellpadding="0">
+    <tbody>
+      {{{rows}}}
+    </tbody>
+  </table>
+  `;
+
+  var template = Handlebars.compile(html);
+
+  var entries = collect.entries;
+  var keys = Object.keys(entries || {});
+  var rows = '';
+
+  for (var i = 0; i < keys.length; i += 6) {
+    var headers = '';
+    var images = '';
+    // Do your work with array[i], array[i+1]...array[i+N-1]
+    [i, i + 1, i + 2, i + 3, i + 4, i + 5].forEach((index) => {
+      if (index >= keys.length) {
+        return;
+      }
+      var entry = entries[keys[index]];
+      var image = entry.image ? `<img src="${entry.image}" />` : '';
+      var title = entry.title || '';
+      if (title) {
+        headers = headers + `<th>${title}</th>`;
+      }
+      if (image) {
+        images = images + `<td>${image}</td>`;
+      }
+    });
+    if (headers) {
+      rows = rows + `<tr>${headers}</tr>`;
+    }
+    if (images) {
+      rows = rows + `<tr>${images}</tr>`;
+    }
+  }
+
+  return template({ title: collect.title, rows: rows });
+}
+
+function template6(collect) {
+  var html = `
+
+  `;
+
+  var template = Handlebars.compile(html);
+
+  return template({});
 }
 
 function template7(collect) {
