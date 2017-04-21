@@ -12,28 +12,28 @@ exports.template = functions.https.onRequest((req, res) => {
 });
 
 function getTemplate(collect) {
-  switch(collect.template) {
-  case 1:
+  var index = collect.template;
+  if (index === 1) {
     return template1(collect);
-  // case 2:
+  // } else if (index === 2) {
   //   return template2(collect);
-  case 3, 11:
+  } else if (index === 3 || index === 11) {
     return template3(collect);
-  case 4, 2:
+  } else if (index === 4 || index === 2) {
     return template4(collect);
-  case 5, 9:
+  } else if (index === 5 || index === 9) {
     return template5(collect);
-  case 6:
+  } else if (index === 6) {
     return template6(collect);
-  case 7:
+  } else if (index === 7) {
     return template7(collect);
-  case 8, 10:
+  } else if (index === 8 || index === 10) {
     return template8(collect);
-  // case 9:
+  // } else if (index === 9) {
   //   return template9(collect);
-  // case 10:
+  // } else if (index === 10) {
   //   return template10(collect);
-  // case 11:
+  // } else if (index === 11) {
   //   return template11(collect);
   }
 }
