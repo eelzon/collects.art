@@ -119,11 +119,17 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func resizedImage(_ image: UIImage) -> UIImage {
-    let oldWidth = image.size.width
-    let scaleFactor = 500 / oldWidth
+    let oldWidth = image.size.width;
+    let oldHeight = image.size.height;
 
-    let newHeight = image.size.height * scaleFactor
-    let newWidth = oldWidth * scaleFactor
+    if oldWidth < 500 && oldHeight < 500 {
+      return image
+    }
+
+    let scaleFactor = (oldWidth > oldHeight) ? 500 / oldWidth : 500 / oldHeight;
+
+    let newHeight = oldHeight * scaleFactor;
+    let newWidth = oldWidth * scaleFactor;
 
     UIGraphicsBeginImageContext(CGSize(width:newWidth, height:newHeight))
     image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
@@ -188,13 +194,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
-      if let url = URL.init(string: textField.text!) {
-        do {
-          let data = try Data(contentsOf: url)
-          self.uploadImage(data)
-        } catch {
-          self.imageFailure()
-        }
+      if URL.init(string: textField.text!) != nil {
+        self.uploadUrl(textField.text!)
+      } else {
+        self.imageFailure()
       }
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
@@ -233,6 +236,25 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     fail.present()
   }
 
+  func uploadUrl(_ url: String) {
+    do {
+      let data = try Data(contentsOf: URL(string: url)!)
+      if let image = UIImage(data: data) {
+        image.af_inflate()
+        self.entry.setObject(image, forKey: "image" as NSCopying)
+        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(url)
+        self.cameraImageView.isHidden = true
+        self.imageButton.setImage(image, for: UIControlState.normal)
+      } else {
+        self.imageFailure()
+      }
+    } catch {
+      self.imageFailure()
+      print(error.localizedDescription)
+    }
+
+  }
+
   func uploadImage(_ data: Data) {
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
@@ -254,12 +276,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
           }
         } else {
           let downloadURL = metadata?.downloadURL()!.absoluteString
-          self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(downloadURL!)
-          let data = try! Data(contentsOf: URL(string: downloadURL!)!)
-          let image = UIImage(data: data)
-          image?.af_inflate()
-          self.entry.setObject(image!, forKey: "image" as NSCopying)
-          self.imageButton.setImage(image, for: UIControlState.normal)
+          self.uploadUrl(downloadURL!)
         }
       })
     } else {

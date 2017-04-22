@@ -134,10 +134,14 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
             for entry in entries {
               let dict = (entry.value as! NSDictionary).mutableCopy() as! NSMutableDictionary
               if let imageURL = dict.value(forKey: "image") as? String {
-                let data = try! Data(contentsOf: URL(string: imageURL)!)
-                let image = UIImage(data: data)
-                image?.af_inflate()
-                dict.setObject(image!, forKey: "image" as NSCopying)
+                do {
+                  let data = try Data(contentsOf: URL(string: imageURL)!)
+                  let image = UIImage(data: data)
+                  image?.af_inflate()
+                  dict.setObject(image!, forKey: "image" as NSCopying)
+                } catch {
+                  print(error.localizedDescription)
+                }
               }
               self.entries.setObject(dict, forKey: entry.key as! NSCopying)
             }

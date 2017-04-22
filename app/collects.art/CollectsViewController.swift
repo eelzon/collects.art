@@ -120,15 +120,19 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     self.ref.child("users/\(self.uid!)/ribbon").setValue(ribbon!)
 
-    let data = try! Data(contentsOf: URL(string: ribbon!)!)
-    let image = UIImage(data: data)
-    image?.af_inflate()
+    do {
+      let data = try Data(contentsOf: URL(string: ribbon!)!)
+      let image = UIImage(data: data)
+      image?.af_inflate()
 
-    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    button.setImage(image, for: UIControlState.normal)
-    button.imageView?.contentMode = .scaleAspectFit
-    button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
-    userButton.customView = button
+      let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+      button.setImage(image, for: UIControlState.normal)
+      button.imageView?.contentMode = .scaleAspectFit
+      button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
+      userButton.customView = button
+    } catch {
+      print(error.localizedDescription)
+    }
   }
 
   func getRibbons() {
