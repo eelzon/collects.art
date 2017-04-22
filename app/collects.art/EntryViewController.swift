@@ -102,17 +102,15 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+      let newImage = resizedImage(image)
       let (_, fileExt) = fileInfo(UIImagePNGRepresentation(image)!)
       var data: Data
       if fileExt == "gif" {
         data = try! AnimatedGIFImageSerialization.animatedGIFData(with: image)
+      } else if fileExt == "jpg" {
+        data = UIImageJPEGRepresentation(newImage, 1.0)!
       } else {
-        let orientedImage = normalizedImage(image)
-        if fileExt == "jpg" {
-          data = UIImageJPEGRepresentation(orientedImage, 1.0)!
-        } else {
-          data = UIImagePNGRepresentation(orientedImage)!
-        }
+        data = UIImagePNGRepresentation(newImage)!
       }
       uploadImage(data)
     }
@@ -120,18 +118,19 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     dismiss(animated: true, completion: nil)
   }
 
-  func normalizedImage(_ image: UIImage) -> UIImage {
-    if (image.imageOrientation == UIImageOrientation.up) {
-      return image;
-    }
+  func resizedImage(_ image: UIImage) -> UIImage {
+    let oldWidth = image.size.width
+    let scaleFactor = 500 / oldWidth
 
-    UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale);
-    let rect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-    image.draw(in: rect)
+    let newHeight = image.size.height * scaleFactor
+    let newWidth = oldWidth * scaleFactor
 
-    let normalizedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-    UIGraphicsEndImageContext();
-    return normalizedImage;
+    UIGraphicsBeginImageContext(CGSize(width:newWidth, height:newHeight))
+    image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    return newImage!
   }
 
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

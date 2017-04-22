@@ -364,7 +364,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
 
-      saveCollect()
+      //saveCollect()
     } else if segue.identifier == "unwindToCollects" {
       let defaults = UserDefaults.standard
       defaults.removeObject(forKey: "collect")
