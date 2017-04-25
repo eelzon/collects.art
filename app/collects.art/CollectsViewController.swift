@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 import SDCAlertView
-import Alamofire
 import AlamofireImage
 import SESlideTableViewCell
 
@@ -23,8 +22,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-  let manager = NetworkReachabilityManager(host: "www.rhizome.org")
-  var previousStatus: String = "reachable"
+  var previousStatus: String = "unconnected"
   var collects: NSMutableDictionary!
   var timestamps: NSMutableArray!
   var ref: FIRDatabaseReference!
@@ -40,12 +38,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    setReachability()
+    setConnectedObserver()
 
     let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
     offlineView.loadHTMLString(html, baseURL: nil)
-
-    setAuth()
 
     let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     button.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
@@ -62,6 +58,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func setAuth() {
     activityIndicator.startAnimating()
     tableView.isHidden = true
+    offlineView.isHidden = true
+    addButton.isEnabled = true
+    userButton.isEnabled = true
 
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
@@ -358,26 +357,28 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     setUserRibbon()
   }
 
-  func setReachability() {
-    manager?.listener = { status in
-      if status == .notReachable {
-        self.previousStatus = "notReachable"
-        self.lockDown()
+  func setConnectedObserver() {
+    let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")
+    connectedRef.observe(.value, with: { snapshot in
+      if let connected = snapshot.value as? Bool, !connected {
+        if (self.previousStatus == "connected") {
+          self.lockDown()
+        }
+        self.previousStatus = "unconnected"
       } else {
-        if (self.previousStatus == "notReachable") {
-          self.offlineView.isHidden = true;
+        if (self.previousStatus == "unconnected") {
           self.setAuth()
         }
-        self.previousStatus = "reachable"
+        self.previousStatus = "connected"
       }
-    }
-
-    manager?.startListening()
+    })
   }
 
   func lockDown() {
     self.activityIndicator.stopAnimating()
     self.tableView.isHidden = true
+    self.addButton.isEnabled = false
+    self.userButton.isEnabled = false
     self.dismiss(animated: true, completion: {})
     self.offlineView.isHidden = false
   }
