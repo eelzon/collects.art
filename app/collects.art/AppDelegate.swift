@@ -26,11 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     FIRApp.configure()
 
     let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
     UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!];
     UINavigationBar.appearance().tintColor = purple
     UINavigationBar.appearance().setTitleVerticalPositionAdjustment(4, for: .default)
 
-    UIBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple], for: UIControlState.normal)
+    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.normal)
+    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.focused)
+    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.selected)
     UIBarButtonItem.appearance().tintColor = purple
 
     // custom scrollview behavior + done button entry
@@ -38,7 +41,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     keyboardManager.toolbarTintColor = purple
     keyboardManager.enable = true
     keyboardManager.shouldPlayInputClicks = false
-    IQBarButtonItem.appearance().setTitleTextAttributes([NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple], for: UIControlState.normal)
+    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.normal)
+    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.focused)
+    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.selected)
     IQBarButtonItem.appearance().tintColor = purple
 
     let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")

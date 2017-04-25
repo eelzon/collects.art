@@ -51,6 +51,12 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     button.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
     addButton.customView = button
 
+    let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.normal)
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.focused)
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
+    navigationItem.rightBarButtonItem?.tintColor = purple
+
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
   }
@@ -342,6 +348,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         destination.preferredContentSize = CGSize(width: 300, height: 300)
         destination.ribbon = ribbon
       }
+    } else if segue.identifier == "segueToAbout" {
+      segue.destination.popoverPresentationController!.delegate = self
+      segue.destination.preferredContentSize = CGSize(width: 300, height: 300)
     }
   }
 
@@ -351,10 +360,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
     return UIModalPresentationStyle.none
-  }
-
-  func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-    setUserRibbon()
   }
 
   func setConnectedObserver() {

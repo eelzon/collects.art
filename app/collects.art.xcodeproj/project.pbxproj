@@ -16,6 +16,7 @@
 		652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7C81E971A2900AA749F /* Assets.xcassets */; };
 		652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */; };
 		65489E051EA3D7A200D3B6FB /* RibbonCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */; };
+		65BE48391EAEEECC008B0ED9 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */; };
 		65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		652CA7CB1E971A2900AA749F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		652CA7CD1E971A2900AA749F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RibbonCollectionViewController.swift; sourceTree = "<group>"; };
+		65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9AD193DB63B99CA27C244499 /* Pods-collects.art.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collects.art.release.xcconfig"; path = "Pods/Target Support Files/Pods-collects.art/Pods-collects.art.release.xcconfig"; sourceTree = "<group>"; };
 		CAD41B532A9B89436A898E9F /* Pods-collects.art.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collects.art.debug.xcconfig"; path = "Pods/Target Support Files/Pods-collects.art/Pods-collects.art.debug.xcconfig"; sourceTree = "<group>"; };
@@ -78,8 +80,9 @@
 			isa = PBXGroup;
 			children = (
 				652CA7C11E971A2900AA749F /* AppDelegate.swift */,
-				652839741E9737040060CFB7 /* CollectsViewController.swift */,
+				65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */,
 				652839691E9726530060CFB7 /* CollectViewController.swift */,
+				652839741E9737040060CFB7 /* CollectsViewController.swift */,
 				652839681E9726530060CFB7 /* EntryViewController.swift */,
 				65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */,
 				652CA7C81E971A2900AA749F /* Assets.xcassets */,
@@ -226,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65BE48391EAEEECC008B0ED9 /* AboutViewController.swift in Sources */,
 				652839701E9726530060CFB7 /* CollectViewController.swift in Sources */,
 				652839761E9737040060CFB7 /* CollectsViewController.swift in Sources */,
 				65489E051EA3D7A200D3B6FB /* RibbonCollectionViewController.swift in Sources */,
