@@ -11,30 +11,41 @@ exports.template = functions.https.onRequest((req, res) => {
   });
 });
 
+function entriesWithoutEmpties(collect) {
+  var allEntries = collect.entries || {};
+  return Object.keys(allEntries).reduce((entries, key) => {
+    var entry = allEntries[key];
+    if (entry.title || entry.image) {
+      entries[key] = entry;
+    }
+    return entries;
+  }, {});
+}
+
 function getTemplate(collect) {
   var index = collect.template;
   if (index === 1) {
     return template1(collect);
-  // } else if (index === 2) {
-  //   return template2(collect);
-  } else if (index === 3 || index === 11) {
+  } else if (index === 2) {
+    return template2(collect);
+  } else if (index === 3) {
     return template3(collect);
-  } else if (index === 4 || index === 2) {
+  } else if (index === 4) {
     return template4(collect);
-  } else if (index === 5 || index === 9) {
+  } else if (index === 5) {
     return template5(collect);
   } else if (index === 6) {
     return template6(collect);
   } else if (index === 7) {
     return template7(collect);
-  } else if (index === 8 || index === 10) {
+  } else if (index === 8) {
     return template8(collect);
-  // } else if (index === 9) {
-  //   return template9(collect);
-  // } else if (index === 10) {
-  //   return template10(collect);
-  // } else if (index === 11) {
-  //   return template11(collect);
+  } else if (index === 9) {
+    return template9(collect);
+  } else if (index === 10) {
+    return template10(collect);
+  } else if (index === 11) {
+    return template11(collect);
   }
 }
 
@@ -91,7 +102,7 @@ function template1(collect) {
     }
   });
 
-  var entries = collect.entries || {}
+  var entries = entriesWithoutEmpties(collect)
   var keys = Object.keys(entries);
   var links = keys.map((key) => {
     var entry = entries[key];
@@ -108,15 +119,120 @@ function template1(collect) {
   return template({ title: collect.title, entries: links });
 }
 
-// function template2(collect) {
-//   var html = `
+function template2(collect) {
+  var html = `
+    <style type="text/css">
+      h1 {
+        color:#50547a;
+      }
+      body {
+        background-image: url("http://meryn.ru/rhizome/maude_stain_pattern-03-light.gif");
+      }
+      .solo img {
+        max-height: 250px;
+        max-width: 300px
+      }
+      .solo.right {
+        text-align: right;
+      }
+      .solo.left {
+        text-align: left;
+      }
+      .group {
+        text-align: center;
+      }
+      .group img {
+        max-height: 300px;
+        max-width: 180px;
+        margin-right: 10px;
+      }
+      .group img:last-child {
+        margin-right: 0;
+      }
+    </style>
+    <h1>{{title}}</h1>
+    <hr>
+    {{#if first}}
+      <div class="solo left">
+        {{#if first.image}}
+          <img src="{{first.image}}" />
+        {{/if}}
+        {{#if first.title}}
+          <p>{{first.title}}</p>
+        {{/if}}
+      </div>
+      <hr>
+    {{/if}}
+    {{#each rows}}
+      <div class="group">
+        {{#if images}}
+          {{{images}}}
+        {{/if}}
+        {{#if titles}}
+          <p>{{{titles}}}</p>
+        {{/if}}
+      </div>
+      <hr>
+    {{/each}}
+    {{#if last}}
+      <div class="solo right">
+        {{#if last.image}}
+          <img src="{{last.image}}" />
+        {{/if}}
+        {{#if last.title}}
+          <p>{{last.title}}</p>
+        {{/if}}
+      </div>
+    {{/if}}
+    <hr>
+  `;
 
-//   `;
+  var template = Handlebars.compile(html);
 
-//   var template = Handlebars.compile(html);
+  var formatEntry = function(entry) {
+    var html = '';
+    if (entry.image) {
+      html = html + `<img src="${entry.image}" />`;
+    }
+    if (entry.title) {
+      html = html + `<p>${entry.title}</p>`;
+    }
+    return html;
+  }
 
-//   return template({});
-// }
+  var entries = entriesWithoutEmpties(collect);
+  var keys = Object.keys(entries);
+
+  var firstKey = keys.shift();
+  var lastKey = keys.pop();
+
+  var rows = [];
+
+  for (var i = 0; i < keys.length; i += 1) {
+    // pick between 2 and 5 items
+    var rowLength = Math.floor(Math.random() * 4) + 2;
+    var images = '';
+    var titles = '';
+    for (var j = 0; j < rowLength; j += 1) {
+      var index = i + j;
+      if (index >= keys.length) {
+        return
+      } else {
+        var entry = entries[keys[index]];
+        if (entry.image) {
+          images = images + `<img src="${entry.image}" />`;
+        }
+        if (entry.title) {
+          titles = titles + ' | ' + entry.title;
+        }
+      }
+    }
+    rows.push({ images: images, titles:titles });
+    i = i + rowLength - 1;
+  }
+
+  return template({ title: collect.title, first: entries[firstKey], last: entries[lastKey], rows: rows });
+}
 
 function template3(collect) {
   var html = `
@@ -156,7 +272,7 @@ function template3(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries || {}
+  var entries = entriesWithoutEmpties(collect);
   var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
@@ -175,7 +291,7 @@ function template4(collect) {
         background-image: url("http://meryn.ru/rhizome/morphine-bg-light.gif");
       }
       .content {
-        width: 90%;
+        max-width: 1000px;
         margin: 20px auto;
         text-align: left;
       }
@@ -200,8 +316,8 @@ function template4(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries;
-  var keys = Object.keys(entries || {});
+  var entries = entriesWithoutEmpties(collect);
+  var keys = Object.keys(entries);
   var content = '';
 
   for (var i = 0; i < keys.length; i += 3) {
@@ -227,70 +343,55 @@ function template4(collect) {
 
 function template5(collect) {
   var html = `
-  <style type="text/css">
-    h1 {
-      text-align: center;
-    }
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      margin: 8px;
-      background-image: url("http://meryn.ru/rhizome/flag-bg2.gif");
-    }
-    table {
-      margin: 0 auto;
-      text-align: center;
-    }
-    table, td, th {
-      border-collapse: collapse;
-      border: 4px ridge;
-    }
-    td, th {
-      margin:0;
-      padding: 6px 6px 1px 6px;
-      max-width: 170px;
-    }
-    img {
-      max-width: 150px;
-      max-height: 150px;
-    }
-  </style>
-  <h1>{{title}}</h1>
-  <hr>
-  <table cellspacing="0" cellpadding="0">
-    <tbody>
-      {{{rows}}}
-    </tbody>
-  </table>
+    <style type="text/css">
+      h1 {
+        text-align: center;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 8px;
+        background-image: url("http://meryn.ru/rhizome/flag-bg2.gif");
+      }
+      img {
+        max-width: 100%;
+        max-height: 150px;
+      }
+      .container {
+        display: inline-flex;
+        flex-wrap: wrap;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+      .inner {
+        overflow: auto;
+        word-wrap: break-word;
+        width: 16%;
+        padding: 6px;
+        border: 4px ridge;
+      }
+    </style>
+    <h1>{{title}}</h1>
+    <hr>
+    <div class="container">
+      {{#each entries}}
+        <div class="inner">
+          {{#if this.title}}
+            <p>{{this.title}}</p>
+          {{/if}}
+          {{#if this.image}}
+            <img src="{{this.image}}">
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
   `;
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries;
-  var keys = Object.keys(entries || {});
-  var rows = '';
+  var entries = entriesWithoutEmpties(collect);
 
-  for (var i = 0; i < keys.length; i += 6) {
-    var headers = '';
-    var images = '';
-    [i, i + 1, i + 2, i + 3, i + 4, i + 5].forEach((index) => {
-      if (index >= keys.length) {
-        return;
-      }
-      var entry = entries[keys[index]];
-      var image = entry.image ? `<img src="${entry.image}" />` : '';
-      var title = entry.title || '';
-      headers = headers + `<th>${title}</th>`;
-      images = images + `<td>${image}</td>`;
-    });
-    if (headers) {
-      rows = rows + `<tr>${headers}</tr>`;
-    }
-    if (images) {
-      rows = rows + `<tr>${images}</tr>`;
-    }
-  }
-
-  return template({ title: collect.title, rows: rows });
+  return template({ title: collect.title, entries: entries });
 }
 
 function template6(collect) {
@@ -340,7 +441,7 @@ function template6(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries || {};
+  var entries = entriesWithoutEmpties(collect);
   var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
@@ -371,6 +472,8 @@ function template7(collect) {
       img {
         max-width: 600px;
         max-height: 450px;
+        min-width: 300px;
+        min-height: 225px;
       }
     </style>
     <h1>{{title}}</h1>
@@ -385,7 +488,7 @@ function template7(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries || {};
+  var entries = entriesWithoutEmpties(collect);
   var keys = Object.keys(entries);
   var index = Math.floor(Math.random() * keys.length);
 
@@ -442,109 +545,152 @@ function template8(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = collect.entries || {};
+  var entries = entriesWithoutEmpties(collect);
 
   return template({ title: collect.title, entries: entries });
 }
 
-// function template9(collect) {
-//   var html = `
+function template9(collect) {
+  var html = `
+    <style type="text/css">
+      h1 {
+        text-align: center;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 8px;
+        background-image: url("http://meryn.ru/rhizome/snowflakes-bg2.gif");
+      }
+      img {
+        max-width: 100%;
+        max-height: 200px;
+      }
+      .container {
+        display: inline-flex;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        max-width: 1000px;
+        text-align: center;
+      }
+      .inner {
+        overflow: auto;
+        word-wrap: break-word;
+        max-width: 200px;
+        padding: 6px;
+        border: 4px ridge;
+      }
+    </style>
+    <h1>{{title}}</h1>
+    <hr>
+    {{{content}}}
+  `;
 
-//   `;
+  var template = Handlebars.compile(html);
 
-//   var template = Handlebars.compile(html);
+  var entries = entriesWithoutEmpties(collect);
+  var keys = Object.keys(entries);
+  var content = '';
 
-//   return template({});
-// }
+  for (var i = 0; i < keys.length; i += 4) {
+    var images = '';
+    var titles = '';
+    [i, i + 1, i + 2, i + 3].forEach((index) => {
+      if (index >= keys.length) {
+        return;
+      }
+      var entry = entries[keys[index]];
+      var image = entry.image ? `<div class="inner"><img src="${entry.image}" /></div>` : '';
+      images = images + image;
+      var title = entry.title ? `<p>${entry.title}</p>` : '';
+      titles = titles + title;
+    });
+    if (images) {
+      images = '<div class="container">' + images + '</div>';
+    }
+    if (images || titles) {
+      content = content + images + titles + '<hr>';
+    }
+  }
 
-// function template10(collect) {
-//   var html = `
-//     <style type="text/css">
-//       h1 {
-//         text-align: center;
-//         text-transform: uppercase;
-//       }
-//       body {
-//         font-family: 'Times New Roman', Times, serif;
-//         margin: 8px;
-//         background-image: url("http://meryn.ru/rhizome/rain-bg-lighter.png");
-//       }
-//       .content {
-//         width: 800px;
-//         margin: 20px auto;
-//         text-align: left;
-//       }
-//       .column-group {
-//         display: inline-block;
-//       }
-//       .column {
-//         width: 230px;
-//         float: left;
-//         margin: 0 30px 0 0;
-//       }
-//       .column.last {
-//         margin: 0;
-//       }
-//       .entry {
-//         padding: 4px 8px;
-//         background-color: rgba(164,172,185, .8);
-//       }
-//     </style>
-//     <h1>{{title}}</h1>
-//     <div class="content">
-//       {{#each entries}}
-//         {{{this}}}
-//       {{/each}}
-//     </div>
-//   `;
+  return template({ title: collect.title, content: content });
+}
 
-//   // <p></p>
-//   // <div class="column-group">
-//   //   <p class="column"></p>
-//   //   <p class="column"></p>
-//   //   <p class="column last"></p>
-//   // </div>
-//   // <p></p>
-//   // <p></p>
-//   var entries = collect.entries;
-//   var keys = Object.keys(entries || {});
-//   var content = '';
+function template10(collect) {
+  var html = `
+    <style type="text/css">
+      h1 {
+        text-align: center;
+      }
+      body {
+        font-family: 'Times New Roman', Times, serif;
+        background-image: url("http://meryn.ru/rhizome/rain-bg-lighter.png");
+      }
+      table {
+        max-width: 800px;
+        margin: 20px auto;
+        text-align: left;
+        border-collapse: separate;
+        border-spacing: 20px;
+      }
+      .column {
+        margin-right: 30px;
+      }
+      td {
+        padding: 4px 8px;
+        background-color: rgba(164,172,185, .8);
+      }
+      img {
+        width: 100%;
+      }
+      .image {
+        width: 200px;
+        margin: 0 auto;
+      }
+    </style>
+    <h1>{{title}}</h1>
+    <table>
+      {{{content}}}
+    </table>
+  `;
 
-//   var formatEntry = (entry, customClass) => {
-//     var image = entry.image ? `<img src="${entry.image}" />` : '';
-//     var title = entry.title ? `<p>${entry.title}</p>` : '';
-//     if (image || title) {
-//       return `<div class="entry ${customClass}">${image}${title}</div>`
-//     }
-//     return '';
-//   };
+  var template = Handlebars.compile(html);
 
-//   for (var i = 0; i < keys.length; i += 6) {
-//     var group = '';
-//     if (i >= keys.length) {
-//       return;
-//     } else {
-//       group = group + formatEntry(entries[keys[i]], '');
-//     }
-//     [i + 1, i + 2, i + 3].forEach((index) => {
-//       if (index >= keys.length) {
-//         return;
-//       }
-//       var entry = entries[keys[index]];
-//       group = group + formatEntry(entry, 'column');
-//       if (group) {
-//         group = group + `<div class="column">${image}${title}</div>`;
-//       }
-//     });
-//     if (group) {
-//       content = content + `<div class="column-group">${group}</div>`;
-//     }
-//   }
+  var formatEntry = (entry, custom) => {
+    var image = entry.image ? `<div class="image"><img src="${entry.image}" /></div>` : '';
+    var title = entry.title ? `<p>${entry.title}</p>` : '';
+    if (image || title) {
+      return `<td ${custom}>${image}${title}</td>`
+    }
+    return '';
+  };
 
-//   var template = Handlebars.compile(html);
+  var entries = entriesWithoutEmpties(collect);
+  var keys = Object.keys(entries);
+  var content = '';
 
-//   return template({});
-// }
+  var rowstartIndex = 1;
+  for (var i = 0; i < keys.length; i += 1) {
+    var row = '';
+    if (i === rowstartIndex) {
+      for (i; i < rowstartIndex + 3; i += 1) {
+        if (i >= keys.length) {
+          continue;
+        }
+        row = row + formatEntry(entries[keys[i]], 'class="column"');
+      }
+      rowstartIndex = rowstartIndex + 6;
+      // we don't want that last increment
+      i = i - 1;
+    } else {
+      row = row + formatEntry(entries[keys[i]], 'colspan="3"');
+    }
+    if (row) {
+      content = content + `<tr>${row}</tr>`;
+    }
+  }
+
+  return template({ title: collect.title, content: content });
+}
 
 // function template11(collect) {
 //   var html = `
@@ -574,8 +720,8 @@ function template8(collect) {
 
 //   var template = Handlebars.compile(html);
 
-//   var entries = collect.entries;
-//   var keys = Object.keys(entries || {});
+//   var entries = entriesWithoutEmpties(collect);
+//   var keys = Object.keys(entries);
 
 //   var links = keys.map((key) => {
 //     var entry = entries[key];
