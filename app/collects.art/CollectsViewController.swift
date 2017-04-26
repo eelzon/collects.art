@@ -72,6 +72,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
 
+    tableView.scrollsToTop = true
+
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
     if FIRAuth.auth()?.currentUser == nil {
@@ -79,7 +81,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         if error != nil {
           self.lockDown()
         } else {
-          UserDefaults.standard.set(user!.uid, forKey: "uid");
           self.uid = user!.uid
           self.ref.child("users/\(self.uid!)/collects").setValue(NSDictionary())
           self.getCollects()
@@ -88,31 +89,27 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         }
       })
     } else {
-      UserDefaults.standard.set(FIRAuth.auth()!.currentUser!.uid, forKey: "uid");
       uid = FIRAuth.auth()!.currentUser!.uid
       //uploadRibbons()
       getCollects()
       getRibbons()
-      self.getTemplates()
+      getTemplates()
     }
   }
 
   func getCollects() {
+    activityIndicator.stopAnimating()
+    tableView.isHidden = false
     ref.child("users/\(uid!)/collects").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collects = value.mutableCopy() as! NSMutableDictionary
           self.timestamps = NSMutableArray.init(array: self.collects.allKeys)
           UserDefaults.standard.set(self.collects, forKey: "collects");
-          self.showTable()
-        } else {
-          self.showTable()
+          self.tableView.reloadData()
         }
-      } else {
-        self.showTable()
       }
     }) { (error) in
-      self.showTable()
       print(error.localizedDescription)
     }
   }
@@ -218,12 +215,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let blacklist = CharacterSet(charactersIn: ".$[]#")
     let components = string.components(separatedBy: blacklist)
     return components.joined(separator: "")
-  }
-
-  func showTable() {
-    activityIndicator.stopAnimating()
-    tableView.isHidden = false
-    tableView.reloadData()
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -348,7 +339,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let collect: [String: Any] = ["title": title!, "readonly": false, "published": false]
 
     let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false, "entries": NSDictionary()])
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
@@ -367,6 +358,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         timestamp = sender as! String
       }
       let destination = segue.destination as! CollectViewController
+      destination.collectTitle = (collects.value(forKey: timestamp) as! NSDictionary).value(forKey: "title") as! String
       destination.timestamp = timestamp
     } else if segue.identifier == "segueToRibbons" {
       if let destination = segue.destination as? RibbonCollectionViewController {

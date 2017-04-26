@@ -62,9 +62,16 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageButton.imageView!.contentMode = .scaleAspectFit
     imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    if let image = entry.object(forKey: "image") as? UIImage {
-      imageButton.setImage(image, for: UIControlState.normal)
-      cameraImageView.isHidden = true
+    if let imageURL = entry.object(forKey: "image") as? String {
+      do {
+        let data = try Data(contentsOf: URL(string: imageURL)!)
+        let image = UIImage(data: data)
+        imageButton.setImage(image, for: UIControlState.normal)
+        cameraImageView.isHidden = true
+        image?.af_inflate()
+      } catch {
+        print(error.localizedDescription)
+      }
     } else {
       cameraImageView.isHidden = false
     }

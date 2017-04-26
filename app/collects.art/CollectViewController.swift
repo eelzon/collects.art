@@ -39,6 +39,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
   var uid: String!
   var timestamp: String!
+  var collectTitle: String!
   var collect: NSDictionary!
   var entryTimestamps: NSMutableArray! = []
   var entries: NSMutableDictionary! = NSMutableDictionary()
@@ -55,12 +56,16 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    uid = UserDefaults.standard.string(forKey: "uid")!;
+    uid = FIRAuth.auth()!.currentUser!.uid
 
     ref = FIRDatabase.database().reference()
 
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
+
+    tableView.scrollsToTop = true
+
+    getEntries();
 
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
@@ -104,18 +109,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    let defaults = UserDefaults.standard
-    if let collectData = defaults.data(forKey: "collect") {
-      collect = NSKeyedUnarchiver.unarchiveObject(with: collectData) as? NSDictionary
-      if let entriesData = defaults.data(forKey: "entries") {
-        entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
-        entryTimestamps = NSMutableArray.init(array: entries.allKeys)
-      }
-      tableView.reloadData()
-      setReadonly()
-    } else {
-      getEntries();
-    }
     super.viewWillAppear(animated)
   }
 
@@ -124,41 +117,22 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   func getEntries() {
-    tableView.isHidden = true
     activityIndicator.startAnimating()
     ref.child("collects/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
+          self.activityIndicator.stopAnimating()
           self.collect = value
           if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
-            self.entries = NSMutableDictionary()
-            for entry in entries {
-              let dict = (entry.value as! NSDictionary).mutableCopy() as! NSMutableDictionary
-              if let imageURL = dict.value(forKey: "image") as? String {
-                do {
-                  let data = try Data(contentsOf: URL(string: imageURL)!)
-                  let image = UIImage(data: data)
-                  image?.af_inflate()
-                  dict.setObject(image!, forKey: "image" as NSCopying)
-                } catch {
-                  print(error.localizedDescription)
-                }
-              }
-              self.entries.setObject(dict, forKey: entry.key as! NSCopying)
-            }
+            self.entries = entries.mutableCopy() as! NSMutableDictionary
+            self.entryTimestamps = NSMutableArray(array: self.entries.allKeys)
           }
-          self.entryTimestamps = NSMutableArray.init(array: self.entries.allKeys)
-
           self.setReadonly()
-
           self.tableView.reloadData()
-          self.activityIndicator.stopAnimating()
-          self.tableView.isHidden = false
         }
       }
     }) { (error) in
       self.activityIndicator.stopAnimating()
-      self.tableView.isHidden = false
       print(error.localizedDescription)
     }
   }
@@ -191,7 +165,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     alert.add(AlertAction(title: "Rename", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       if (textField.text?.characters.count)! > 0 {
-        self.changeTitle(textField.text! as NSString)
+        self.changeTitle(textField.text!)
       }
     }))
     alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
@@ -211,7 +185,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
   }
 
-  func changeTitle (_ title: NSString!) {
+  func changeTitle (_ title: String!) {
+    collectTitle = title;
     collect.setValue(title, forKey: "title")
 
     refreshTitleCell()
@@ -260,7 +235,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     if indexPath.section == 0 {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTitleTableViewCell") as! CollectTitleTableViewCell
 
-      cell.titleLabel?.text = collect?.value(forKey: "title") as? String;
+      cell.titleLabel?.text = collectTitle;
 
       return cell;
     } else {
@@ -273,9 +248,18 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         entryTitle = "untitled"
       }
 
-      if let image = entry.object(forKey: "image") as? UIImage {
+
+      if let imageURL = entry.object(forKey: "image") as? String {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
-        cell.entryImageView.image = image
+        do {
+          let data = try Data(contentsOf: URL(string: imageURL)!)
+          let image = UIImage(data: data)
+          cell.entryImageView.image = image
+          image?.af_inflate()
+        } catch {
+          print(error.localizedDescription)
+        }
+
         cell.titleLabel?.text = entryTitle;
         cell.removeAllRightButtons()
         if !readonly {
@@ -364,8 +348,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
-
-      //saveCollect()
     } else if segue.identifier == "unwindToCollects" {
       let defaults = UserDefaults.standard
       defaults.removeObject(forKey: "collect")
@@ -382,14 +364,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
     return UIModalPresentationStyle.none
-  }
-
-  func saveCollect() {
-    let defaults = UserDefaults.standard
-    let encodedCollect = NSKeyedArchiver.archivedData(withRootObject: collect)
-    defaults.set(encodedCollect, forKey: "collect")
-    let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
-    defaults.set(encodedEntries, forKey: "entries")
   }
 
   @IBAction func createEntry(_ sender: Any) {
