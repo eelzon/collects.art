@@ -83,6 +83,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           self.ref.child("users/\(self.uid!)/collects").setValue(NSDictionary())
           self.getCollects()
           self.getRibbons()
+          self.getTemplates()
         }
       })
     } else {
@@ -91,6 +92,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       //uploadRibbons()
       getCollects()
       getRibbons()
+      self.getTemplates()
     }
   }
 
@@ -143,7 +145,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func getRibbons() {
     UserDefaults.standard.addObserver(self, forKeyPath: "ribbon", options: NSKeyValueObservingOptions.new, context: nil)
 
-    UserDefaults.standard.removeObject(forKey: "ribbons")
     if UserDefaults.standard.object(forKey: "ribbons") == nil {
       ref.child("ribbons").observeSingleEvent(of: .value, with: { (snapshot) in
         if snapshot.exists(), let value = snapshot.value as? NSDictionary {
@@ -160,6 +161,20 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     }
   }
 
+  func getTemplates() {
+    if UserDefaults.standard.object(forKey: "templates") == nil {
+      ref.child("templates").observeSingleEvent(of: .value, with: { (snapshot) in
+        if snapshot.exists(), let value = snapshot.value as? NSDictionary {
+          let templates = NSMutableArray()
+          for template in value {
+            templates.add(template.value as! NSDictionary)
+          }
+          UserDefaults.standard.set(templates, forKey: "templates");
+        }
+      })
+    }
+  }
+
   func openRibbons(_ sender:Any) {
     performSegue(withIdentifier: "segueToRibbons", sender: self)
   }
@@ -168,7 +183,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     if keyPath == "ribbon" {
       self.dismiss(animated: true, completion: (() -> Void)? {
         self.setUserRibbon()
-        })
+      })
     } else {
       super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
     }
@@ -320,7 +335,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
     let collect: [String: Any] = ["title": title!, "readonly": false]
-    let templateIndex = Int(arc4random_uniform(UInt32(11))) + 1
+    let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
 
     self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)

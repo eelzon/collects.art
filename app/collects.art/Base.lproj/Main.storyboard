@@ -194,10 +194,13 @@
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="88O-9O-Wlz"/>
-                        <barButtonItem title="remix" id="UX5-0d-5Mf">
+                        <barButtonItem title="template" id="UX5-0d-5Mf">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="remixTemplate:" destination="Tlv-7y-fsl" id="zLl-QL-avp"/>
+                                <action selector="openTemplate:" destination="Tlv-7y-fsl" id="dqz-Ur-Nak"/>
+                                <segue destination="Po2-JR-vjN" kind="popoverPresentation" identifier="segueToTemplates" popoverAnchorBarButtonItem="UX5-0d-5Mf" id="SQL-dk-a0K">
+                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                </segue>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="tT2-b4-dGR"/>
@@ -216,9 +219,9 @@
                         <outlet property="addButton" destination="rk1-8e-lkz" id="5RE-gi-bEo"/>
                         <outlet property="backButton" destination="oyv-q1-ceZ" id="Keh-zx-Ecs"/>
                         <outlet property="openButton" destination="gEc-QD-ovF" id="xep-Ha-l9M"/>
-                        <outlet property="remixButton" destination="UX5-0d-5Mf" id="qRh-mb-k9G"/>
                         <outlet property="renameButton" destination="Aya-l4-dKb" id="6jt-b6-kNg"/>
                         <outlet property="tableView" destination="Gjh-Wd-E6c" id="d8h-2R-5um"/>
+                        <outlet property="templateButton" destination="UX5-0d-5Mf" id="lzN-fp-wrv"/>
                         <segue destination="X4V-qv-1z8" kind="unwind" identifier="unwindToCollects" unwindAction="unwindToCollectsWithSegue:" id="g09-hu-BU9"/>
                     </connections>
                 </viewController>
@@ -270,14 +273,7 @@
                             <outlet property="delegate" destination="NlI-zy-vna" id="5m8-Vj-pnK"/>
                         </connections>
                     </collectionView>
-                    <toolbarItems>
-                        <barButtonItem systemItem="reply" id="lsg-jZ-RET">
-                            <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="backToCollects:" destination="Tlv-7y-fsl" id="VmF-q5-nav"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="480"/>
@@ -544,6 +540,61 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnh-rC-dix" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="620.625" y="-919.0140845070423"/>
+        </scene>
+        <!--Template Collection View Controller-->
+        <scene sceneID="ph3-xf-OiB">
+            <objects>
+                <collectionViewController id="Po2-JR-vjN" customClass="TemplateCollectionViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="g4G-qL-ZDq">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="a3B-1k-qTM">
+                            <size key="itemSize" width="150" height="125"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TemplateCollectionViewCell" id="wy7-Xq-yMp" customClass="TemplateCollectionViewCell" customModule="collects_art" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="150" height="125"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="150" height="125"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WbS-iq-Xfh">
+                                            <rect key="frame" x="8" y="8" width="134" height="109"/>
+                                        </imageView>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="WbS-iq-Xfh" firstAttribute="top" secondItem="wy7-Xq-yMp" secondAttribute="top" constant="8" id="0AH-bb-Z4S"/>
+                                    <constraint firstAttribute="trailing" secondItem="WbS-iq-Xfh" secondAttribute="trailing" constant="8" id="BHq-0v-vIm"/>
+                                    <constraint firstItem="WbS-iq-Xfh" firstAttribute="leading" secondItem="wy7-Xq-yMp" secondAttribute="leading" constant="8" id="Q5d-np-M4w"/>
+                                    <constraint firstAttribute="bottom" secondItem="WbS-iq-Xfh" secondAttribute="bottom" constant="8" id="taq-pK-uXp"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="templateView" destination="WbS-iq-Xfh" id="dIW-Jl-YRg"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="Po2-JR-vjN" id="lGR-8u-0U3"/>
+                            <outlet property="delegate" destination="Po2-JR-vjN" id="8Zu-w1-F3J"/>
+                        </connections>
+                    </collectionView>
+                    <toolbarItems/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="480"/>
+                    <connections>
+                        <outlet property="collectionView" destination="g4G-qL-ZDq" id="h82-TQ-sok"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="r8K-5D-q7C" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1369" y="-242"/>
         </scene>
     </scenes>
     <resources>

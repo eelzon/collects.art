@@ -32,7 +32,7 @@ class CollectTableViewCell: SESlideTableViewCell {
 
 }
 
-class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SESlideTableViewCellDelegate {
+class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -47,7 +47,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   @IBOutlet weak var backButton: UIBarButtonItem!
   @IBOutlet weak var openButton: UIBarButtonItem!
   @IBOutlet weak var renameButton: UIBarButtonItem!
-  @IBOutlet weak var remixButton: UIBarButtonItem!
+  @IBOutlet weak var templateButton: UIBarButtonItem!
   @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
@@ -85,13 +85,13 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     rename.addTarget(self, action: #selector(renameCollect(_:)), for:UIControlEvents.touchUpInside)
     renameButton.customView = rename
 
-    let remix = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    remix.setImage(UIImage.init(named: "remix"), for: UIControlState.normal)
-    remix.imageView?.contentMode = .scaleAspectFit
-    remix.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    remix.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    remix.addTarget(self, action: #selector(remixTemplate(_:)), for:UIControlEvents.touchUpInside)
-    remixButton.customView = remix
+    let template = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    template.setImage(UIImage.init(named: "template"), for: UIControlState.normal)
+    template.imageView?.contentMode = .scaleAspectFit
+    template.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    template.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    template.addTarget(self, action: #selector(openTemplate(_:)), for:UIControlEvents.touchUpInside)
+    templateButton.customView = template
 
     let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     add.setImage(UIImage.init(named: "addEntry"), for: UIControlState.normal)
@@ -166,7 +166,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     if (collect.object(forKey: "readonly") as? NSNumber) == 1 {
       readonly = true
       addButton.isEnabled = false
-      remixButton.isEnabled = false
+      templateButton.isEnabled = false
       renameButton.isEnabled = false
     }
   }
@@ -224,19 +224,15 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     self.ref.child("collects/\(timestamp!)/title").setValue(title)
   }
 
-  @IBAction func remixTemplate(_ sender: Any) {
-    let templateIndex = Int(arc4random_uniform(UInt32(11))) + 1
+  @IBAction func openTemplate(_ sender: Any) {
+    performSegue(withIdentifier: "segueToTemplates", sender: self)
+  }
 
-    self.ref.child("collects/\(timestamp!)/template").setValue(templateIndex)
-
-    let alert = AlertController(attributedTitle: NSAttributedString.init(string: "Template changed", attributes: [NSFontAttributeName: UIFont.init(name: "Times New Roman", size: 18)!, NSForegroundColorAttributeName: UIColor.black]), attributedMessage: nil, preferredStyle: .alert)
-    alert.add(AlertAction(title: "Ok", style: .normal))
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-    alert.visualStyle.backgroundColor = UIColor.white
-    alert.visualStyle.cornerRadius = 0
-
-    alert.present()
+  func saveTemplate(index: Int) {
+    self.dismiss(animated: true, completion: (() -> Void)? {
+      self.ref.child("collects/\(self.timestamp!)/template").setValue(index)
+      self.collect.setValue(index, forKey: "template")
+    })
   }
 
   func refreshTitleCell() {
@@ -373,7 +369,18 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       let defaults = UserDefaults.standard
       defaults.removeObject(forKey: "collect")
       defaults.removeObject(forKey: "entries")
+    } else if segue.identifier == "segueToTemplates" {
+      if let destination = segue.destination as? TemplateCollectionViewController {
+        destination.popoverPresentationController!.delegate = self
+        destination.delegate = self
+        destination.preferredContentSize = CGSize(width: 300, height: 300)
+        destination.templateIndex = collect.value(forKey: "template") as! Int
+      }
     }
+  }
+
+  func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    return UIModalPresentationStyle.none
   }
 
   func saveCollect() {
