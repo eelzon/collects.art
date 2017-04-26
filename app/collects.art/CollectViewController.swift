@@ -32,7 +32,7 @@ class CollectTableViewCell: SESlideTableViewCell {
 
 }
 
-class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate {
+class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -251,14 +251,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
       if let imageURL = entry.object(forKey: "image") as? String {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
-        do {
-          let data = try Data(contentsOf: URL(string: imageURL)!)
-          let image = UIImage(data: data)
-          cell.entryImageView.image = image
-          image?.af_inflate()
-        } catch {
-          print(error.localizedDescription)
-        }
+        cell.entryImageView.af_setImage(withURL: URL(string: imageURL)!)
 
         cell.titleLabel?.text = entryTitle;
         cell.removeAllRightButtons()
@@ -348,6 +341,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.collectTimestamp = timestamp
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
+      destination.delegate = self
     } else if segue.identifier == "unwindToCollects" {
       let defaults = UserDefaults.standard
       defaults.removeObject(forKey: "collect")
@@ -375,6 +369,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     entryTimestamps = NSMutableArray.init(array: entries.allKeys)
     tableView.reloadData()
     performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
+  }
+
+  func updateEntry(entryTimestamp: String, entry: NSDictionary) {
+    entries.setValue(entry, forKey: entryTimestamp)
+    tableView.reloadData()
   }
   
 }

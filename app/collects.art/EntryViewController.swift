@@ -12,10 +12,15 @@ import SDCAlertView
 import AlamofireImage
 import AnimatedGIFImageSerialization
 
+protocol EntryDelegate {
+  func updateEntry(entryTimestamp: String, entry: NSDictionary)
+}
+
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {
 
   @IBOutlet var cameraImageView: UIImageView!
   @IBOutlet var imageButton: UIButton!
+  @IBOutlet var imageView: UIImageView!
   @IBOutlet var titleView: UITextView!
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var backButton: UIBarButtonItem!
@@ -27,6 +32,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   var readonly: Bool!
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
+  var delegate: EntryDelegate!
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -59,19 +65,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
     imageButton.layer.borderWidth = 1.0
     imageButton.layer.cornerRadius = 0
-    imageButton.imageView!.contentMode = .scaleAspectFit
     imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     if let imageURL = entry.object(forKey: "image") as? String {
-      do {
-        let data = try Data(contentsOf: URL(string: imageURL)!)
-        let image = UIImage(data: data)
-        imageButton.setImage(image, for: UIControlState.normal)
-        cameraImageView.isHidden = true
-        image?.af_inflate()
-      } catch {
-        print(error.localizedDescription)
-      }
+      imageView.af_setImage(withURL: URL(string: imageURL)!)
+      cameraImageView.isHidden = true
+      activityIndicator.startAnimating()
     } else {
       cameraImageView.isHidden = false
     }
@@ -89,14 +88,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   override func viewWillDisappear(_ animated: Bool) {
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
 
-    let defaults = UserDefaults.standard
-    if let entriesData = defaults.data(forKey: "entries") {
-      let entries = (NSKeyedUnarchiver.unarchiveObject(with: entriesData) as! NSDictionary).mutableCopy() as! NSMutableDictionary
-      entry.setValue(titleView.text!, forKey: "title")
-      entries.setValue(entry, forKey: timestamp)
-      let encodedEntries = NSKeyedArchiver.archivedData(withRootObject: entries)
-      defaults.set(encodedEntries, forKey: "entries")
-    }
+    entry.setValue(titleView.text!, forKey: "title")
+    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
 
     super.viewWillDisappear(animated)
   }
@@ -113,6 +106,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       let (_, fileExt) = fileInfo(UIImagePNGRepresentation(image)!)
       var data: Data
       if fileExt == "gif" {
+        print(image.duration, image.images?.count)
         data = try! AnimatedGIFImageSerialization.animatedGIFData(with: image)
       } else if fileExt == "jpg" {
         data = UIImageJPEGRepresentation(newImage, 1.0)!
@@ -162,10 +156,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Cancel", style: .preferred))
     if entry.value(forKey: "image") != nil {
       alert.add(AlertAction(title: "Clear image", style: .normal, handler: { (action) -> Void in
-        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
-        self.entry.removeObject(forKey: "image")
-        self.imageButton.setImage(nil, for: UIControlState.normal)
-        self.cameraImageView.isHidden = false
+        self.clearImage()
       }))
     }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
@@ -191,6 +182,25 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.visualStyle.cornerRadius = 0
 
     alert.present()
+  }
+
+  func clearImage() {
+    let imageURL = entry.value(forKey: "image") as! String
+    ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
+    entry.removeObject(forKey: "image")
+    cameraImageView.isHidden = false
+    imageView.image = nil;
+    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
+
+    let request = URLRequest.init(url: URL.init(string: imageURL)!)
+
+    let imageDownloader = UIImageView.af_sharedImageDownloader
+
+    // Clear the URLRequest from the in-memory cache
+    let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
+
+    // Clear the URLRequest from the on-disk cache
+    imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
   }
 
   func promptUrl() {
@@ -244,28 +254,16 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func uploadUrl(_ url: String) {
-    do {
-      let data = try Data(contentsOf: URL(string: url)!)
-      if let image = UIImage(data: data) {
-        image.af_inflate()
-        self.entry.setObject(image, forKey: "image" as NSCopying)
-        self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").setValue(url)
-        self.cameraImageView.isHidden = true
-        self.imageButton.setImage(image, for: UIControlState.normal)
-      } else {
-        self.imageFailure()
-      }
-    } catch {
-      self.imageFailure()
-      print(error.localizedDescription)
-    }
-
+    entry.setObject(url, forKey: "image" as NSCopying)
+    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/image").setValue(url)
+    cameraImageView.isHidden = true
+    imageView.af_setImage(withURL: URL(string: url)!)
   }
 
   func uploadImage(_ data: Data) {
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
-      imageButton.imageView?.isHidden = true
+      imageView.isHidden = true
       cameraImageView.isHidden = true
       backButton.isEnabled = false
       activityIndicator.startAnimating()
@@ -277,8 +275,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.activityIndicator.stopAnimating()
         self.backButton.isEnabled = true
         if error != nil {
-          self.imageButton.imageView?.isHidden = false
-          if self.imageButton.imageView?.image == nil {
+          self.imageView.isHidden = false
+          if self.imageView.image == nil {
             self.cameraImageView.isHidden = false
           }
         } else {
