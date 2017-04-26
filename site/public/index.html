@@ -57,30 +57,34 @@
             var user = users[uid];
 
             if (user.collects && Object.keys(user.collects)) {
-              var ribbon = document.createElement('img');
-              ribbon.src = user.ribbon;
-              ribbon.style.height = '50px';
-
-              var userTd = document.createElement('td');
-              userTd.appendChild(ribbon)
-
-              var entriesTd = document.createElement('td');
               var ul = document.createElement('ul');
               Object.keys(user.collects).forEach(function(timestamp) {
                 var collect = user.collects[timestamp];
-                var li = document.createElement("li");
-                var a = document.createElement('a');
-                a.appendChild(document.createTextNode(collect.title));
-                a.href = '/' + timestamp + '/' + collect.title;
-                li.appendChild(a);
-                ul.appendChild(li);
+                if (collect.published) {
+                  var li = document.createElement("li");
+                  var a = document.createElement('a');
+                  a.appendChild(document.createTextNode(collect.title));
+                  a.href = '/' + timestamp + '/' + collect.title;
+                  li.appendChild(a);
+                  ul.appendChild(li);
+                }
               });
-              entriesTd.appendChild(ul);
+              if (ul.innerHTML) {
+                var ribbon = document.createElement('img');
+                ribbon.src = user.ribbon;
+                ribbon.style.height = '50px';
 
-              var tr = document.createElement('tr');
-              tr.appendChild(userTd);
-              tr.appendChild(entriesTd);
-              table.appendChild(tr);
+                var userTd = document.createElement('td');
+                userTd.appendChild(ribbon)
+
+                var entriesTd = document.createElement('td');
+                entriesTd.appendChild(ul);
+
+                var tr = document.createElement('tr');
+                tr.appendChild(userTd);
+                tr.appendChild(entriesTd);
+                table.appendChild(tr);
+              }
             }
           });
 

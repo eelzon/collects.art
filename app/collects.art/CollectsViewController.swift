@@ -22,6 +22,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+  let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
   var previousStatus: String = "unconnected"
   var collects: NSMutableDictionary!
   var timestamps: NSMutableArray!
@@ -258,9 +259,15 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.delegate = self
     cell.showsRightSlideIndicator = false
     let font = UIFont.init(name: "Times New Roman", size: 18)
-    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "→close" : "→open"
-    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
-    cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+
+    cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
+
+    let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "close collect" : "open collect"
+    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: purple, font: font!)
+
+    let publishTitle = collect.object(forKey: "published") as? NSNumber == 0 ? "set public" : "set private"
+    cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
+
 
     return cell;
   }
@@ -281,22 +288,26 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let collect = dict.mutableCopy() as! NSMutableDictionary
 
     if buttonIndex == 0 {
-      let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
-      collect.setObject(readonly, forKey: "readonly" as NSCopying)
-      collects[timestamp] = collect
-      UserDefaults.standard.set(collects, forKey: "collects");
-      ref.child("users/\(uid!)/collects/\(timestamp)/readonly").setValue(readonly)
-      ref.child("collects/\(timestamp)/readonly").setValue(readonly)
-      tableView.reloadData();
-    } else {
       ref.child("users/\(uid!)/collects/\(timestamp)").removeValue()
       ref.child("collects/\(timestamp)").removeValue()
       timestamps.removeObject(at: indexPath.row)
       collects.removeObject(forKey: timestamp);
-      UserDefaults.standard.set(collects, forKey: "collects");
-
-      tableView.reloadData();
+    } else if buttonIndex == 1 {
+      let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
+      collect.setObject(readonly, forKey: "readonly" as NSCopying)
+      collects[timestamp] = collect
+      ref.child("users/\(uid!)/collects/\(timestamp)/readonly").setValue(readonly)
+      ref.child("collects/\(timestamp)/readonly").setValue(readonly)
+    } else {
+      let published = !(collect.object(forKey: "published") as? NSNumber == 0 ? false : true)
+      collect.setObject(published, forKey: "published" as NSCopying)
+      collects[timestamp] = collect
+      ref.child("users/\(uid!)/collects/\(timestamp)/published").setValue(published)
+      ref.child("collects/\(timestamp)/published").setValue(published)
     }
+
+    UserDefaults.standard.set(collects, forKey: "collects");
+    tableView.reloadData();
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -334,10 +345,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func initCollect(_ title: NSString!) {
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
-    let collect: [String: Any] = ["title": title!, "readonly": false]
-    let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
+    let collect: [String: Any] = ["title": title!, "readonly": false, "published": false]
 
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "entries": NSDictionary()])
+    let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
+    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false, "entries": NSDictionary()])
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)

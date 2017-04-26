@@ -36,6 +36,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+  let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
   var uid: String!
   var timestamp: String!
   var collect: NSDictionary!
@@ -281,7 +282,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
           cell.delegate = self
           cell.showsRightSlideIndicator = false
           let font = UIFont.init(name: "Times New Roman", size: 18)
-          cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
         }
 
         cell.layoutIfNeeded()
@@ -295,7 +296,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
           cell.delegate = self
           cell.showsRightSlideIndicator = false
           let font = UIFont.init(name: "Times New Roman", size: 18)
-          cell.addRightButton(withText: "x", textColor: UIColor.white, backgroundColor: purple, font: font!)
+          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
         }
 
         cell.layoutIfNeeded()
