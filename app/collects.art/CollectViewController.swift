@@ -32,6 +32,10 @@ class CollectTableViewCell: SESlideTableViewCell {
 
 }
 
+protocol CollectDelegate {
+  func updateCollect(timestamp: String, collect: NSDictionary)
+}
+
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
@@ -46,6 +50,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var readonly: Bool = false
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
+  var delegate: CollectDelegate!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var backButton: UIBarButtonItem!
   @IBOutlet weak var openButton: UIBarButtonItem!
@@ -135,7 +140,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
           self.renameButton.isEnabled = true
           if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
             self.entries = entries.mutableCopy() as! NSMutableDictionary
-            let array = (self.entries.allKeys as! [String]).sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending } as NSArray
+            let array = (self.entries.allKeys as! [String]).sorted { $1.localizedCaseInsensitiveCompare($0) == ComparisonResult.orderedAscending } as NSArray
             self.entryTimestamps = NSMutableArray(array: array)
 
           }
@@ -203,10 +208,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     refreshTitleCell()
 
-    let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
-    let collects = dict.mutableCopy() as! NSMutableDictionary
-    collects.setObject(collect, forKey: timestamp as NSCopying)
-    UserDefaults.standard.set(collects, forKey: "collects");
+    delegate.updateCollect(timestamp: timestamp, collect: collect)
 
     self.ref.child("users/\(uid!)/collects/\(timestamp!)/title").setValue(title)
     self.ref.child("collects/\(timestamp!)/title").setValue(title)
@@ -388,7 +390,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)
-    entryTimestamps.add(entryTimestamp)
+    entryTimestamps.insert(entryTimestamp, at: 0)
     tableView.reloadData()
     performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
   }

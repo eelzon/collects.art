@@ -18,14 +18,14 @@ class CollectsTableViewCell: SESlideTableViewCell {
 
 }
 
-class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate {
+class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, CollectDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
   var previousStatus: String = "unconnected"
-  var collects: NSMutableDictionary!
-  var timestamps: NSMutableArray!
+  var collects: NSMutableDictionary! = NSMutableDictionary()
+  var timestamps: NSMutableArray! = NSMutableArray()
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
   var uid: String!
@@ -108,7 +108,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collects = value.mutableCopy() as! NSMutableDictionary
-          self.timestamps = NSMutableArray.init(array: self.collects.allKeys)
+          let dict = (self.collects.allKeys as NSArray).reverseObjectEnumerator().allObjects
+          self.timestamps = NSMutableArray.init(array: dict)
           UserDefaults.standard.set(self.collects, forKey: "collects");
           self.tableView.reloadData()
         }
@@ -228,11 +229,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewWillAppear(_ animated: Bool) {
     self.navigationController?.setNavigationBarHidden(false, animated: true)
 
-    let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary;
-    collects = dict.mutableCopy() as! NSMutableDictionary
-    timestamps = NSMutableArray.init(array: collects.allKeys)
-    tableView.reloadData()
-
     super.viewWillAppear(animated)
   }
 
@@ -341,6 +337,13 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     alert.present()
   }
 
+  func updateCollect(timestamp: String, collect: NSDictionary) {
+    collects.setValue(collect, forKey: timestamp)
+    UserDefaults.standard.set(collects, forKey: "collects");
+
+    tableView.reloadData()
+  }
+
   func initCollect(_ title: NSString!) {
     let timestamp = "\(Int(NSDate().timeIntervalSince1970))"
 
@@ -351,6 +354,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
+    timestamps.insert(timestamp, at: 0)
     self.tableView.reloadData();
 
     UserDefaults.standard.set(collects, forKey: "collects");
@@ -368,6 +372,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       let destination = segue.destination as! CollectViewController
       destination.collectTitle = (collects.value(forKey: timestamp) as! NSDictionary).value(forKey: "title") as! String
       destination.timestamp = timestamp
+      destination.delegate = self
     } else if segue.identifier == "segueToRibbons" {
       if let destination = segue.destination as? RibbonCollectionViewController {
         destination.popoverPresentationController!.delegate = self
