@@ -120,14 +120,24 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   func getEntries() {
     activityIndicator.startAnimating()
+    openButton.isEnabled = false
+    addButton.isEnabled = false
+    templateButton.isEnabled = false
+    renameButton.isEnabled = false
     ref.child("collects/\(timestamp!)").observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.activityIndicator.stopAnimating()
           self.collect = value
+          self.openButton.isEnabled = true
+          self.addButton.isEnabled = true
+          self.templateButton.isEnabled = true
+          self.renameButton.isEnabled = true
           if let entries = self.collect.value(forKey: "entries") as? NSDictionary {
             self.entries = entries.mutableCopy() as! NSMutableDictionary
-            self.entryTimestamps = NSMutableArray(array: self.entries.allKeys)
+            let array = (self.entries.allKeys as! [String]).sorted { $0.localizedCaseInsensitiveCompare($1) == ComparisonResult.orderedAscending } as NSArray
+            self.entryTimestamps = NSMutableArray(array: array)
+
           }
           self.setReadonly()
           self.tableView.reloadData()
@@ -378,7 +388,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)
-    entryTimestamps = NSMutableArray.init(array: entries.allKeys)
+    entryTimestamps.add(entryTimestamp)
     tableView.reloadData()
     performSegue(withIdentifier: "segueToEntry", sender: entryTimestamp)
   }

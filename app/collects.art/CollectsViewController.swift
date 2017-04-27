@@ -104,7 +104,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func getCollects() {
     activityIndicator.stopAnimating()
     tableView.isHidden = false
-    ref.child("users/\(uid!)/collects").observeSingleEvent(of: .value, with: { (snapshot) in
+    ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists() {
         if let value = snapshot.value as? NSDictionary {
           self.collects = value.mutableCopy() as! NSMutableDictionary
