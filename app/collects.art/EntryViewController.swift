@@ -189,16 +189,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
     entry.removeObject(forKey: "image")
     cameraImageView.isHidden = false
+
+    imageView.af_cancelImageRequest()
     imageView.image = nil;
-    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
 
     let request = URLRequest.init(url: URL.init(string: imageURL)!)
-
     let imageDownloader = UIImageView.af_sharedImageDownloader
-
     // Clear the URLRequest from the in-memory cache
     let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
-
     // Clear the URLRequest from the on-disk cache
     imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
   }
@@ -257,6 +255,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     entry.setObject(url, forKey: "image" as NSCopying)
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/image").setValue(url)
     cameraImageView.isHidden = true
+    imageView.isHidden = false
     imageView.af_setImage(withURL: URL(string: url)!)
   }
 
