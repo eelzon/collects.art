@@ -643,7 +643,7 @@ function template10(collect) {
         width: 100%;
       }
       .image {
-        width: 200px;
+        max-width: 200px;
         margin: 0 auto;
       }
     </style>
