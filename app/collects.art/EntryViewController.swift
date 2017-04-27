@@ -67,7 +67,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageButton.layer.cornerRadius = 0
     imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    if let imageURL = entry.object(forKey: "image") as? String {
+    if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
       imageView.af_setImage(withURL: URL(string: imageURL)!)
       cameraImageView.isHidden = true
       activityIndicator.startAnimating()
@@ -188,7 +188,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func clearImage() {
-    if let imageURL = entry.value(forKey: "image") as? String {
+    if let imageURL = entry.value(forKey: "image") as? String, imageURL.characters.count > 0 {
       ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
       if let filename = entry.value(forKey: "filename") as? String {
         ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/filename").removeValue()

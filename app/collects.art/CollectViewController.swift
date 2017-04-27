@@ -251,7 +251,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       }
 
 
-      if let imageURL = entry.object(forKey: "image") as? String {
+      if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
         cell.entryImageView.af_setImage(withURL: URL(string: imageURL)!)
 
