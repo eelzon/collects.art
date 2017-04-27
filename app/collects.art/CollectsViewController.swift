@@ -41,6 +41,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     setConnectedObserver()
 
+    activityIndicator.startAnimating()
+
     let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
     offlineView.loadHTMLString(html, baseURL: nil)
 
@@ -67,7 +69,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func setAuth() {
-    activityIndicator.startAnimating()
     tableView.isHidden = true
     offlineView.isHidden = true
     addButton.isEnabled = true
@@ -86,7 +87,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           self.lockDown()
         } else {
           self.uid = user!.uid
-          self.ref.child("users/\(self.uid!)/collects").setValue(NSDictionary())
           self.getCollects()
           self.getRibbons()
           self.getTemplates()
@@ -102,21 +102,26 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func getCollects() {
-    activityIndicator.stopAnimating()
     tableView.isHidden = false
     ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
-      if snapshot.exists() {
-        if let value = snapshot.value as? NSDictionary {
-          self.collects = value.mutableCopy() as! NSMutableDictionary
-          let dict = (self.collects.allKeys as NSArray).reverseObjectEnumerator().allObjects
-          self.timestamps = NSMutableArray.init(array: dict)
-          UserDefaults.standard.set(self.collects, forKey: "collects");
-          self.tableView.reloadData()
-        }
+      if snapshot.exists(), let value = snapshot.value as? NSDictionary {
+        UserDefaults.standard.set(value, forKey: "collects");
+        self.setCollects(dict: value)
+      } else {
+        self.setCollects(dict: UserDefaults.standard.object(forKey: "collects") as! NSDictionary)
       }
     }) { (error) in
       print(error.localizedDescription)
+      self.setCollects(dict: UserDefaults.standard.object(forKey: "collects") as! NSDictionary)
     }
+  }
+
+  func setCollects(dict: NSDictionary) {
+    activityIndicator.stopAnimating()
+    collects = dict.mutableCopy() as! NSMutableDictionary
+    let array = (self.collects.allKeys as NSArray).reverseObjectEnumerator().allObjects
+    timestamps = NSMutableArray.init(array: array)
+    tableView.reloadData()
   }
 
   func setUserRibbon() {
@@ -340,7 +345,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func updateCollect(timestamp: String, collect: NSDictionary) {
     collects.setValue(collect, forKey: timestamp)
     UserDefaults.standard.set(collects, forKey: "collects");
-
     tableView.reloadData()
   }
 
@@ -350,12 +354,12 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let collect: [String: Any] = ["title": title!, "readonly": false, "published": false]
 
     let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
-    self.ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false])
-    self.ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
+    ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false])
+    ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 
     collects.setValue(collect, forKey: timestamp)
     timestamps.insert(timestamp, at: 0)
-    self.tableView.reloadData();
+    tableView.reloadData();
 
     UserDefaults.standard.set(collects, forKey: "collects");
     performSegue(withIdentifier: "segueToCollect", sender: timestamp)
