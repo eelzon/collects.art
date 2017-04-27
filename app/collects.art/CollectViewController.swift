@@ -45,6 +45,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var entries: NSMutableDictionary! = NSMutableDictionary()
   var readonly: Bool = false
   var ref: FIRDatabaseReference!
+  var storageRef: FIRStorageReference!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var backButton: UIBarButtonItem!
   @IBOutlet weak var openButton: UIBarButtonItem!
@@ -59,6 +60,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     uid = FIRAuth.auth()!.currentUser!.uid
 
     ref = FIRDatabase.database().reference()
+    storageRef = FIRStorage.storage().reference()
 
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
@@ -287,9 +289,19 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     let indexPath = tableView.indexPath(for: cell)!
     let entryTimestamp = entryTimestamps[indexPath.row] as! String
 
+    let entry = entries.object(forKey: entryTimestamp) as! NSDictionary
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").removeValue()
     entryTimestamps.removeObject(at: indexPath.row)
     entries.removeObject(forKey: entryTimestamp)
+
+    if let filename = entry.value(forKey: "filename") as? String {
+      let task = storageRef.child("images/\(filename)")
+      task.delete(completion: { error in
+        if let error = error {
+          print(error.localizedDescription)
+        }
+      })
+    }
 
     tableView.reloadData();
   }

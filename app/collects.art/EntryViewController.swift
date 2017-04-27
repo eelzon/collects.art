@@ -188,20 +188,31 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func clearImage() {
-    let imageURL = entry.value(forKey: "image") as! String
-    ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
-    entry.removeObject(forKey: "image")
-    cameraImageView.isHidden = false
+    if let imageURL = entry.value(forKey: "image") as? String {
+      ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
+      if let filename = entry.value(forKey: "filename") as? String {
+        ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/filename").removeValue()
+        let task = storageRef.child("images/\(filename)")
+        task.delete(completion: { error in
+          if let error = error {
+            print(error.localizedDescription)
+          }
+        })
+        entry.removeObject(forKey: "filename")
+      }
+      entry.removeObject(forKey: "image")
+      cameraImageView.isHidden = false
 
-    imageView.af_cancelImageRequest()
-    imageView.image = nil;
+      imageView.af_cancelImageRequest()
+      imageView.image = nil;
 
-    let request = URLRequest.init(url: URL.init(string: imageURL)!)
-    let imageDownloader = UIImageView.af_sharedImageDownloader
-    // Clear the URLRequest from the in-memory cache
-    let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
-    // Clear the URLRequest from the on-disk cache
-    imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
+      let request = URLRequest.init(url: URL.init(string: imageURL)!)
+      let imageDownloader = UIImageView.af_sharedImageDownloader
+      // Clear the URLRequest from the in-memory cache
+      let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
+      // Clear the URLRequest from the on-disk cache
+      imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
+    }
   }
 
   func promptUrl() {
@@ -213,6 +224,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
       if URL.init(string: textField.text!) != nil {
+        self.clearImage()
         self.uploadUrl(textField.text!)
       } else {
         self.imageFailure()
@@ -256,6 +268,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
   func uploadUrl(_ url: String) {
     entry.setObject(url, forKey: "image" as NSCopying)
+    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/image").setValue(url)
     cameraImageView.isHidden = true
     imageView.isHidden = false
@@ -265,23 +278,25 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func uploadImage(_ data: Data) {
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
+      clearImage()
       imageView.isHidden = true
       cameraImageView.isHidden = true
-      backButton.isEnabled = false
       activityIndicator.startAnimating()
 
       let imageMetadata = FIRStorageMetadata()
       imageMetadata.contentType = contentType
-      let task = storageRef.child("images/\(timestamp!).\(fileExt)")
+      let filename = "\(timestamp!).\(fileExt)"
+      let task = storageRef.child("images/\(filename)")
       task.put(data, metadata: imageMetadata, completion: { (_ metadata: FIRStorageMetadata?, _ error: Error?) in
         self.activityIndicator.stopAnimating()
-        self.backButton.isEnabled = true
         if error != nil {
           self.imageView.isHidden = false
           if self.imageView.image == nil {
             self.cameraImageView.isHidden = false
           }
         } else {
+          self.entry.setObject(filename, forKey: "filename" as NSCopying)
+          self.ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/filename").setValue(filename)
           let downloadURL = metadata?.downloadURL()!.absoluteString
           self.uploadUrl(downloadURL!)
         }
