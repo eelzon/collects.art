@@ -19,6 +19,7 @@
 		65BE48391EAEEECC008B0ED9 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */; };
 		65BE483B1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE483A1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift */; };
 		65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */; };
+		65D5C0AD1EB1A3B700E03C40 /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 65D5C0AC1EB1A3B700E03C40 /* about.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		65BE483A1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateCollectionViewController.swift; sourceTree = "<group>"; };
 		65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		65D5C0AC1EB1A3B700E03C40 /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = about.html; sourceTree = "<group>"; };
 		9AD193DB63B99CA27C244499 /* Pods-collects.art.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collects.art.release.xcconfig"; path = "Pods/Target Support Files/Pods-collects.art/Pods-collects.art.release.xcconfig"; sourceTree = "<group>"; };
 		CAD41B532A9B89436A898E9F /* Pods-collects.art.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collects.art.debug.xcconfig"; path = "Pods/Target Support Files/Pods-collects.art/Pods-collects.art.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -91,6 +93,7 @@
 				652CA7C81E971A2900AA749F /* Assets.xcassets */,
 				652839621E9726450060CFB7 /* Main.storyboard */,
 				652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */,
+				65D5C0AC1EB1A3B700E03C40 /* about.html */,
 				652CA7CD1E971A2900AA749F /* Info.plist */,
 				65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */,
 			);
@@ -173,6 +176,7 @@
 				652839641E9726450060CFB7 /* Main.storyboard in Resources */,
 				65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */,
 				652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */,
+				65D5C0AD1EB1A3B700E03C40 /* about.html in Resources */,
 				652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

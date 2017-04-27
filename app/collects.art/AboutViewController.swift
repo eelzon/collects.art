@@ -10,10 +10,18 @@ import UIKit
 
 class AboutViewController: UIViewController {
 
+  @IBOutlet weak var webView: UIWebView!
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    // Do any additional setup after loading the view.
+    let file = Bundle.main.path(forResource: "about", ofType: "html")!
+    do {
+      let html = try NSString.init(contentsOfFile: file, encoding: String.Encoding.utf8.rawValue)
+      webView.loadHTMLString(html as String, baseURL: URL.init(fileURLWithPath: Bundle.main.bundlePath))
+    } catch {
+      webView.loadHTMLString("<html><body><p>Collects is an anonymized social network in the style of the artist Bunny Rogers. Create your own collects or view the work of others at <a href='https://collectable.art'>collectable.art</a>.</p></body></html>", baseURL: nil)
+    }
   }
 
   override func viewWillAppear(_ animated: Bool) {

@@ -394,41 +394,14 @@
         <scene sceneID="8Aa-Mf-evy">
             <objects>
                 <viewController id="iNu-Ma-YKO" customClass="AboutViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="GA8-EO-JN4"/>
-                        <viewControllerLayoutGuide type="bottom" id="FbP-21-4sc"/>
-                    </layoutGuides>
-                    <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="g3Q-4c-GkL">
+                    <webView key="view" contentMode="scaleToFill" id="EBc-Ct-gLD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2xi-TL-apX">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                                <attributedString key="attributedText">
-                                    <fragment>
-                                        <string key="content">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                        <attributes>
-                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <font key="NSFont" size="18" name="TimesNewRomanPSMT"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
-                            </textView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="2xi-TL-apX" secondAttribute="trailing" id="3TQ-vt-Ku5"/>
-                            <constraint firstItem="2xi-TL-apX" firstAttribute="top" secondItem="g3Q-4c-GkL" secondAttribute="top" id="DJW-mN-nK5"/>
-                            <constraint firstItem="2xi-TL-apX" firstAttribute="leading" secondItem="g3Q-4c-GkL" secondAttribute="leading" id="N3R-Ge-W66"/>
-                            <constraint firstItem="2xi-TL-apX" firstAttribute="bottom" secondItem="FbP-21-4sc" secondAttribute="top" id="SBW-8X-hAa"/>
-                            <constraint firstItem="2xi-TL-apX" firstAttribute="centerY" secondItem="g3Q-4c-GkL" secondAttribute="centerY" id="gKQ-xx-6ly"/>
-                            <constraint firstItem="2xi-TL-apX" firstAttribute="centerX" secondItem="g3Q-4c-GkL" secondAttribute="centerX" id="lCP-b6-zoM"/>
-                        </constraints>
-                    </scrollView>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </webView>
+                    <connections>
+                        <outlet property="webView" destination="EBc-Ct-gLD" id="XUk-xJ-iao"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eau-GW-pXi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
