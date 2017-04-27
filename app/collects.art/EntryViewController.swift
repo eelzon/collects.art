@@ -103,15 +103,18 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
       let newImage = resizedImage(image)
-      let (_, fileExt) = fileInfo(UIImagePNGRepresentation(image)!)
+      let (_, fileExt) = fileInfo(UIImagePNGRepresentation(newImage)!)
       var data: Data
-      if fileExt == "gif" {
-        print(image.duration, image.images?.count)
-        data = try! AnimatedGIFImageSerialization.animatedGIFData(with: image)
-      } else if fileExt == "jpg" {
-        data = UIImageJPEGRepresentation(newImage, 1.0)!
-      } else {
-        data = UIImagePNGRepresentation(newImage)!
+
+      // try any upload as an animated gif first
+      do {
+        data = try AnimatedGIFImageSerialization.animatedGIFData(with: newImage)
+      } catch {
+        if fileExt == "jpg" {
+          data = UIImageJPEGRepresentation(newImage, 1.0)!
+        } else {
+          data = UIImagePNGRepresentation(newImage)!
+        }
       }
       uploadImage(data)
     }
