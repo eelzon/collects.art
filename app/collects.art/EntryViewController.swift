@@ -188,7 +188,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func clearImage() {
-    if let imageURL = entry.value(forKey: "image") as? String, imageURL.characters.count > 0 {
+    if let imageURL = entry.value(forKey: "image") as? String {
       ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/image").removeValue()
       if let filename = entry.value(forKey: "filename") as? String {
         ref.child("collects/\(self.collectTimestamp!)/entries/\(self.timestamp!)/filename").removeValue()
@@ -206,12 +206,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       imageView.af_cancelImageRequest()
       imageView.image = nil;
 
-      let request = URLRequest.init(url: URL.init(string: imageURL)!)
-      let imageDownloader = UIImageView.af_sharedImageDownloader
-      // Clear the URLRequest from the in-memory cache
-      let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
-      // Clear the URLRequest from the on-disk cache
-      imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
+      if imageURL.characters.count > 0 {
+        let request = URLRequest.init(url: URL.init(string: imageURL)!)
+        let imageDownloader = UIImageView.af_sharedImageDownloader
+        // Clear the URLRequest from the in-memory cache
+        let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
+        // Clear the URLRequest from the on-disk cache
+        imageDownloader.sessionManager.session.configuration.urlCache?.removeCachedResponse(for: request)
+      }
     }
   }
 
