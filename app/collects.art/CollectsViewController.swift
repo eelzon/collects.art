@@ -44,19 +44,23 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
     offlineView.loadHTMLString(html, baseURL: nil)
 
-    let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    button.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
-    button.imageView?.contentMode = .scaleAspectFit
-    button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    button.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    button.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
-    addButton.customView = button
+    let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
+    add.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
+    add.imageView?.contentMode = .scaleAspectFit
+    add.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
+    add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    add.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
+    addButton.customView = add
 
     let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
     navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.normal)
     navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.focused)
     navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
     navigationItem.rightBarButtonItem?.tintColor = purple
+    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.normal)
+    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.focused)
+    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
+    navigationItem.leftBarButtonItem?.tintColor = purple
 
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -175,6 +179,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   func openRibbons(_ sender:Any) {
     performSegue(withIdentifier: "segueToRibbons", sender: self)
+  }
+
+  @IBAction func openSite(_ sender: Any) {
+    UIApplication.shared.openURL(URL.init(string: "https://collectable.art")!)
   }
 
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
