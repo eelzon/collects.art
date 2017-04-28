@@ -123,17 +123,17 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func resizedImage(_ image: UIImage) -> UIImage {
-    let oldWidth = image.size.width;
-    let oldHeight = image.size.height;
+    let oldWidth = image.size.width
+    let oldHeight = image.size.height
 
     if oldWidth < 500 && oldHeight < 500 {
       return image
     }
 
-    let scaleFactor = (oldWidth > oldHeight) ? 500 / oldWidth : 500 / oldHeight;
+    let scaleFactor = (oldWidth > oldHeight) ? 500 / oldWidth : 500 / oldHeight
 
-    let newHeight = oldHeight * scaleFactor;
-    let newWidth = oldWidth * scaleFactor;
+    let newHeight = oldHeight * scaleFactor
+    let newWidth = oldWidth * scaleFactor
 
     UIGraphicsBeginImageContext(CGSize(width:newWidth, height:newHeight))
     image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
@@ -204,7 +204,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       cameraImageView.isHidden = false
 
       imageView.af_cancelImageRequest()
-      imageView.image = nil;
+      imageView.image = nil
 
       if imageURL.characters.count > 0 {
         let request = URLRequest.init(url: URL.init(string: imageURL)!)
@@ -220,8 +220,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func promptUrl() {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
-      textField.autocapitalizationType = UITextAutocapitalizationType.none;
-    });
+      textField.autocapitalizationType = UITextAutocapitalizationType.none
+    })
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField

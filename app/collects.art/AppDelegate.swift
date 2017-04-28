@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     if UserDefaults.standard.object(forKey: "collects") == nil {
-      UserDefaults.standard.set(NSDictionary(), forKey: "collects");
+      UserDefaults.standard.set(NSDictionary(), forKey: "collects")
     }
 
     // Use Firebase library to configure APIs
@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
     let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
-    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!];
+    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!]
     UINavigationBar.appearance().tintColor = purple
     UINavigationBar.appearance().setTitleVerticalPositionAdjustment(4, for: .default)
 
@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")
     connectedRef.observe(.value, with: { snapshot in
-      if let connected = snapshot.value as? Bool, !connected {
+      if let connected = snapshot.value as? Bool, connected == false {
         if let navigationController = self.window?.rootViewController as? UINavigationController {
           navigationController.popToRootViewController(animated: true)
         }

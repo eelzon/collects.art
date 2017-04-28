@@ -64,6 +64,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     uid = FIRAuth.auth()!.currentUser!.uid
 
+    tableView.scrollsToTop = true
+
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
 
@@ -72,7 +74,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     tableView.scrollsToTop = true
 
-    getEntries();
+    getEntries()
 
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
@@ -175,9 +177,9 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   @IBAction func renameCollect(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
-      textField.autocapitalizationType = UITextAutocapitalizationType.none;
+      textField.autocapitalizationType = UITextAutocapitalizationType.none
       textField.text = self.collect.value(forKey: "title") as? String
-    });
+    })
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Rename", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
@@ -203,7 +205,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   func changeTitle (_ title: String!) {
-    collectTitle = title;
+    collectTitle = title
     collect.setValue(title, forKey: "title")
 
     refreshTitleCell()
@@ -249,15 +251,15 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     if indexPath.section == 0 {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTitleTableViewCell") as! CollectTitleTableViewCell
 
-      cell.titleLabel?.text = collectTitle;
+      cell.titleLabel?.text = collectTitle
 
-      return cell;
+      return cell
     } else {
       let entryTimestamp = entryTimestamps[indexPath.row] as! String
       let entry = entries.value(forKey: entryTimestamp) as! NSDictionary
-      var entryTitle: String;
+      var entryTitle: String
       if let title = entry.value(forKey: "title") as? String, title.characters.count > 0 {
-        entryTitle = title;
+        entryTitle = title
       } else {
         entryTitle = "untitled"
       }
@@ -267,7 +269,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
         cell.entryImageView.af_setImage(withURL: URL(string: imageURL)!)
 
-        cell.titleLabel?.text = entryTitle;
+        cell.titleLabel?.text = entryTitle
         cell.removeAllRightButtons()
         if !readonly {
           cell.delegate = self
@@ -278,10 +280,10 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         cell.layoutIfNeeded()
 
-        return cell;
+        return cell
       } else {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
-        cell.titleLabel?.text = entryTitle;
+        cell.titleLabel?.text = entryTitle
         cell.removeAllRightButtons()
         if !readonly {
           cell.delegate = self
@@ -292,7 +294,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         cell.layoutIfNeeded()
 
-        return cell;
+        return cell
       }
     }
   }
@@ -315,7 +317,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       })
     }
 
-    tableView.reloadData();
+    tableView.reloadData()
   }
 
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -351,8 +353,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "segueToEntry" {
-      var entryTimestamp: String;
-      var entry: NSDictionary;
+      var entryTimestamp: String
+      var entry: NSDictionary
       if let indexPath = tableView.indexPathForSelectedRow {
         entryTimestamp = entryTimestamps[indexPath.row] as! String
       } else {
@@ -386,7 +388,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   @IBAction func createEntry(_ sender: Any) {
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
-    let entry: NSDictionary = ["title": ""];
+    let entry: NSDictionary = ["title": ""]
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
     (collect.value(forKey: "entries") as? NSDictionary)?.setValue(entry, forKey: entryTimestamp)
     entries.setValue(entry, forKey: entryTimestamp)

@@ -46,6 +46,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
     offlineView.loadHTMLString(html, baseURL: nil)
 
+    tableView.scrollsToTop = true
+
     let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     add.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
     add.imageView?.contentMode = .scaleAspectFit
@@ -105,7 +107,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     tableView.isHidden = false
     ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists(), let value = snapshot.value as? NSDictionary {
-        UserDefaults.standard.set(value, forKey: "collects");
+        UserDefaults.standard.set(value, forKey: "collects")
         self.setCollects(dict: value)
       } else {
         self.setCollects(dict: UserDefaults.standard.object(forKey: "collects") as! NSDictionary)
@@ -160,7 +162,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           for ribbon in value {
             ribbons.add((ribbon.value as! NSDictionary).value(forKey: "url")!)
           }
-          UserDefaults.standard.set(ribbons, forKey: "ribbons");
+          UserDefaults.standard.set(ribbons, forKey: "ribbons")
           self.setUserRibbon()
         }
       })
@@ -177,7 +179,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
           for template in value {
             templates.add(template.value as! NSDictionary)
           }
-          UserDefaults.standard.set(templates, forKey: "templates");
+          UserDefaults.standard.set(templates, forKey: "templates")
         }
       })
     }
@@ -244,7 +246,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return timestamps.count;
+    return timestamps.count
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -253,7 +255,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     let cell = tableView.dequeueReusableCell(withIdentifier: "CollectsTableViewCell") as! CollectsTableViewCell
 
-    cell.titleLabel?.text = collect.value(forKey: "title") as? String;
+    cell.titleLabel?.text = collect.value(forKey: "title") as? String
 
     cell.removeAllRightButtons()
     cell.delegate = self
@@ -269,7 +271,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
 
 
-    return cell;
+    return cell
   }
 
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -278,7 +280,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return true;
+    return true
   }
 
   func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
@@ -291,7 +293,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       ref.child("users/\(uid!)/collects/\(timestamp)").removeValue()
       ref.child("collects/\(timestamp)").removeValue()
       timestamps.removeObject(at: indexPath.row)
-      collects.removeObject(forKey: timestamp);
+      collects.removeObject(forKey: timestamp)
     } else if buttonIndex == 1 {
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
@@ -306,8 +308,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       ref.child("collects/\(timestamp)/published").setValue(published)
     }
 
-    UserDefaults.standard.set(collects, forKey: "collects");
-    tableView.reloadData();
+    UserDefaults.standard.set(collects, forKey: "collects")
+    tableView.reloadData()
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -323,8 +325,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBAction func createCollect(_ button: UIButton) {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
-      textField.autocapitalizationType = UITextAutocapitalizationType.none;
-    });
+      textField.autocapitalizationType = UITextAutocapitalizationType.none
+    })
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Add collect", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
@@ -344,7 +346,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   func updateCollect(timestamp: String, collect: NSDictionary) {
     collects.setValue(collect, forKey: timestamp)
-    UserDefaults.standard.set(collects, forKey: "collects");
+    UserDefaults.standard.set(collects, forKey: "collects")
     tableView.reloadData()
   }
 
@@ -359,15 +361,15 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     collects.setValue(collect, forKey: timestamp)
     timestamps.insert(timestamp, at: 0)
-    tableView.reloadData();
+    tableView.reloadData()
 
-    UserDefaults.standard.set(collects, forKey: "collects");
+    UserDefaults.standard.set(collects, forKey: "collects")
     performSegue(withIdentifier: "segueToCollect", sender: timestamp)
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "segueToCollect" {
-      var timestamp: String;
+      var timestamp: String
       if let indexPath = tableView.indexPathForSelectedRow {
         timestamp = timestamps[indexPath.row] as! String
       } else {

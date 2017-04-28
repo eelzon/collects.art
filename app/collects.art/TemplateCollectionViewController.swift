@@ -32,7 +32,7 @@ class TemplateCollectionViewController: UICollectionViewController {
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    self.view?.superview?.layer.cornerRadius = 0;
+    self.view?.superview?.layer.cornerRadius = 0
     super.viewWillAppear(animated)
   }
 
