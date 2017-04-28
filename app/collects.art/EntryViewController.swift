@@ -86,12 +86,15 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   override func viewWillDisappear(_ animated: Bool) {
-    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
-
-    entry.setValue(titleView.text!, forKey: "title")
-    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
+    saveEntry()
 
     super.viewWillDisappear(animated)
+  }
+
+  func saveEntry() {
+    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
+    entry.setValue(titleView.text!, forKey: "title")
+    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
   }
 
   func dismissKeyboard() {
@@ -270,7 +273,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
   func uploadUrl(_ url: String) {
     entry.setObject(url, forKey: "image" as NSCopying)
-    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
+    saveEntry()
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/image").setValue(url)
     cameraImageView.isHidden = true
     imageView.isHidden = false

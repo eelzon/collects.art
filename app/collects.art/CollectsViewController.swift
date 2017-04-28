@@ -313,6 +313,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }
