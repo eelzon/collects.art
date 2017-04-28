@@ -44,7 +44,7 @@
         <!--Collect View Controller-->
         <scene sceneID="C0V-7v-do1">
             <objects>
-                <viewController id="Tlv-7y-fsl" customClass="CollectViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Tlv-7y-fsl" customClass="CollectViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Phb-0O-wFd"/>
                         <viewControllerLayoutGuide type="bottom" id="Ei8-Nw-Vd8"/>
