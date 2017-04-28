@@ -394,10 +394,11 @@
         <scene sceneID="8Aa-Mf-evy">
             <objects>
                 <viewController id="iNu-Ma-YKO" customClass="AboutViewController" customModule="collects_art" customModuleProvider="target" sceneMemberID="viewController">
-                    <webView key="view" contentMode="scaleToFill" id="EBc-Ct-gLD">
+                    <webView key="view" contentMode="scaleToFill" allowsInlineMediaPlayback="NO" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" keyboardDisplayRequiresUserAction="NO" id="EBc-Ct-gLD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <dataDetectorType key="dataDetectorTypes"/>
                         <connections>
                             <outlet property="delegate" destination="iNu-Ma-YKO" id="3Cz-oa-MLq"/>
                         </connections>

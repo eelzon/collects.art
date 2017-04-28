@@ -1,8 +1,8 @@
 <html>
   <head>
     <style type="text/css">
-      h4 {
-        margin-bottom: .5em;
+      h3 {
+        margin-bottom: 0;
       }
       a:link, a:visited, a:hover, a:active {
         color: #551a8b;
@@ -11,15 +11,24 @@
         max-width: 30px;
         max-height: 30px;
       }
+      td {
+        padding: 5px;
+      }
     </style>
   </head>
   <body>
     <p>Collects is an anonymized social network in the style of the artist Bunny Rogers, created in 2017 for Rhizome's <a href="https://sevenonseven.art">Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers. Create your own collects or view the work of others at <a href="https://collectable.art">collectable.art</a>.</p>
 
-    <h4>Collects</h4>
+    <h3>Collects</h3>
+    <p>When you swipe on a collect you can:</p>
+    <ul>
+      <li>Make it public on <a href="https://collectable.art">collectable.art</a></li>
+      <li>Close it to further additions if you are done collecting</li>
+      <li>Delete it</li>
+    </ul>
     <table>
       <tr>
-        <td><img src="images/ribbon.gif"></td>
+        <td><img src="images/ribbon.png"></td>
         <td>Select your adoptable ribbon</td>
       </tr>
       <tr>
@@ -27,19 +36,18 @@
         <td>Create a collect</td>
       </tr>
     </table>
-
-    <p>When you swipe on a collect you can:</p>
-    <ul>
-      <li>Make it public on <a href="https://collectable.art">collectable.art</a> (private collects are always available via the view your collect button)</li>
-      <li>Close it to further additions if you are done collecting</li>
-      <li>Delete it</li>
-    </ul>
-
-    <h4>Collect</h4>
+    <br/>
+    <hr>
+    <h3>Collect</h3>
+    <p>Swipe on any entry to delete it.</p>
     <table>
       <tr>
+        <td><img src="images/back.png"></td>
+        <td>Go back to your collects</td>
+      </tr>
+      <tr>
         <td><img src="images/open.png"></td>
-        <td>View your collect in a browser</td>
+        <td>View your collect in a browser (private collects, which aren't shown publicly on <a href="https://collectable.art">collectable.art</a>, are always available via this button)</td>
       </tr>
       <tr>
         <td><img src="images/rename.png"></td>
@@ -53,10 +61,15 @@
         <td>Create an entry in your collect</td>
       </tr>
     </table>
-
-    <p>Swipe on an entry to delete.</p>
-
-    <h4>Entry</h4>
-    <p>Each entry has an image and a text field. Use the back button to save your progress.</p>
+    <br/>
+    <hr>
+    <h3>Entry</h3>
+    <p>You can add text and/or an image to each entry.</p>
+    <table>
+      <tr>
+        <td><img src="images/back.png"></td>
+        <td>Save changes to your entry and go back to your collect.</td>
+      </tr>
+    </table>
   </body>
 </html>
