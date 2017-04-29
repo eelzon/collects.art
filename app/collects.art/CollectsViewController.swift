@@ -444,13 +444,13 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func lockDown() {
+    dismiss(animated: true, completion: {})
     activityIndicator.stopAnimating()
     addButton.isEnabled = false
     userButton.isEnabled = false
     navigationItem.leftBarButtonItem?.isEnabled = false
     tableView.isHidden = true
     offlineView.isHidden = false
-    dismiss(animated: true, completion: {})
   }
   
 }
