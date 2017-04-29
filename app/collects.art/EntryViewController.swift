@@ -66,9 +66,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     back.addTarget(self, action: #selector(backToCollect(_:)), for:UIControlEvents.touchUpInside)
     backButton.customView = back
 
-    imageButton.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
-    imageButton.layer.borderWidth = 1.0
-    imageButton.layer.cornerRadius = 0
+    imageView.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+    imageView.layer.borderWidth = 1.0
+    imageView.layer.cornerRadius = 0
+
     imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
     imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
     if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
