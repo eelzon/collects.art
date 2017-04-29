@@ -266,14 +266,13 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.showsRightSlideIndicator = false
     let font = UIFont.init(name: "Times New Roman", size: 18)
 
-    cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
-
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "close collect" : "open collect"
     cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: purple, font: font!)
 
     let publishTitle = collect.object(forKey: "published") as? NSNumber == 0 ? "set public" : "set private"
     cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
 
+    cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
 
     return cell
   }
@@ -294,22 +293,22 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     let collect = dict.mutableCopy() as! NSMutableDictionary
 
     if buttonIndex == 0 {
-      ref.child("users/\(uid!)/collects/\(timestamp)").removeValue()
-      ref.child("collects/\(timestamp)").removeValue()
-      timestamps.removeObject(at: indexPath.row)
-      collects.removeObject(forKey: timestamp)
-    } else if buttonIndex == 1 {
       let readonly = !(collect.object(forKey: "readonly") as? NSNumber == 0 ? false : true)
       collect.setObject(readonly, forKey: "readonly" as NSCopying)
       collects[timestamp] = collect
       ref.child("users/\(uid!)/collects/\(timestamp)/readonly").setValue(readonly)
       ref.child("collects/\(timestamp)/readonly").setValue(readonly)
-    } else {
+    } else if buttonIndex == 1 {
       let published = !(collect.object(forKey: "published") as? NSNumber == 0 ? false : true)
       collect.setObject(published, forKey: "published" as NSCopying)
       collects[timestamp] = collect
       ref.child("users/\(uid!)/collects/\(timestamp)/published").setValue(published)
       ref.child("collects/\(timestamp)/published").setValue(published)
+    } else {
+      ref.child("users/\(uid!)/collects/\(timestamp)").removeValue()
+      ref.child("collects/\(timestamp)").removeValue()
+      timestamps.removeObject(at: indexPath.row)
+      collects.removeObject(forKey: timestamp)
     }
 
     UserDefaults.standard.set(collects, forKey: "collects")
