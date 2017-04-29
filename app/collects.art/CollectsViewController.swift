@@ -31,6 +31,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   var storageRef: FIRStorageReference!
   var uid: String!
   var ribbon: String!
+  var slidOpenIndexPath: IndexPath!
   @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var userButton: UIBarButtonItem!
   @IBOutlet weak var tableView: UITableView!
@@ -315,8 +316,24 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     tableView.reloadData()
   }
 
+  func slideTableViewCell(_ cell: SESlideTableViewCell!, wilShowButtonsOf side: SESlideTableViewCellSide) {
+    let indexPath = tableView.indexPath(for: cell)!
+    // if there's a previously opened slide menu in another cell, close it
+    if slidOpenIndexPath != nil,
+      indexPath != slidOpenIndexPath,
+      let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
+      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: true)
+    }
+    slidOpenIndexPath = indexPath
+  }
+
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
+    // if there's any open slide menu, close it before moving
+    if slidOpenIndexPath != nil,
+      let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
+      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: false)
+    }
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }

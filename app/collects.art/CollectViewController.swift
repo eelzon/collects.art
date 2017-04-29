@@ -51,6 +51,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
   var delegate: CollectDelegate!
+  var slidOpenIndexPath: IndexPath!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var backButton: UIBarButtonItem!
   @IBOutlet weak var openButton: UIBarButtonItem!
@@ -128,6 +129,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    // if we catch a right swipe gesture but there's an open slide menu under that swipe, ignore the swipe gesture
+    // in favor of the pan gesture to close the slide menu
     if (gestureRecognizer as? UISwipeGestureRecognizer) != nil,
       let indexPath = tableView.indexPathForRow(at: gestureRecognizer.location(in: view)),
       let cell = tableView.cellForRow(at: indexPath) as? SESlideTableViewCell,
@@ -332,6 +335,17 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     tableView.reloadData()
   }
 
+  func slideTableViewCell(_ cell: SESlideTableViewCell!, wilShowButtonsOf side: SESlideTableViewCellSide) {
+    let indexPath = tableView.indexPath(for: cell)!
+    // if there's a previously opened slide menu in another cell, close it
+    if slidOpenIndexPath != nil,
+      indexPath != slidOpenIndexPath,
+      let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
+      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: true)
+    }
+    slidOpenIndexPath = indexPath
+  }
+
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
     cell.separatorInset = UIEdgeInsets.zero
     cell.layoutMargins = UIEdgeInsets.zero
@@ -346,6 +360,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
+    // if there's any open slide menu, close it before moving
+    if slidOpenIndexPath != nil,
+      let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
+      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: false)
+    }
     let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
     cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
   }
