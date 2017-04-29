@@ -194,6 +194,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   @IBAction func openSite(_ sender: Any) {
+    // close popovers if open
+    dismiss(animated: true, completion: {})
     UIApplication.shared.openURL(URL.init(string: "https://collectable.art")!)
   }
 
@@ -343,6 +345,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   @IBAction func createCollect(_ button: UIButton) {
+    // close popovers if open
+    dismiss(animated: true, completion: {})
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
       textField.autocapitalizationType = UITextAutocapitalizationType.none
@@ -445,8 +449,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     userButton.isEnabled = false
     navigationItem.leftBarButtonItem?.isEnabled = false
     tableView.isHidden = true
-    dismiss(animated: true, completion: {})
     offlineView.isHidden = false
+    dismiss(animated: true, completion: {})
   }
   
 }

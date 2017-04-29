@@ -190,6 +190,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   @IBAction func renameCollect(_ button: UIButton) {
+    // close popovers if open
+    dismiss(animated: true, completion: {})
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
       textField.autocapitalizationType = UITextAutocapitalizationType.none
@@ -213,6 +215,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   @IBAction func openCollect(_ sender: Any) {
+    // close popovers if open
+    dismiss(animated: true, completion: {})
     if timestamp != nil, let title = collect.value(forKey: "title") {
       let url = ("https://collectable.art/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
       UIApplication.shared.openURL(URL.init(string: url)!)
@@ -419,6 +423,8 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   }
 
   @IBAction func createEntry(_ sender: Any) {
+    // close popovers if open
+    dismiss(animated: true, completion: {})
     let entryTimestamp = "\(Int(NSDate().timeIntervalSince1970))"
     let entry: NSDictionary = ["title": ""]
     ref.child("collects/\(timestamp!)/entries/\(entryTimestamp)").setValue(entry)
