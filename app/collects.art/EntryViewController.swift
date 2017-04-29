@@ -54,6 +54,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       titleView.isEditable = false
     }
 
+    let swipeToCollect = UISwipeGestureRecognizer(target: self, action: #selector(backToCollect(_:)))
+    swipeToCollect.direction = .right
+    view.addGestureRecognizer(swipeToCollect)
+
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
     back.imageView?.contentMode = .scaleAspectFit

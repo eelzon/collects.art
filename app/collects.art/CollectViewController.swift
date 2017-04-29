@@ -36,7 +36,7 @@ protocol CollectDelegate {
   func updateCollect(timestamp: String, collect: NSDictionary)
 }
 
-class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate {
+class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate, UIGestureRecognizerDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -75,6 +75,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     tableView.scrollsToTop = true
 
     getEntries()
+
+    let swipeToCollects = UISwipeGestureRecognizer(target: self, action: #selector(backToCollects(_:)))
+    swipeToCollects.direction = .right
+    swipeToCollects.delegate = self
+    view.addGestureRecognizer(swipeToCollects)
 
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
@@ -123,6 +128,16 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+  }
+
+  func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    if (gestureRecognizer as? UISwipeGestureRecognizer) != nil,
+      let indexPath = tableView.indexPathForRow(at: gestureRecognizer.location(in: view)),
+      let cell = tableView.cellForRow(at: indexPath) as? SESlideTableViewCell,
+      cell.slideState == SESlideTableViewCellSlideState.right {
+      return false
+    }
+    return true
   }
 
   func getEntries() {
