@@ -376,7 +376,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     let collect: [String: Any] = ["title": title!, "readonly": false, "published": false]
 
-    let templateIndex = Int(arc4random_uniform(UInt32(10))) + 1
+    let templateLength = (UserDefaults.standard.object(forKey: "templates") as! NSArray).count
+    let templateIndex = Int(arc4random_uniform(UInt32(templateLength))) + 1
     ref.child("collects/\(timestamp)").setValue(["title": title!, "template": templateIndex, "readonly": false, "published": false])
     ref.child("users/\(uid!)/collects/\(timestamp)").setValue(collect)
 

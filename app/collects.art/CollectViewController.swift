@@ -239,6 +239,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     self.dismiss(animated: true, completion: (() -> Void)? {
       self.ref.child("collects/\(self.timestamp!)/template").setValue(index)
       self.collect.setValue(index, forKey: "template")
+      self.delegate.updateCollect(timestamp: self.timestamp, collect: self.collect)
     })
   }
 
