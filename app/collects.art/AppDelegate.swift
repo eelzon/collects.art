@@ -9,11 +9,13 @@
 import UIKit
 import Firebase
 import IQKeyboardManagerSwift
+import Alamofire
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
+  let manager = NetworkReachabilityManager()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
@@ -45,14 +47,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.selected)
     IQBarButtonItem.appearance().tintColor = purple
 
-    let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")
-    connectedRef.observe(.value, with: { snapshot in
-      if let connected = snapshot.value as? Bool, connected == false {
+    manager?.listener = { status in
+      if status == .notReachable {
         if let navigationController = self.window?.rootViewController as? UINavigationController {
           navigationController.popToRootViewController(animated: true)
         }
       }
-    })
+    }
+
+    manager?.startListening()
 
     return true
   }

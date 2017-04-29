@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import SDCAlertView
+import Alamofire
 import AlamofireImage
 import SESlideTableViewCell
 
@@ -23,9 +24,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
-  var previousStatus: String = "unconnected"
   var collects: NSMutableDictionary! = NSMutableDictionary()
   var timestamps: NSMutableArray! = NSMutableArray()
+  let manager = NetworkReachabilityManager()
   var ref: FIRDatabaseReference!
   var storageRef: FIRStorageReference!
   var uid: String!
@@ -39,14 +40,13 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    setConnectedObserver()
+    setReachability()
 
-    activityIndicator.startAnimating()
-
-    let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
-    offlineView.loadHTMLString(html, baseURL: nil)
-
-    tableView.scrollsToTop = true
+    if !manager!.isReachable {
+      self.lockDown()
+    } else {
+      self.setAuth()
+    }
 
     let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
     add.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
@@ -66,15 +66,15 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
     navigationItem.leftBarButtonItem?.tintColor = purple
 
+    tableView.scrollsToTop = true
     tableView.estimatedRowHeight = 80
     tableView.rowHeight = UITableViewAutomaticDimension
   }
 
   func setAuth() {
+    offlineView.isHidden = false
+    activityIndicator.startAnimating()
     tableView.isHidden = true
-    offlineView.isHidden = true
-    addButton.isEnabled = true
-    userButton.isEnabled = true
 
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
@@ -105,6 +105,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   func getCollects() {
     tableView.isHidden = false
+    addButton.isEnabled = true
+    userButton.isEnabled = true
+    navigationItem.leftBarButtonItem?.isEnabled = true
     ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists(), let value = snapshot.value as? NSDictionary {
         UserDefaults.standard.set(value, forKey: "collects")
@@ -400,30 +403,33 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     return UIModalPresentationStyle.none
   }
 
-  func setConnectedObserver() {
-    let connectedRef = FIRDatabase.database().reference(withPath: ".info/connected")
-    connectedRef.observe(.value, with: { snapshot in
-      if let connected = snapshot.value as? Bool, !connected {
-        if (self.previousStatus == "connected") {
-          self.lockDown()
-        }
-        self.previousStatus = "unconnected"
+  func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
+    setUserRibbon()
+  }
+
+  func setReachability() {
+    let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
+    offlineView.loadHTMLString(html, baseURL: nil)
+
+    manager?.listener = { status in
+      if status == .notReachable {
+        self.lockDown()
       } else {
-        if (self.previousStatus == "unconnected") {
-          self.setAuth()
-        }
-        self.previousStatus = "connected"
+        self.setAuth()
       }
-    })
+    }
+
+    manager?.startListening()
   }
 
   func lockDown() {
-    self.activityIndicator.stopAnimating()
-    self.tableView.isHidden = true
-    self.addButton.isEnabled = false
-    self.userButton.isEnabled = false
-    self.dismiss(animated: true, completion: {})
-    self.offlineView.isHidden = false
+    activityIndicator.stopAnimating()
+    addButton.isEnabled = false
+    userButton.isEnabled = false
+    navigationItem.leftBarButtonItem?.isEnabled = false
+    tableView.isHidden = true
+    dismiss(animated: true, completion: {})
+    offlineView.isHidden = false
   }
   
 }

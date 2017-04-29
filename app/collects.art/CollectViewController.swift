@@ -64,15 +64,12 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     uid = FIRAuth.auth()!.currentUser!.uid
 
-    tableView.scrollsToTop = true
-
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
 
+    tableView.scrollsToTop = true
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 140
-
-    tableView.scrollsToTop = true
 
     getEntries()
 
