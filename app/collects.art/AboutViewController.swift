@@ -20,7 +20,7 @@ class AboutViewController: UIViewController, UIWebViewDelegate {
       let html = try NSString.init(contentsOfFile: file, encoding: String.Encoding.utf8.rawValue)
       webView.loadHTMLString(html as String, baseURL: URL.init(fileURLWithPath: Bundle.main.bundlePath))
     } catch {
-      webView.loadHTMLString("<html><body><p>Collects is an anonymized social network in the style of the artist Bunny Rogers, created in 2017 for Rhizome's <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers. Create your own collects or view the work of others at <a href='https://collectable.art'>collectable.art</a>.</p></body></html>", baseURL: nil)
+      webView.loadHTMLString("<html><head><style type='text/css'>a:link, a:visited, a:hover, a:active { color: #551a8b; }</style></head><body><p>Collects is an anonymized social network in the style of the artist Bunny Rogers, created in 2017 for Rhizome's <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers. Create your own collects or view the work of others at <a href='https://collectable.art'>collectable.art</a>.</p></body></html>", baseURL: nil)
     }
   }
 
