@@ -73,7 +73,7 @@ class TemplateCollectionViewController: UICollectionViewController {
 
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     templateIndex = (templates.object(at: indexPath.row) as! NSDictionary).value(forKey: "index") as! Int
-    self.delegate.saveTemplate(index: templateIndex)
+    delegate.saveTemplate(index: templateIndex)
   }
 
 }

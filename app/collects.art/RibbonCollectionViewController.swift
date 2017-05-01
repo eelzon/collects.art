@@ -14,14 +14,21 @@ class RibbonCollectionViewCell: UICollectionViewCell {
 
 }
 
+protocol RibbonDelegate {
+  func setUserRibbon()
+}
+
+
 class RibbonCollectionViewController: UICollectionViewController {
 
   var ribbon: String!
   var ribbons: NSArray!
+  var delegate: RibbonDelegate!
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    ribbon = UserDefaults.standard.object(forKey: "ribbon") as! String
     ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
   }
 
@@ -67,6 +74,7 @@ class RibbonCollectionViewController: UICollectionViewController {
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     ribbon = ribbons.object(at: indexPath.row) as! String
     UserDefaults.standard.set(ribbon, forKey: "ribbon")
+    delegate.setUserRibbon()
   }
 
 }

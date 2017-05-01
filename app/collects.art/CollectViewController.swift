@@ -404,10 +404,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       destination.timestamp = entryTimestamp
       destination.readonly = readonly
       destination.delegate = self
-    } else if segue.identifier == "unwindToCollects" {
-      let defaults = UserDefaults.standard
-      defaults.removeObject(forKey: "collect")
-      defaults.removeObject(forKey: "entries")
     } else if segue.identifier == "segueToTemplates" {
       if let destination = segue.destination as? TemplateCollectionViewController {
         destination.popoverPresentationController!.delegate = self

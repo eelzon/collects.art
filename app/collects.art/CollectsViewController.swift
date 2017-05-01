@@ -19,7 +19,7 @@ class CollectsTableViewCell: SESlideTableViewCell {
 
 }
 
-class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, CollectDelegate {
+class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, CollectDelegate, RibbonDelegate {
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
@@ -131,6 +131,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func setUserRibbon() {
+    // close ribbon popover if open
+    dismiss(animated: true, completion: {})
+
     ribbon = UserDefaults.standard.object(forKey: "ribbon") as? String
     if ribbon == nil {
       let ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
@@ -157,8 +160,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func getRibbons() {
-    UserDefaults.standard.addObserver(self, forKeyPath: "ribbon", options: NSKeyValueObservingOptions.new, context: nil)
-
     if UserDefaults.standard.object(forKey: "ribbons") == nil {
       ref.child("ribbons").observeSingleEvent(of: .value, with: { (snapshot) in
         if snapshot.exists(), let value = snapshot.value as? NSDictionary {
@@ -197,16 +198,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     // close popovers if open
     dismiss(animated: true, completion: {})
     UIApplication.shared.openURL(URL.init(string: "https://collectable.art")!)
-  }
-
-  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    if keyPath == "ribbon" {
-      self.dismiss(animated: true, completion: (() -> Void)? {
-        self.setUserRibbon()
-      })
-    } else {
-      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-    }
   }
 
   // proud of this lil script, so it gets to stay :)
@@ -408,7 +399,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       if let destination = segue.destination as? RibbonCollectionViewController {
         destination.popoverPresentationController!.delegate = self
         destination.preferredContentSize = CGSize(width: 300, height: 300)
-        destination.ribbon = ribbon
+        destination.delegate = self
       }
     } else if segue.identifier == "segueToAbout" {
       segue.destination.popoverPresentationController!.delegate = self
@@ -422,10 +413,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
   func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
     return UIModalPresentationStyle.none
-  }
-
-  func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
-    setUserRibbon()
   }
 
   func setReachability() {
