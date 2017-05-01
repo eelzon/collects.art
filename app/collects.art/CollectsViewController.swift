@@ -108,7 +108,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     tableView.isHidden = false
     addButton.isEnabled = true
     userButton.isEnabled = true
-    navigationItem.leftBarButtonItem?.isEnabled = true
     ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
       if snapshot.exists(), let value = snapshot.value as? NSDictionary {
         UserDefaults.standard.set(value, forKey: "collects")
@@ -435,7 +434,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     activityIndicator.stopAnimating()
     addButton.isEnabled = false
     userButton.isEnabled = false
-    navigationItem.leftBarButtonItem?.isEnabled = false
     tableView.isHidden = true
     offlineView.isHidden = false
   }
