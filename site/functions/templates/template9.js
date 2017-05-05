@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: center;
@@ -13,7 +13,7 @@ module.exports = function(title, entries) {
       }
       img {
         max-width: 100%;
-        max-height: 200px;
+        max-height: 400px;
       }
       .container {
         display: inline-flex;
@@ -25,7 +25,7 @@ module.exports = function(title, entries) {
       .inner {
         overflow: auto;
         word-wrap: break-word;
-        max-width: 200px;
+        max-width: 300px;
         padding: 6px;
         border: 4px ridge;
       }
@@ -33,9 +33,7 @@ module.exports = function(title, entries) {
     <h1>{{title}}</h1>
     <hr>
     {{{content}}}
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var content = '';
   for (var i = 0; i < entries.length; i += 4) {

@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: left;
@@ -26,9 +26,7 @@ module.exports = function(title, entries) {
     {{/if}}
     <hr>
     <a href='/'>back</a>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var index = Math.floor(Math.random() * entries.length);
 

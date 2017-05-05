@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: center;
@@ -36,9 +36,7 @@ module.exports = function(title, entries) {
     <table>
       {{{content}}}
     </table>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var formatEntry = (entry, custom) => {
     var image = entry.image ? `<div class='image'><img src='${entry.image}' /></div>` : '';
@@ -50,7 +48,6 @@ module.exports = function(title, entries) {
   };
 
   var content = '';
-
   var rowstartIndex = 1;
   for (var i = 0; i < entries.length; i += 1) {
     var row = '';

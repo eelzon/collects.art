@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: center;
@@ -44,9 +44,7 @@ module.exports = function(title, entries) {
         </div>
       {{/each}}
     </div>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   return template({ title: title, entries: entries });
 }

@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         color:#50547a;
@@ -66,9 +66,7 @@ module.exports = function(title, entries) {
       </div>
     {{/if}}
     <hr>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var formatEntry = function(entry) {
     var html = '';
@@ -85,7 +83,6 @@ module.exports = function(title, entries) {
   var lastEntry = entries.pop();
 
   var rows = [];
-
   for (var i = 0; i < entries.length; i += 1) {
     // pick between 2 and 5 items
     var rowLength = Math.floor(Math.random() * 4) + 2;

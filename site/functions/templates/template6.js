@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: center;
@@ -43,9 +43,7 @@ module.exports = function(title, entries) {
       {{/if}}
     {{/each}}
     <hr>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var index = Math.floor(Math.random() * entries.length);
   var random = entries.splice(index, 1);

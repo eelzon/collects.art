@@ -1,7 +1,5 @@
-var functions = require('firebase-functions');
 var cors = require('cors')({ origin: true });
-var Handlebars = require('handlebars');
-
+var functions = require('firebase-functions');
 var admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
@@ -39,7 +37,7 @@ function getTemplate(collect) {
     require('./templates/template8'),
     require('./templates/template9'),
     require('./templates/template10')
-  ]
+  ];
   var entries = arrayFromEntries(collect.entries);
   return templates[collect.template - 1](collect.title, entries);
 }

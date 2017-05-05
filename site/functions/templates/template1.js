@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align:center;
@@ -33,9 +33,7 @@ module.exports = function(title, entries) {
         {{/ifSecond}}
       {{/ifThird}}
     {{/each}}
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   Handlebars.registerHelper('ifThird', function (index, options) {
     if ((index + 1) % 3 == 0){

@@ -1,7 +1,7 @@
 var Handlebars = require('handlebars');
 
 module.exports = function(title, entries) {
-  var html = `
+  var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align: center;
@@ -33,12 +33,9 @@ module.exports = function(title, entries) {
     <div class='content'>
       {{{content}}}
     </div>
-  `;
-
-  var template = Handlebars.compile(html);
+  `);
 
   var content = '';
-
   for (var i = 0; i < entries.length; i += 3) {
     var group = '';
     [i, i + 1, i + 2].forEach((index) => {
