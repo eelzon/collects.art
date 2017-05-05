@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Collectable.art</title>
 
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel='shortcut icon' href='./favicon.ico' type='image/x-icon' />
 
     <!-- update the version number as needed -->
-    <script defer src="/__/firebase/3.7.8/firebase-app.js"></script>
+    <script defer src='/__/firebase/3.7.8/firebase-app.js'></script>
     <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/3.7.8/firebase-database.js"></script>
+    <script defer src='/__/firebase/3.7.8/firebase-database.js'></script>
     <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+    <script defer src='/__/firebase/init.js'></script>
 
-    <style media="screen"></style>
+    <style media='screen'></style>
   </head>
   <body>
     <h1>Collects</h1>
     <table></table>
     <hr>
-    <small>Collects is an anonymized social network in the style of the artist Bunny Rogers, created in 2017 for Rhizome's <a href="https://sevenonseven.art">Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers. Create your own collects with the <a href="https://collectable.art/app">collectable.art app</a>.</small>
+    <small>Collects is an anonymized social network in the style of the artist Bunny Rogers, created in 2017 for Rhizome's <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers. Create your own collects with the <a href='https://collectable.art/app'>collectable.art app</a>.</small>
     <script>
       window.onload = function() {
         loadCollects().catch(function(e) {
@@ -40,7 +40,7 @@
               Object.keys(user.collects).forEach(function(timestamp) {
                 var collect = user.collects[timestamp];
                 if (collect.published) {
-                  var li = document.createElement("li");
+                  var li = document.createElement('li');
                   var a = document.createElement('a');
                   a.appendChild(document.createTextNode(collect.title));
                   a.href = '/' + timestamp + '/' + collect.title;

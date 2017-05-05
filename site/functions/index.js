@@ -51,12 +51,12 @@ function getTemplate(collect) {
 
 function template1(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align:center;
       }
       body {
-          background-image: url("http://meryn.ru/rhizome/harlequin.png");
+          background-image: url('http://meryn.ru/rhizome/harlequin.png');
       }
       p {
         width: 50%;
@@ -70,14 +70,14 @@ function template1(collect) {
     <hr>
     {{#each entries}}
       {{#ifThird @index}}
-        <p style="text-align: center; margin: 0 auto;">{{{this}}}</p>
+        <p style='text-align: center; margin: 0 auto;'>{{{this}}}</p>
         <hr>
       {{else}}
         {{#ifSecond @index}}
-          <p style="text-align: left; margin-right: auto;">{{{this}}}</p>
+          <p style='text-align: left; margin-right: auto;'>{{{this}}}</p>
           <hr>
         {{else}}
-          <p style="text-align: right; margin-left: auto;">{{{this}}}</p>
+          <p style='text-align: right; margin-left: auto;'>{{{this}}}</p>
           <hr>
         {{/ifSecond}}
       {{/ifThird}}
@@ -107,11 +107,11 @@ function template1(collect) {
   var links = keys.map((key) => {
     var entry = entries[key];
     if (entry.title && entry.image) {
-      return `<a href="${entry.image}">${entry.title}</a>`;
+      return `<a href='${entry.image}'>${entry.title}</a>`;
     } else if (entry.title) {
       return entry.title;
     } else if (entry.image) {
-      return `<a href="${entry.image}">untitled</a>`;
+      return `<a href='${entry.image}'>untitled</a>`;
     }
     return '';
   });
@@ -121,12 +121,12 @@ function template1(collect) {
 
 function template2(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         color:#50547a;
       }
       body {
-        background-image: url("http://meryn.ru/rhizome/maude_stain_pattern-03-light.gif");
+        background-image: url('http://meryn.ru/rhizome/maude_stain_pattern-03-light.gif');
       }
       .solo img {
         max-height: 250px;
@@ -153,9 +153,9 @@ function template2(collect) {
     <h1>{{title}}</h1>
     <hr>
     {{#if first}}
-      <div class="solo left">
+      <div class='solo left'>
         {{#if first.image}}
-          <img src="{{first.image}}" />
+          <img src='{{first.image}}' />
         {{/if}}
         {{#if first.title}}
           <p>{{first.title}}</p>
@@ -164,7 +164,7 @@ function template2(collect) {
       <hr>
     {{/if}}
     {{#each rows}}
-      <div class="group">
+      <div class='group'>
         {{#if images}}
           {{{images}}}
         {{/if}}
@@ -175,9 +175,9 @@ function template2(collect) {
       <hr>
     {{/each}}
     {{#if last}}
-      <div class="solo right">
+      <div class='solo right'>
         {{#if last.image}}
-          <img src="{{last.image}}" />
+          <img src='{{last.image}}' />
         {{/if}}
         {{#if last.title}}
           <p>{{last.title}}</p>
@@ -192,7 +192,7 @@ function template2(collect) {
   var formatEntry = function(entry) {
     var html = '';
     if (entry.image) {
-      html = html + `<img src="${entry.image}" />`;
+      html = html + `<img src='${entry.image}' />`;
     }
     if (entry.title) {
       html = html + `<p>${entry.title}</p>`;
@@ -220,7 +220,7 @@ function template2(collect) {
       } else {
         var entry = entries[keys[index]];
         if (entry.image) {
-          images = images + `<img src="${entry.image}" />`;
+          images = images + `<img src='${entry.image}' />`;
         }
         if (entry.title) {
           titles = titles + ' | ' + entry.title;
@@ -236,14 +236,14 @@ function template2(collect) {
 
 function template3(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/bow-bg2.png");
+        background-image: url('http://meryn.ru/rhizome/bow-bg2.png');
         text-align: center;
         margin-top: 40px;
       }
@@ -262,10 +262,10 @@ function template3(collect) {
     </style>
     <h1>{{title}}</h1>
     {{#if entry.image}}
-      <img src="{{entry.image}}">
+      <img src='{{entry.image}}'>
     {{/if}}
     {{#if entry.title}}
-      <p class="description">{{entry.title}}</p>
+      <p class='description'>{{entry.title}}</p>
     {{/if}}
     <hr>
   `;
@@ -281,14 +281,14 @@ function template3(collect) {
 
 function template4(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/morphine-bg-light.gif");
+        background-image: url('http://meryn.ru/rhizome/morphine-bg-light.gif');
       }
       .content {
         max-width: 1000px;
@@ -309,7 +309,7 @@ function template4(collect) {
       }
     </style>
     <h1>{{title}}</h1>
-    <div class="content">
+    <div class='content'>
       {{{content}}}
     </div>
   `;
@@ -327,14 +327,14 @@ function template4(collect) {
         return;
       }
       var entry = entries[keys[index]];
-      var image = entry.image ? `<img src="${entry.image}" />` : '';
+      var image = entry.image ? `<img src='${entry.image}' />` : '';
       var title = entry.title ? `<p>${entry.title}</p>` : '';
       if (image || title) {
-        group = group + `<div class="column">${image}${title}</div>`;
+        group = group + `<div class='column'>${image}${title}</div>`;
       }
     });
     if (group) {
-      content = content + `<div class="column-group">${group}</div>`;
+      content = content + `<div class='column-group'>${group}</div>`;
     }
   }
 
@@ -343,14 +343,14 @@ function template4(collect) {
 
 function template5(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/flag-bg2.gif");
+        background-image: url('http://meryn.ru/rhizome/flag-bg2.gif');
       }
       img {
         max-width: 100%;
@@ -373,14 +373,14 @@ function template5(collect) {
     </style>
     <h1>{{title}}</h1>
     <hr>
-    <div class="container">
+    <div class='container'>
       {{#each entries}}
-        <div class="inner">
+        <div class='inner'>
           {{#if this.title}}
             <p>{{this.title}}</p>
           {{/if}}
           {{#if this.image}}
-            <img src="{{this.image}}">
+            <img src='{{this.image}}'>
           {{/if}}
         </div>
       {{/each}}
@@ -396,14 +396,14 @@ function template5(collect) {
 
 function template6(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/tulip-bg-light.gif");
+        background-image: url('http://meryn.ru/rhizome/tulip-bg-light.gif');
       }
       .description {
        color: #9B979F;
@@ -421,9 +421,9 @@ function template6(collect) {
     </style>
     <h1>{{title}}</h1>
     <hr>
-    <p class="description">
+    <p class='description'>
       {{#if random.image}}
-        <a href="{{random.image}}">
+        <a href='{{random.image}}'>
       {{/if}}
       {{random.title}}
       {{#if random.image}}
@@ -433,7 +433,7 @@ function template6(collect) {
     <hr>
     {{#each rest}}
       {{#if this.image}}
-        <p><img src="{{this.image}}" title="{{this.title}}" alt="{{this.title}}" /></p>
+        <p><img src='{{this.image}}' title='{{this.title}}' alt='{{this.title}}' /></p>
       {{/if}}
     {{/each}}
     <hr>
@@ -460,14 +460,14 @@ function template6(collect) {
 
 function template7(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: left;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/patch-bg2.gif");
+        background-image: url('http://meryn.ru/rhizome/patch-bg2.gif');
       }
       img {
         max-width: 600px;
@@ -477,13 +477,13 @@ function template7(collect) {
       }
     </style>
     <h1>{{title}}</h1>
-    <a href="/">back</a>
+    <a href='/'>back</a>
     <hr>
     {{#if entry.image}}
-      <img src="{{entry.image}}" title="{{entry.title}}" alt="{{entry.title}}">
+      <img src='{{entry.image}}' title='{{entry.title}}' alt='{{entry.title}}'>
     {{/if}}
     <hr>
-    <a href="/">back</a>
+    <a href='/'>back</a>
   `;
 
   var template = Handlebars.compile(html);
@@ -497,14 +497,14 @@ function template7(collect) {
 
 function template8(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/ty-bg-light.png");
+        background-image: url('http://meryn.ru/rhizome/ty-bg-light.png');
       }
       .poem {
         background: white;
@@ -524,9 +524,9 @@ function template8(collect) {
     {{#each entries}}
       {{#if this.image}}
         {{#if this.title}}
-          <a href="#{{@index}}">
+          <a href='#{{@index}}'>
         {{/if}}
-          <img src="{{this.image}}" />
+          <img src='{{this.image}}' />
         {{#if this.title}}
           </a>
         {{/if}}
@@ -535,8 +535,8 @@ function template8(collect) {
 
     {{#each entries}}
       {{#if this.title}}
-        <a name="{{@index}}"></a>
-        <p class="poem">
+        <a name='{{@index}}'></a>
+        <p class='poem'>
           {{this.title}}
         </p>
       {{/if}}
@@ -552,14 +552,14 @@ function template8(collect) {
 
 function template9(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
         margin: 8px;
-        background-image: url("http://meryn.ru/rhizome/snowflakes-bg2.gif");
+        background-image: url('http://meryn.ru/rhizome/snowflakes-bg2.gif');
       }
       img {
         max-width: 100%;
@@ -599,13 +599,13 @@ function template9(collect) {
         return;
       }
       var entry = entries[keys[index]];
-      var image = entry.image ? `<div class="inner"><img src="${entry.image}" /></div>` : '';
+      var image = entry.image ? `<div class='inner'><img src='${entry.image}' /></div>` : '';
       images = images + image;
       var title = entry.title ? `<p>${entry.title}</p>` : '';
       titles = titles + title;
     });
     if (images) {
-      images = '<div class="container">' + images + '</div>';
+      images = '<div class=\'container\'>' + images + '</div>';
     }
     if (images || titles) {
       content = content + images + titles + '<hr>';
@@ -617,13 +617,13 @@ function template9(collect) {
 
 function template10(collect) {
   var html = `
-    <style type="text/css">
+    <style type='text/css'>
       h1 {
         text-align: center;
       }
       body {
         font-family: 'Times New Roman', Times, serif;
-        background-image: url("http://meryn.ru/rhizome/rain-bg-lighter.png");
+        background-image: url('http://meryn.ru/rhizome/rain-bg-lighter.png');
       }
       table {
         max-width: 800px;
@@ -656,7 +656,7 @@ function template10(collect) {
   var template = Handlebars.compile(html);
 
   var formatEntry = (entry, custom) => {
-    var image = entry.image ? `<div class="image"><img src="${entry.image}" /></div>` : '';
+    var image = entry.image ? `<div class='image'><img src='${entry.image}' /></div>` : '';
     var title = entry.title ? `<p>${entry.title}</p>` : '';
     if (image || title) {
       return `<td ${custom}>${image}${title}</td>`
@@ -676,13 +676,13 @@ function template10(collect) {
         if (i >= keys.length) {
           continue;
         }
-        row = row + formatEntry(entries[keys[i]], 'class="column"');
+        row = row + formatEntry(entries[keys[i]], 'class=\'column\'');
       }
       rowstartIndex = rowstartIndex + 6;
       // we don't want that last increment
       i = i - 1;
     } else {
-      row = row + formatEntry(entries[keys[i]], 'colspan="3"');
+      row = row + formatEntry(entries[keys[i]], 'colspan=\'3\'');
     }
     if (row) {
       content = content + `<tr>${row}</tr>`;
