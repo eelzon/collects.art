@@ -20,7 +20,7 @@
     <script>
       window.onload = function() {
         var [timestamp, title] = window.location.pathname.slice(1).split('/', 2);
-        document.title = title;
+        document.title = decodeURI(title);
         loadCollect(timestamp).then(function(html) {
           document.body.innerHTML = html;
         }).catch(function(e) {
