@@ -2,12 +2,17 @@ var functions = require('firebase-functions');
 var cors = require('cors')({ origin: true });
 var Handlebars = require('handlebars');
 
+var admin = require('firebase-admin');
+admin.initializeApp(functions.config().firebase);
+
 // Create and Deploy Your First Cloud Functions
 // https://firebase.google.com/docs/functions/write-firebase-functions
 exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
-    var collect = JSON.parse(req.body);
-    res.send(getTemplate(collect));
+    admin.database().ref('/collects/' + req.query.timestamp).once('value').then(function(snapshot) {
+      var collect = snapshot.exportVal();
+      res.send(getTemplate(collect));
+    });
   });
 });
 

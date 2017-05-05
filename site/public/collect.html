@@ -19,7 +19,8 @@
   <body>
     <script>
       window.onload = function() {
-        var timestamp = window.location.pathname.slice(1).split('/', 1);
+        var [timestamp, title] = window.location.pathname.slice(1).split('/', 2);
+        document.title = title;
         loadCollect(timestamp).then(function(html) {
           document.body.innerHTML = html;
         }).catch(function(e) {
@@ -29,27 +30,21 @@
       };
 
       function loadCollect(timestamp) {
-        return firebase.database().ref('/collects/' + timestamp).once('value').then(function(snapshot) {
-          var collect = snapshot.exportVal();
+        return new Promise(function(resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          var url = 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template';
+          xhr.open('POST', `${url}?timestamp=${timestamp}`, true);
+          xhr.send();
 
-          document.title = collect.title;
-
-          return new Promise(function(resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            var url = 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template';
-            xhr.open('POST', url, true);
-            xhr.send(JSON.stringify(collect));
-
-            xhr.onerror = function() {
-              return reject(new Error('network error'));
-            };
-            xhr.ontimeout = function() {
-              return reject(new Error('timeout'));
-            };
-            xhr.onload = function() {
-              return resolve(xhr.response);
-            };
-          });
+          xhr.onerror = function() {
+            return reject(new Error('network error'));
+          };
+          xhr.ontimeout = function() {
+            return reject(new Error('timeout'));
+          };
+          xhr.onload = function() {
+            return resolve(xhr.response);
+          };
         });
       }
     </script>
