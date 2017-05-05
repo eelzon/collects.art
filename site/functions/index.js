@@ -16,15 +16,15 @@ exports.template = functions.https.onRequest((req, res) => {
   });
 });
 
-function entriesWithoutEmpties(collect) {
+function arrayFromEntries(collect) {
   var allEntries = collect.entries || {};
   return Object.keys(allEntries).reduce((entries, key) => {
     var entry = allEntries[key];
     if (entry.title || entry.image) {
-      entries[key] = entry;
+      entries.push(entry);
     }
     return entries;
-  }, {});
+  }, []);
 }
 
 function getTemplate(collect) {
@@ -107,10 +107,8 @@ function template1(collect) {
     }
   });
 
-  var entries = entriesWithoutEmpties(collect)
-  var keys = Object.keys(entries);
-  var links = keys.map((key) => {
-    var entry = entries[key];
+  var entries = arrayFromEntries(collect);
+  var links = entries.map((entry) => {
     if (entry.title && entry.image) {
       return `<a href='${entry.image}'>${entry.title}</a>`;
     } else if (entry.title) {
@@ -205,25 +203,24 @@ function template2(collect) {
     return html;
   }
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
+  var entries = arrayFromEntries(collect);
 
-  var firstKey = keys.shift();
-  var lastKey = keys.pop();
+  var firstEntry = entries.shift();
+  var lastEntry = entries.pop();
 
   var rows = [];
 
-  for (var i = 0; i < keys.length; i += 1) {
+  for (var i = 0; i < entries.length; i += 1) {
     // pick between 2 and 5 items
     var rowLength = Math.floor(Math.random() * 4) + 2;
     var images = '';
     var titles = '';
     for (var j = 0; j < rowLength; j += 1) {
       var index = i + j;
-      if (index >= keys.length) {
-        return
+      if (index >= entries.length) {
+        return;
       } else {
-        var entry = entries[keys[index]];
+        var entry = entries[index];
         if (entry.image) {
           images = images + `<img src='${entry.image}' />`;
         }
@@ -236,7 +233,7 @@ function template2(collect) {
     i = i + rowLength - 1;
   }
 
-  return template({ title: collect.title, first: entries[firstKey], last: entries[lastKey], rows: rows });
+  return template({ title: collect.title, first: firstEntry, last: lastEntry, rows: rows });
 }
 
 function template3(collect) {
@@ -277,11 +274,10 @@ function template3(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
-  var index = Math.floor(Math.random() * keys.length);
+  var entries = arrayFromEntries(collect);
+  var index = Math.floor(Math.random() * entries.length);
 
-  return template({ title: collect.title, entry: entries[keys[index]] });
+  return template({ title: collect.title, entry: entries[index] });
 }
 
 function template4(collect) {
@@ -321,17 +317,16 @@ function template4(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
+  var entries = arrayFromEntries(collect);
   var content = '';
 
-  for (var i = 0; i < keys.length; i += 3) {
+  for (var i = 0; i < entries.length; i += 3) {
     var group = '';
     [i, i + 1, i + 2].forEach((index) => {
-      if (index >= keys.length) {
+      if (index >= entries.length) {
         return;
       }
-      var entry = entries[keys[index]];
+      var entry = entries[index];
       var image = entry.image ? `<img src='${entry.image}' />` : '';
       var title = entry.title ? `<p>${entry.title}</p>` : '';
       if (image || title) {
@@ -394,7 +389,7 @@ function template5(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
+  var entries = arrayFromEntries(collect);
 
   return template({ title: collect.title, entries: entries });
 }
@@ -446,21 +441,11 @@ function template6(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
-  var index = Math.floor(Math.random() * keys.length);
+  var entries = arrayFromEntries(collect);
+  var index = Math.floor(Math.random() * entries.length);
+  var random = entries.splice(index, 1);
 
-  var rest = [];
-  var random;
-  keys.forEach((key, i) => {
-    if (i !== index) {
-      rest.push(entries[key]);
-    } else {
-      random = entries[key];
-    }
-  });
-
-  return template({ title: collect.title, random: random, rest: rest });
+  return template({ title: collect.title, random: random, rest: entries });
 }
 
 function template7(collect) {
@@ -493,11 +478,10 @@ function template7(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
-  var index = Math.floor(Math.random() * keys.length);
+  var entries = arrayFromEntries(collect);
+  var index = Math.floor(Math.random() * entries.length);
 
-  return template({ title: collect.title, entry: entries[keys[index]] });
+  return template({ title: collect.title, entry: entries[index] });
 }
 
 function template8(collect) {
@@ -550,7 +534,7 @@ function template8(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
+  var entries = arrayFromEntries(collect);
 
   return template({ title: collect.title, entries: entries });
 }
@@ -592,18 +576,17 @@ function template9(collect) {
 
   var template = Handlebars.compile(html);
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
+  var entries = arrayFromEntries(collect);
   var content = '';
 
-  for (var i = 0; i < keys.length; i += 4) {
+  for (var i = 0; i < entries.length; i += 4) {
     var images = '';
     var titles = '';
     [i, i + 1, i + 2, i + 3].forEach((index) => {
-      if (index >= keys.length) {
+      if (index >= entries.length) {
         return;
       }
-      var entry = entries[keys[index]];
+      var entry = entries[index];
       var image = entry.image ? `<div class='inner'><img src='${entry.image}' /></div>` : '';
       images = images + image;
       var title = entry.title ? `<p>${entry.title}</p>` : '';
@@ -669,25 +652,24 @@ function template10(collect) {
     return '';
   };
 
-  var entries = entriesWithoutEmpties(collect);
-  var keys = Object.keys(entries);
+  var entries = arrayFromEntries(collect);
   var content = '';
 
   var rowstartIndex = 1;
-  for (var i = 0; i < keys.length; i += 1) {
+  for (var i = 0; i < entries.length; i += 1) {
     var row = '';
     if (i === rowstartIndex) {
       for (i; i < rowstartIndex + 3; i += 1) {
-        if (i >= keys.length) {
+        if (i >= entries.length) {
           continue;
         }
-        row = row + formatEntry(entries[keys[i]], 'class=\'column\'');
+        row = row + formatEntry(entries[i], 'class=\'column\'');
       }
       rowstartIndex = rowstartIndex + 6;
       // we don't want that last increment
       i = i - 1;
     } else {
-      row = row + formatEntry(entries[keys[i]], 'colspan=\'3\'');
+      row = row + formatEntry(entries[i], 'colspan=\'3\'');
     }
     if (row) {
       content = content + `<tr>${row}</tr>`;
