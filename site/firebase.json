@@ -7,6 +7,11 @@
     "rewrites": [ {
       "source": "**",
       "destination": "/index.html"
+    } ],
+    "redirects": [ {
+      "source": "/app",
+      "destination": "https://itunes.apple.com/us/app/collectable-art/id1228469623",
+      "type": 301
     } ]
   }
 }
