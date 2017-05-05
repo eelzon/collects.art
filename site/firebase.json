@@ -6,7 +6,7 @@
     "public": "public",
     "rewrites": [ {
       "source": "**",
-      "destination": "/index.html"
+      "destination": "/collect.html"
     } ],
     "redirects": [ {
       "source": "/app",

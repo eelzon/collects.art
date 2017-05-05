@@ -10,7 +10,6 @@
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/3.7.8/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/3.7.8/firebase-auth.js"></script>
     <script defer src="/__/firebase/3.7.8/firebase-database.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
@@ -18,45 +17,25 @@
     <style media="screen"></style>
   </head>
   <body>
-    <div id="collects" style="display:none">
-      <h1>Collects</h1>
-      <table id="table"></table>
-      <hr>
-      <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
-    </div>
-    <div id="collect" style="display:none"></div>
-    <p id="load">...</p>
+    <h1>Collects</h1>
+    <table></table>
+    <hr>
+    <small>Created in 2017 for <a href='https://sevenonseven.art'>Seven on Seven</a> by Nozlee Samadzadeh and Bunny Rogers</small>
     <script>
-      var load = document.getElementById('load');
-      var collectsDiv = document.getElementById('collects');
-      var collectDiv = document.getElementById('collect');
-
       window.onload = function() {
-        init();
-      };
-
-      function init() {
-        var promise;
-        var timestamp = window.location.pathname.slice(1).split('/')[0];
-        if (!timestamp) {
-          promise = loadCollects();
-        } else {
-          promise = loadCollect(timestamp);
-        }
-        promise.catch(function(e) {
-          load.innerHTML = 'oops';
+        loadCollects().catch(function(e) {
+          document.body.innerHTML = 'oops';
           console.error(e);
         });
-      }
+      };
 
       function loadCollects() {
         return firebase.database().ref('/users').once('value').then(function(snapshot) {
-          var table = document.getElementById('table');
+          var table = document.getElementsByTagName('table')[0];
           var users = snapshot.exportVal();
           Object.keys(users).forEach(function(uid) {
             var user = users[uid];
-
-            if (user.collects && Object.keys(user.collects)) {
+            if (user.collects) {
               var ul = document.createElement('ul');
               Object.keys(user.collects).forEach(function(timestamp) {
                 var collect = user.collects[timestamp];
@@ -74,69 +53,18 @@
                 ribbon.src = user.ribbon;
                 ribbon.style.height = '50px';
 
-                var userTd = document.createElement('td');
-                userTd.appendChild(ribbon)
+                var user = document.createElement('td');
+                user.appendChild(ribbon)
 
-                var entriesTd = document.createElement('td');
-                entriesTd.appendChild(ul);
+                var entries = document.createElement('td');
+                entries.appendChild(ul);
 
                 var tr = document.createElement('tr');
-                tr.appendChild(userTd);
-                tr.appendChild(entriesTd);
+                tr.appendChild(user);
+                tr.appendChild(entries);
                 table.appendChild(tr);
               }
             }
-          });
-
-          collectsDiv.style.display = '';
-          load.style.display = 'none';
-          load.remove();
-          collectDiv.remove();
-        });
-      }
-
-      function loadCollect(timestamp) {
-        return firebase.database().ref('/collects/' + timestamp).once('value').then(function(snapshot) {
-          var collect = snapshot.exportVal();
-
-          document.title = collect.title;
-
-          return new Promise(function(resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            var headers = {
-              'Content-Type': 'application/json',
-              Accept: 'text/html'
-            };
-
-            var handleXhrError = function(message) {
-              var error = new Error(message);
-              return reject(error);
-            };
-
-            xhr.onerror = function() {
-              return handleXhrError('An network error occurred.')
-            };
-            xhr.ontimeout = function() {
-              return handleXhrError('The XMLHttpRequest timed out.');
-            };
-
-            xhr.onload = function() {
-              if (xhr.status < 200 || xhr.status >= 300) {
-                var error = new HttpStatusError(`Response status not within range: ${xhr.status}`, xhr);
-                return reject(error);
-              }
-              return resolve(xhr.response);
-            };
-
-            var url = 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template';
-            xhr.open('POST', url, true);
-            xhr.send(JSON.stringify(collect));
-          }).then(function(html) {
-            collectDiv.style.display = '';
-            collectDiv.innerHTML = html;
-            load.style.display = 'none';
-            load.remove();
-            collectsDiv.remove();
           });
         });
       }

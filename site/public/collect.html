@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/3.7.8/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/3.7.8/firebase-database.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <style media="screen"></style>
+  </head>
+  <body>
+    <script>
+      window.onload = function() {
+        var timestamp = window.location.pathname.slice(1).split('/', 1);
+        loadCollect(timestamp).then(function(html) {
+          document.body.innerHTML = html;
+        }).catch(function(e) {
+          document.body.innerHTML = 'oops';
+          console.error(e);
+        });
+      };
+
+      function loadCollect(timestamp) {
+        return firebase.database().ref('/collects/' + timestamp).once('value').then(function(snapshot) {
+          var collect = snapshot.exportVal();
+
+          document.title = collect.title;
+
+          return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            var url = 'https://us-central1-' + firebase.app().options.authDomain.split('.')[0] + '.cloudfunctions.net/template';
+            xhr.open('POST', url, true);
+            xhr.send(JSON.stringify(collect));
+
+            xhr.onerror = function() {
+              return reject(new Error('network error'));
+            };
+            xhr.ontimeout = function() {
+              return reject(new Error('timeout'));
+            };
+            xhr.onload = function() {
+              return resolve(xhr.response);
+            };
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
