@@ -1,6 +1,17 @@
 {
   "rules": {
-    ".read": "auth != null",
+    "users": {
+      ".read": "true"
+    },
+    "collects": {
+      ".read": "true"
+    },
+    "templates": {
+      ".read": "auth != null"
+    },
+    "ribbons": {
+      ".read": "auth != null"
+    },
     ".write": "auth != null"
   }
 }
