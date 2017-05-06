@@ -1,13 +1,13 @@
 var Handlebars = require('handlebars');
 
-module.exports = function(title, entries) {
+module.exports = function(title, entries, background) {
   var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         color:#50547a;
       }
       body {
-        background-image: url('http://meryn.ru/rhizome/maude_stain_pattern-03-light.gif');
+        background-image: url('${background}');
       }
       .solo img {
         max-height: 300px;
@@ -31,7 +31,7 @@ module.exports = function(title, entries) {
         margin-right: 0;
       }
     </style>
-    <h1>{{title}}</h1>
+    <h1>${title}</h1>
     <hr>
     {{#if first}}
       <div class='solo left'>
@@ -106,5 +106,5 @@ module.exports = function(title, entries) {
     i = i + rowLength - 1;
   }
 
-  return template({ title: title, first: firstEntry, last: lastEntry, rows: rows });
+  return template({ first: firstEntry, last: lastEntry, rows: rows });
 }

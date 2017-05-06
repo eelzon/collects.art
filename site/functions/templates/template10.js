@@ -1,6 +1,6 @@
 var Handlebars = require('handlebars');
 
-module.exports = function(title, entries) {
+module.exports = function(title, entries, background) {
   var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
@@ -8,7 +8,7 @@ module.exports = function(title, entries) {
       }
       body {
         font-family: 'Times New Roman', Times, serif;
-        background-image: url('http://meryn.ru/rhizome/rain-bg-lighter.png');
+        background-image: url('${background}');
       }
       table {
         max-width: 800px;
@@ -32,7 +32,7 @@ module.exports = function(title, entries) {
         margin: 0 auto;
       }
     </style>
-    <h1>{{title}}</h1>
+    <h1>${title}</h1>
     <table>
       {{{content}}}
     </table>
@@ -69,5 +69,5 @@ module.exports = function(title, entries) {
     }
   }
 
-  return template({ title: title, content: content });
+  return template({ content: content });
 }

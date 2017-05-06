@@ -1,13 +1,13 @@
 var Handlebars = require('handlebars');
 
-module.exports = function(title, entries) {
+module.exports = function(title, entries, background) {
   var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
         text-align:center;
       }
       body {
-          background-image: url('http://meryn.ru/rhizome/harlequin.png');
+          background-image: url('${background}');
       }
       p {
         width: 50%;
@@ -17,7 +17,7 @@ module.exports = function(title, entries) {
         color: black;
       }
     </style>
-    <h1>{{title}}</h1>
+    <h1>${title}</h1>
     <hr>
     {{#each entries}}
       {{#ifThird @index}}
@@ -62,5 +62,5 @@ module.exports = function(title, entries) {
     return '';
   });
 
-  return template({ title: title, entries: links });
+  return template({ entries: links });
 }

@@ -9,8 +9,11 @@ exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
     admin.database().ref('/collects/' + req.query.timestamp).once('value').then(function(snapshot) {
       var collect = snapshot.exportVal();
-      var html = getTemplate(collect);
-      res.send(html);
+      admin.database().ref(`/templates/template${collect.template}/background`).once('value').then(function(snapshot) {
+        var background = snapshot.exportVal();
+        var html = getTemplate(collect, background);
+        res.send(html);
+      });
     });
   });
 });
@@ -25,7 +28,7 @@ function arrayFromEntries(dict) {
   }, []);
 }
 
-function getTemplate(collect) {
+function getTemplate(collect, background) {
   var templates = [
     require('./templates/template1'),
     require('./templates/template2'),
@@ -39,5 +42,5 @@ function getTemplate(collect) {
     require('./templates/template10')
   ];
   var entries = arrayFromEntries(collect.entries);
-  return templates[collect.template - 1](collect.title, entries);
+  return templates[collect.template - 1](collect.title, entries, background);
 }
