@@ -16,7 +16,7 @@ module.exports = function(title, entries, background) {
       .description {
         max-width: 460px;
         margin: 40px auto;
-        background-color: rgba(150,135,165,1);
+        background-color: rgba(150, 135, 165, 1);
         color: white;
         padding: 10px;
         font-style: italic;

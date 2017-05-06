@@ -4,7 +4,7 @@ module.exports = function(title, entries, background) {
   var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
-        color:#50547a;
+        color: #50547a;
       }
       body {
         background-image: url('${background}');

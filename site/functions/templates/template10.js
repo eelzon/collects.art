@@ -22,7 +22,7 @@ module.exports = function(title, entries, background) {
       }
       td {
         padding: 4px 8px;
-        background-color: rgba(164,172,185, .8);
+        background-color: rgba(164, 172, 185, .8);
       }
       img {
         width: 100%;

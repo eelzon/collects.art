@@ -46,7 +46,7 @@ module.exports = function(title, entries, background) {
   `);
 
   var index = Math.floor(Math.random() * entries.length);
-  var random = entries.splice(index, 1);
-
+  var random = entries.splice(index, 1).pop();
+  
   return template({ random: random, rest: entries });
 }

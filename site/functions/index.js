@@ -30,6 +30,7 @@ function arrayFromEntries(dict) {
 
 function getTemplate(collect, background) {
   var templates = [
+    'zero lol', // don't tell me what to do, man
     require('./templates/template1'),
     require('./templates/template2'),
     require('./templates/template3'),
@@ -42,5 +43,5 @@ function getTemplate(collect, background) {
     require('./templates/template10')
   ];
   var entries = arrayFromEntries(collect.entries);
-  return templates[collect.template - 1](collect.title, entries, background);
+  return templates[collect.template](collect.title, entries, background);
 }

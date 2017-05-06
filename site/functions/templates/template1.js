@@ -4,7 +4,7 @@ module.exports = function(title, entries, background) {
   var template = Handlebars.compile(`
     <style type='text/css'>
       h1 {
-        text-align:center;
+        text-align: center;
       }
       body {
           background-image: url('${background}');
