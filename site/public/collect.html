@@ -4,12 +4,12 @@
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='shortcut icon' href='/favicon.ico' type='image/x-icon' />
+    <title>Collectable.art</title>
     <style type='text/css'>
       body {
         font-size: 18px;
       }
     </style>
-    <title></title>
     <!-- update the version number as needed -->
     <script defer src='/__/firebase/3.7.8/firebase-app.js'></script>
     <!-- include only the Firebase features as you need -->
@@ -22,7 +22,9 @@
     <script>
       window.onload = function() {
         var [timestamp, title] = window.location.pathname.slice(1).split('/', 2);
-        document.title = decodeURI(title);
+        if (title) {
+          document.title = decodeURI(title);
+        }
         loadCollect(timestamp).then(function(html) {
           document.body.innerHTML = html;
         }).catch(function(e) {
