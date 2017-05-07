@@ -232,9 +232,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
       let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTitleTableViewCell") as! CollectTitleTableViewCell
-
       cell.titleLabel?.text = collectTitle
-
       return cell
     } else {
       let entryTimestamp = entryTimestamps[indexPath.row] as! String
@@ -246,36 +244,23 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         entryTitle = "untitled"
       }
 
-
+      var cell: SESlideTableViewCell;
       if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
-        cell.entryImageView.af_setImage(withURL: URL(string: imageURL)!)
-
-        cell.titleLabel?.text = entryTitle
-        cell.removeAllRightButtons()
-        if !readonly {
-          cell.delegate = self
-          cell.showsRightSlideIndicator = false
-          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
-        }
-
-        cell.layoutIfNeeded()
-
-        return cell
+        cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
+        (cell as! CollectWithImageTableViewCell).entryImageView.af_setImage(withURL: URL(string: imageURL)!)
+        (cell as! CollectWithImageTableViewCell).titleLabel?.text = entryTitle
       } else {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
-        cell.titleLabel?.text = entryTitle
-        cell.removeAllRightButtons()
-        if !readonly {
-          cell.delegate = self
-          cell.showsRightSlideIndicator = false
-          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
-        }
-
-        cell.layoutIfNeeded()
-
-        return cell
+        cell = tableView.dequeueReusableCell(withIdentifier: "CollectTableViewCell") as! CollectTableViewCell
+        (cell as! CollectTableViewCell).titleLabel?.text = entryTitle
       }
+
+      if !readonly {
+        cell.removeAllRightButtons()
+        cell.delegate = self
+        cell.showsRightSlideIndicator = false
+        cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
+      }
+      return cell
     }
   }
 
