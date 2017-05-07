@@ -50,13 +50,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       self.setAuth()
     }
 
-    let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    add.setImage(UIImage.init(named: "add"), for: .normal)
-    add.imageView?.contentMode = .scaleAspectFit
-    add.contentHorizontalAlignment = .fill
-    add.contentVerticalAlignment = .fill
-    add.addTarget(self, action: #selector(createCollect(_:)), for: .touchUpInside)
-    addButton.customView = add
+    addButton.customView = CollectsButton(image: "add", target: self, action: #selector(createCollect(_:)))
 
     let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
     navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
@@ -122,7 +116,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     activityIndicator.stopAnimating()
     collects = dict.mutableCopy() as! NSMutableDictionary
     let array = (self.collects.allKeys as NSArray).reverseObjectEnumerator().allObjects
-    timestamps = NSMutableArray.init(array: array)
+    timestamps = NSMutableArray(array: array)
     tableView.reloadData()
   }
 
@@ -145,11 +139,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       let image = UIImage(data: data)
       image?.af_inflate()
 
-      let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-      button.setImage(image, for: .normal)
-      button.imageView?.contentMode = .scaleAspectFit
-      button.addTarget(self, action: #selector(openRibbons(_:)), for: .touchUpInside)
-      userButton.customView = button
+      userButton.customView = CollectsButton(image: image, target: self, action: #selector(openRibbons(_:)))
     } catch {
       print(error.localizedDescription)
     }
@@ -193,7 +183,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBAction func openSite(_ sender: Any) {
     // close popovers if open
     dismiss(animated: true, completion: {})
-    UIApplication.shared.openURL(URL.init(string: "https://collectable.art")!)
+    UIApplication.shared.openURL(URL(string: "https://collectable.art")!)
   }
 
   // proud of this lil script, so it gets to stay :)
@@ -209,7 +199,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     while let file = files?.nextObject() as? String {
       let imagePath = (path as NSString).appendingPathComponent(file)
       if fileManager.fileExists(atPath: imagePath) {
-        if let data = NSData.init(contentsOfFile: imagePath) as Data? {
+        if let data = NSData(contentsOfFile: imagePath) as Data? {
           storageRef.child("ribbons").child(file).put(data, metadata: metadata).observe(.success) { (snapshot) in
             let downloadURL = snapshot.metadata?.downloadURL()?.absoluteString
             // Write the download URL to the Realtime Database
@@ -337,7 +327,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         self.initCollect(textField.text! as NSString)
       }
     }))
-    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
+    alert.visualStyle = CollectsAlertVisualStyle(alertStyle: .alert)
     alert.present()
   }
 

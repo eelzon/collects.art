@@ -56,7 +56,7 @@ class TemplateCollectionViewController: UICollectionViewController {
 
     let template = templates.object(at: indexPath.row) as! NSDictionary
     let url = template.value(forKey: "url") as! String
-    cell.templateView.af_setImage(withURL: URL.init(string: url)!)
+    cell.templateView.af_setImage(withURL: URL(string: url)!)
 
     cell.layer.borderWidth = 1.0
     cell.layer.cornerRadius = 0

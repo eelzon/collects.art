@@ -79,45 +79,11 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     swipeToCollects.delegate = self
     view.addGestureRecognizer(swipeToCollects)
 
-    let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    back.setImage(UIImage.init(named: "back"), for: .normal)
-    back.imageView?.contentMode = .scaleAspectFit
-    back.contentHorizontalAlignment = .fill
-    back.contentVerticalAlignment = .fill
-    back.addTarget(self, action: #selector(backToCollects(_:)), for: .touchUpInside)
-    backButton.customView = back
-
-    let open = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    open.setImage(UIImage.init(named: "open"), for: .normal)
-    open.imageView?.contentMode = .scaleAspectFit
-    open.contentHorizontalAlignment = .fill
-    open.contentVerticalAlignment = .fill
-    open.addTarget(self, action: #selector(openCollect(_:)), for: .touchUpInside)
-    openButton.customView = open
-
-    let rename = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    rename.setImage(UIImage.init(named: "rename"), for: .normal)
-    rename.imageView?.contentMode = .scaleAspectFit
-    rename.contentHorizontalAlignment = .fill
-    rename.contentVerticalAlignment = .fill
-    rename.addTarget(self, action: #selector(renameCollect(_:)), for: .touchUpInside)
-    renameButton.customView = rename
-
-    let template = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    template.setImage(UIImage.init(named: "template"), for: .normal)
-    template.imageView?.contentMode = .scaleAspectFit
-    template.contentHorizontalAlignment = .fill
-    template.contentVerticalAlignment = .fill
-    template.addTarget(self, action: #selector(openTemplate(_:)), for: .touchUpInside)
-    templateButton.customView = template
-
-    let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    add.setImage(UIImage.init(named: "addEntry"), for: .normal)
-    add.imageView?.contentMode = .scaleAspectFit
-    add.contentHorizontalAlignment = .fill
-    add.contentVerticalAlignment = .fill
-    add.addTarget(self, action: #selector(createEntry(_:)), for: .touchUpInside)
-    addButton.customView = add
+    backButton.customView = CollectsButton(image: "back", target: self, action: #selector(backToCollects(_:)))
+    openButton.customView = CollectsButton(image: "open", target: self, action: #selector(openCollect(_:)))
+    renameButton.customView = CollectsButton(image: "rename", target: self, action: #selector(renameCollect(_:)))
+    templateButton.customView = CollectsButton(image: "template", target: self, action: #selector(openTemplate(_:)))
+    addButton.customView = CollectsButton(image: "add", target: self, action: #selector(createEntry(_:)))
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -204,7 +170,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.changeTitle(textField.text!)
       }
     }))
-    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
+    alert.visualStyle = CollectsAlertVisualStyle(alertStyle: .alert)
     alert.present()
   }
 
@@ -213,7 +179,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     dismiss(animated: true, completion: {})
     if timestamp != nil, let title = collect.value(forKey: "title") {
       let url = ("https://collectable.art/\(timestamp!)/\(title)" as NSString).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-      UIApplication.shared.openURL(URL.init(string: url)!)
+      UIApplication.shared.openURL(URL(string: url)!)
     }
   }
 
@@ -243,7 +209,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   func refreshTitleCell() {
     tableView.beginUpdates()
-    tableView.reloadRows(at: [IndexPath.init(row: 0, section: 0)], with: .automatic)
+    tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     tableView.endUpdates()
   }
 

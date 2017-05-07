@@ -60,13 +60,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     swipeToCollect.direction = .right
     view.addGestureRecognizer(swipeToCollect)
 
-    let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    back.setImage(UIImage.init(named: "back"), for: .normal)
-    back.imageView?.contentMode = .scaleAspectFit
-    back.contentHorizontalAlignment = .fill
-    back.contentVerticalAlignment = .fill
-    back.addTarget(self, action: #selector(backToCollect(_:)), for: .touchUpInside)
-    backButton.customView = back
+    backButton.customView = CollectsButton(image: "back", target: self, action: #selector(backToCollect(_:)))
 
     imageView.layer.borderColor = UIColor.gray.cgColor
     imageView.layer.borderWidth = 1.0
@@ -185,7 +179,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Upload from url", style: .normal, handler: { (action) -> Void in
       self.promptUrl()
     }))
-    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .actionSheet)
+    alert.visualStyle = CollectsAlertVisualStyle(alertStyle: .actionSheet)
     alert.present()
   }
 
@@ -209,7 +203,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       imageView.image = nil
 
       if imageURL.characters.count > 0 {
-        let request = URLRequest.init(url: URL.init(string: imageURL)!)
+        let request = URLRequest(url: URL(string: imageURL)!)
         let imageDownloader = UIImageView.af_sharedImageDownloader
         // Clear the URLRequest from the in-memory cache
         let _ = imageDownloader.imageCache?.removeImage(for: request, withIdentifier: nil)
@@ -227,14 +221,14 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
       let textField = alert!.textFields![0] as UITextField
-      if URL.init(string: textField.text!) != nil {
+      if URL(string: textField.text!) != nil {
         self.clearImage()
         self.uploadUrl(textField.text!)
       } else {
         self.imageFailure()
       }
     }))
-    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
+    alert.visualStyle = CollectsAlertVisualStyle(alertStyle: .alert)
     alert.present()
   }
 
@@ -259,7 +253,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func imageFailure() {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.add(AlertAction(title: "That didn't work", style: .normal))
-    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
+    alert.visualStyle = CollectsAlertVisualStyle(alertStyle: .alert)
     alert.present()
   }
 

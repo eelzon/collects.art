@@ -56,7 +56,7 @@ class RibbonCollectionViewController: UICollectionViewController {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RibbonCollectionViewCell", for: indexPath) as! RibbonCollectionViewCell
 
     let url = ribbons.object(at: indexPath.row) as! String
-    cell.ribbonView.af_setImage(withURL: URL.init(string: url)!)
+    cell.ribbonView.af_setImage(withURL: URL(string: url)!)
 
     cell.layer.borderWidth = 1.0
     cell.layer.cornerRadius = 0
