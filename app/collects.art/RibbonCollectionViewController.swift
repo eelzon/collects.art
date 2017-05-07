@@ -61,7 +61,7 @@ class RibbonCollectionViewController: UICollectionViewController {
     cell.layer.borderWidth = 1.0
     cell.layer.cornerRadius = 0
     if url == ribbon {
-      cell.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+      cell.layer.borderColor = UIColor.gray.cgColor
     } else {
       cell.layer.borderColor = UIColor.clear.cgColor
     }

@@ -40,7 +40,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
 
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-  let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
+  let font = UIFont(name: "Times New Roman", size: 18)!
   var uid: String!
   var timestamp: String!
   var collectTitle: String!
@@ -80,43 +80,43 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     view.addGestureRecognizer(swipeToCollects)
 
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
+    back.setImage(UIImage.init(named: "back"), for: .normal)
     back.imageView?.contentMode = .scaleAspectFit
-    back.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    back.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    back.addTarget(self, action: #selector(backToCollects(_:)), for:UIControlEvents.touchUpInside)
+    back.contentHorizontalAlignment = .fill
+    back.contentVerticalAlignment = .fill
+    back.addTarget(self, action: #selector(backToCollects(_:)), for: .touchUpInside)
     backButton.customView = back
 
     let open = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    open.setImage(UIImage.init(named: "open"), for: UIControlState.normal)
+    open.setImage(UIImage.init(named: "open"), for: .normal)
     open.imageView?.contentMode = .scaleAspectFit
-    open.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    open.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    open.addTarget(self, action: #selector(openCollect(_:)), for:UIControlEvents.touchUpInside)
+    open.contentHorizontalAlignment = .fill
+    open.contentVerticalAlignment = .fill
+    open.addTarget(self, action: #selector(openCollect(_:)), for: .touchUpInside)
     openButton.customView = open
 
     let rename = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    rename.setImage(UIImage.init(named: "rename"), for: UIControlState.normal)
+    rename.setImage(UIImage.init(named: "rename"), for: .normal)
     rename.imageView?.contentMode = .scaleAspectFit
-    rename.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    rename.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    rename.addTarget(self, action: #selector(renameCollect(_:)), for:UIControlEvents.touchUpInside)
+    rename.contentHorizontalAlignment = .fill
+    rename.contentVerticalAlignment = .fill
+    rename.addTarget(self, action: #selector(renameCollect(_:)), for: .touchUpInside)
     renameButton.customView = rename
 
     let template = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    template.setImage(UIImage.init(named: "template"), for: UIControlState.normal)
+    template.setImage(UIImage.init(named: "template"), for: .normal)
     template.imageView?.contentMode = .scaleAspectFit
-    template.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    template.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    template.addTarget(self, action: #selector(openTemplate(_:)), for:UIControlEvents.touchUpInside)
+    template.contentHorizontalAlignment = .fill
+    template.contentVerticalAlignment = .fill
+    template.addTarget(self, action: #selector(openTemplate(_:)), for: .touchUpInside)
     templateButton.customView = template
 
     let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    add.setImage(UIImage.init(named: "addEntry"), for: UIControlState.normal)
+    add.setImage(UIImage.init(named: "addEntry"), for: .normal)
     add.imageView?.contentMode = .scaleAspectFit
-    add.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    add.addTarget(self, action: #selector(createEntry(_:)), for:UIControlEvents.touchUpInside)
+    add.contentHorizontalAlignment = .fill
+    add.contentVerticalAlignment = .fill
+    add.addTarget(self, action: #selector(createEntry(_:)), for: .touchUpInside)
     addButton.customView = add
   }
 
@@ -204,10 +204,10 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.changeTitle(textField.text!)
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
+    alert.visualStyle.textFieldFont = font
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.alertNormalFont = font
+    alert.visualStyle.normalTextColor = purple
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
 
@@ -294,8 +294,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         if !readonly {
           cell.delegate = self
           cell.showsRightSlideIndicator = false
-          let font = UIFont.init(name: "Times New Roman", size: 18)
-          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
+          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
         }
 
         cell.layoutIfNeeded()
@@ -308,8 +307,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         if !readonly {
           cell.delegate = self
           cell.showsRightSlideIndicator = false
-          let font = UIFont.init(name: "Times New Roman", size: 18)
-          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
+          cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
         }
 
         cell.layoutIfNeeded()
@@ -370,13 +368,6 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
       let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
       slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: false)
     }
-    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
-    cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
-  }
-
-  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
-    cell.contentView.backgroundColor = UIColor.clear
   }
 
   @IBAction func backToCollects(_ sender: Any) {

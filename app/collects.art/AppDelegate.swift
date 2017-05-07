@@ -32,9 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     UINavigationBar.appearance().tintColor = purple
     UINavigationBar.appearance().setTitleVerticalPositionAdjustment(4, for: .default)
 
-    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.normal)
-    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.focused)
-    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.selected)
+    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: .normal)
     UIBarButtonItem.appearance().tintColor = purple
 
     // custom scrollview behavior + done button entry
@@ -42,9 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     keyboardManager.toolbarTintColor = purple
     keyboardManager.enable = true
     keyboardManager.shouldPlayInputClicks = false
-    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.normal)
-    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.focused)
-    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: UIControlState.selected)
+    IQBarButtonItem.appearance().setTitleTextAttributes(attributes, for: .normal)
     IQBarButtonItem.appearance().tintColor = purple
 
     manager?.listener = { status in

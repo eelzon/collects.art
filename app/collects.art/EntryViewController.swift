@@ -25,6 +25,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var backButton: UIBarButtonItem!
 
+  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+  let font = UIFont(name: "Times New Roman", size: 18)!
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
@@ -39,7 +41,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
     // Do any additional setup after loading the view.
 
-    titleView.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+    titleView.layer.borderColor = UIColor.gray.cgColor
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
     titleView.text = entry.value(forKey: "title") as? String
@@ -59,19 +61,19 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     view.addGestureRecognizer(swipeToCollect)
 
     let back = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    back.setImage(UIImage.init(named: "back"), for: UIControlState.normal)
+    back.setImage(UIImage.init(named: "back"), for: .normal)
     back.imageView?.contentMode = .scaleAspectFit
-    back.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    back.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    back.addTarget(self, action: #selector(backToCollect(_:)), for:UIControlEvents.touchUpInside)
+    back.contentHorizontalAlignment = .fill
+    back.contentVerticalAlignment = .fill
+    back.addTarget(self, action: #selector(backToCollect(_:)), for: .touchUpInside)
     backButton.customView = back
 
-    imageView.layer.borderColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 1.0).cgColor
+    imageView.layer.borderColor = UIColor.gray.cgColor
     imageView.layer.borderWidth = 1.0
     imageView.layer.cornerRadius = 0
 
-    imageButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    imageButton.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
+    imageButton.contentHorizontalAlignment = .fill
+    imageButton.contentVerticalAlignment = .fill
     if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
       imageView.af_setImage(withURL: URL(string: imageURL)!)
       cameraImageView.isHidden = true
@@ -186,9 +188,9 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       self.promptUrl()
     }))
 
-    alert.visualStyle.actionSheetPreferredFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.actionSheetNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.actionSheetPreferredFont = font
+    alert.visualStyle.actionSheetNormalFont = font
+    alert.visualStyle.normalTextColor = purple
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
 
@@ -240,10 +242,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.imageFailure()
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
+    alert.visualStyle.textFieldFont = font
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.alertNormalFont = font
+    alert.visualStyle.normalTextColor = purple
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
 
@@ -271,8 +273,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func imageFailure() {
     let fail = AlertController(title: "", message: "", preferredStyle: .alert)
     fail.add(AlertAction(title: "That didn't work", style: .normal))
-    fail.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    fail.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    fail.visualStyle.alertNormalFont = font
+    fail.visualStyle.normalTextColor = purple
     fail.present()
   }
 

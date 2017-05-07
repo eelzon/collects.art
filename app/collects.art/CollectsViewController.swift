@@ -21,9 +21,15 @@ class CollectsTableViewCell: SESlideTableViewCell {
 
 class CollectsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, CollectDelegate, RibbonDelegate {
 
+  @IBOutlet weak var addButton: UIBarButtonItem!
+  @IBOutlet weak var userButton: UIBarButtonItem!
+  @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet weak var offlineView: UIWebView!
+
   let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
   let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-  let grey = UIColor(colorLiteralRed: 90/256, green: 94/256, blue: 105/256, alpha: 1.0)
+  let font = UIFont(name: "Times New Roman", size: 18)!
   var collects: NSMutableDictionary! = NSMutableDictionary()
   var timestamps: NSMutableArray! = NSMutableArray()
   let manager = NetworkReachabilityManager()
@@ -32,11 +38,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   var uid: String!
   var ribbon: String!
   var slidOpenIndexPath: IndexPath!
-  @IBOutlet weak var addButton: UIBarButtonItem!
-  @IBOutlet weak var userButton: UIBarButtonItem!
-  @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var offlineView: UIWebView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -50,21 +51,17 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     let add = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-    add.setImage(UIImage.init(named: "add"), for: UIControlState.normal)
+    add.setImage(UIImage.init(named: "add"), for: .normal)
     add.imageView?.contentMode = .scaleAspectFit
-    add.contentHorizontalAlignment = UIControlContentHorizontalAlignment.fill
-    add.contentVerticalAlignment = UIControlContentVerticalAlignment.fill
-    add.addTarget(self, action: #selector(createCollect(_:)), for:UIControlEvents.touchUpInside)
+    add.contentHorizontalAlignment = .fill
+    add.contentVerticalAlignment = .fill
+    add.addTarget(self, action: #selector(createCollect(_:)), for: .touchUpInside)
     addButton.customView = add
 
     let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
-    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.normal)
-    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.focused)
-    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
     navigationItem.rightBarButtonItem?.tintColor = purple
-    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.normal)
-    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.focused)
-    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: UIControlState.selected)
+    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
     navigationItem.leftBarButtonItem?.tintColor = purple
 
     tableView.scrollsToTop = true
@@ -149,9 +146,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       image?.af_inflate()
 
       let button = UIButton(frame: CGRect.init(x: 0, y: 0, width: 40, height: 40))
-      button.setImage(image, for: UIControlState.normal)
+      button.setImage(image, for: .normal)
       button.imageView?.contentMode = .scaleAspectFit
-      button.addTarget(self, action: #selector(openRibbons(_:)), for:UIControlEvents.touchUpInside)
+      button.addTarget(self, action: #selector(openRibbons(_:)), for: .touchUpInside)
       userButton.customView = button
     } catch {
       print(error.localizedDescription)
@@ -256,15 +253,14 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.removeAllRightButtons()
     cell.delegate = self
     cell.showsRightSlideIndicator = false
-    let font = UIFont.init(name: "Times New Roman", size: 18)
 
     let publishTitle = collect.object(forKey: "published") as? NSNumber == 0 ? "set public" : "set private"
-    cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font!)
+    cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font)
 
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "close collect" : "open collect"
-    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: purple, font: font!)
+    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: purple, font: font)
 
-    cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: grey, font: font!)
+    cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
 
     return cell
   }
@@ -325,13 +321,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
       let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
       slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: false)
     }
-    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
-    cell.contentView.backgroundColor = UIColor(colorLiteralRed: 200/256, green: 200/256, blue: 204/256, alpha: 0.1)
-  }
-
-  func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-    let cell: UITableViewCell = tableView.cellForRow(at: indexPath)!
-    cell.contentView.backgroundColor = UIColor.clear
   }
 
   @IBAction func createCollect(_ button: UIButton) {
@@ -348,10 +337,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         self.initCollect(textField.text! as NSString)
       }
     }))
-    alert.visualStyle.textFieldFont = UIFont(name: "Times New Roman", size: 18)!
+    alert.visualStyle.textFieldFont = font
     alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = UIFont(name: "Times New Roman", size: 18)!
-    alert.visualStyle.normalTextColor = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    alert.visualStyle.alertNormalFont = font
+    alert.visualStyle.normalTextColor = purple
     alert.visualStyle.backgroundColor = UIColor.white
     alert.visualStyle.cornerRadius = 0
 
