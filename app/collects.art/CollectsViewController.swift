@@ -27,8 +27,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var offlineView: UIWebView!
 
-  let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
-  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let font = UIFont(name: "Times New Roman", size: 18)!
   var collects: NSMutableDictionary! = NSMutableDictionary()
   var timestamps: NSMutableArray! = NSMutableArray()
@@ -246,10 +244,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     cell.showsRightSlideIndicator = false
 
     let publishTitle = collect.object(forKey: "published") as? NSNumber == 0 ? "set public" : "set private"
-    cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: blue, font: font)
+    cell.addRightButton(withText: publishTitle, textColor: UIColor.white, backgroundColor: UIColor.linkBlue, font: font)
 
     let readonlyTitle = collect.object(forKey: "readonly") as? NSNumber == 0 ? "close collect" : "open collect"
-    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: purple, font: font)
+    cell.addRightButton(withText: readonlyTitle, textColor: UIColor.white, backgroundColor: UIColor.linkPurple, font: font)
 
     cell.addRightButton(withText: "delete", textColor: UIColor.white, backgroundColor: UIColor.gray, font: font)
 

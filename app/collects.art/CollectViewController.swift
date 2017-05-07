@@ -39,8 +39,6 @@ class CollectTableViewCell: SESlideTableViewCell {
 
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate, UIGestureRecognizerDelegate {
 
-  let blue = UIColor(colorLiteralRed: 0, green: 0, blue: 238/256, alpha: 1.0)
-  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
   let font = UIFont(name: "Times New Roman", size: 18)!
   var uid: String!
   var timestamp: String!
