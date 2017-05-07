@@ -13,7 +13,9 @@ import AlamofireImage
 import AnimatedGIFImageSerialization
 
 protocol EntryDelegate {
+
   func updateEntry(entryTimestamp: String, entry: NSDictionary)
+
 }
 
 class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UITextViewDelegate {

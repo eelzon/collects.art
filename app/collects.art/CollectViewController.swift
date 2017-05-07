@@ -13,6 +13,12 @@ import AlamofireImage
 import SDCAlertView
 import SESlideTableViewCell
 
+protocol CollectDelegate {
+
+  func updateCollect(timestamp: String, collect: NSDictionary)
+
+}
+
 class CollectTitleTableViewCell: UITableViewCell {
 
   @IBOutlet var titleLabel: UILabel!
@@ -30,10 +36,6 @@ class CollectTableViewCell: SESlideTableViewCell {
 
   @IBOutlet var titleLabel: UILabel!
 
-}
-
-protocol CollectDelegate {
-  func updateCollect(timestamp: String, collect: NSDictionary)
 }
 
 class CollectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate, SESlideTableViewCellDelegate, TemplateDelegate, EntryDelegate, UIGestureRecognizerDelegate {

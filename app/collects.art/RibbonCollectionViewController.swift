@@ -8,38 +8,27 @@
 
 import UIKit
 
+protocol RibbonDelegate {
+
+  func setUserRibbon()
+
+}
+
 class RibbonCollectionViewCell: UICollectionViewCell {
 
   @IBOutlet var ribbonView: UIImageView!
 
 }
 
-protocol RibbonDelegate {
-  func setUserRibbon()
-}
-
-
 class RibbonCollectionViewController: UICollectionViewController {
 
-  var ribbon: String!
-  var ribbons: NSArray!
+  var ribbon: String! = UserDefaults.standard.object(forKey: "ribbon") as! String
+  var ribbons: NSArray! = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
   var delegate: RibbonDelegate!
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    ribbon = UserDefaults.standard.object(forKey: "ribbon") as! String
-    ribbons = UserDefaults.standard.object(forKey: "ribbons") as! NSArray
-  }
 
   override func viewWillAppear(_ animated: Bool) {
     self.view?.superview?.layer.cornerRadius = 0
     super.viewWillAppear(animated)
-  }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
   }
 
   // MARK: UICollectionViewDataSource

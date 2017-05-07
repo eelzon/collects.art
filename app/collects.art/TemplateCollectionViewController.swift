@@ -8,37 +8,28 @@
 
 import UIKit
 
+protocol TemplateDelegate {
+
+  func saveTemplate(index: Int)
+
+}
+
 class TemplateCollectionViewCell: UICollectionViewCell {
 
   @IBOutlet var templateView: UIImageView!
 
 }
 
-protocol TemplateDelegate {
-  func saveTemplate(index: Int)
-}
-
 class TemplateCollectionViewController: UICollectionViewController {
 
   var templateIndex: Int!
   var timestamp: String!
-  var templates: NSArray!
+  var templates: NSArray = UserDefaults.standard.object(forKey: "templates") as! NSArray
   var delegate: TemplateDelegate!
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    templates = UserDefaults.standard.object(forKey: "templates") as! NSArray
-  }
 
   override func viewWillAppear(_ animated: Bool) {
     self.view?.superview?.layer.cornerRadius = 0
     super.viewWillAppear(animated)
-  }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
   }
 
   // MARK: UICollectionViewDataSource

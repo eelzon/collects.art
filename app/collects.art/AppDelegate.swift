@@ -78,10 +78,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
 
-
 }
 
 class NavigationBar: UINavigationBar {
+
   override func layoutSubviews() {
     super.layoutSubviews()
     frame.size.height = 54
@@ -92,9 +92,11 @@ class NavigationBar: UINavigationBar {
     size.height = 54
     return size
   }
+
 }
 
 class Toolbar: UIToolbar {
+
   override func layoutSubviews() {
     super.layoutSubviews()
     frame.size.height = 54
@@ -105,5 +107,5 @@ class Toolbar: UIToolbar {
     size.height = 54
     return size
   }
-}
 
+}
