@@ -25,8 +25,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
   @IBOutlet weak var backButton: UIBarButtonItem!
 
-  let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-  let font = UIFont(name: "Times New Roman", size: 18)!
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
@@ -40,6 +38,8 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     super.viewDidLoad()
 
     // Do any additional setup after loading the view.
+
+    imagePicker.delegate = self
 
     titleView.layer.borderColor = UIColor.gray.cgColor
     titleView.layer.borderWidth = 1.0
@@ -174,26 +174,18 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
     if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)) {
       alert.add(AlertAction(title: "Take photo", style: .normal, handler: { (action) -> Void in
-        self.imagePicker.delegate = self
         self.imagePicker.sourceType = .camera
         self.present(self.imagePicker, animated: false, completion: nil)
       }))
     }
     alert.add(AlertAction(title: "Photo library", style: .normal, handler: { (action) -> Void in
-      self.imagePicker.delegate = self
       self.imagePicker.sourceType = .photoLibrary
       self.present(self.imagePicker, animated: false, completion: nil)
     }))
     alert.add(AlertAction(title: "Upload from url", style: .normal, handler: { (action) -> Void in
       self.promptUrl()
     }))
-
-    alert.visualStyle.actionSheetPreferredFont = font
-    alert.visualStyle.actionSheetNormalFont = font
-    alert.visualStyle.normalTextColor = purple
-    alert.visualStyle.backgroundColor = UIColor.white
-    alert.visualStyle.cornerRadius = 0
-
+    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .actionSheet)
     alert.present()
   }
 
@@ -242,13 +234,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
         self.imageFailure()
       }
     }))
-    alert.visualStyle.textFieldFont = font
-    alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = font
-    alert.visualStyle.normalTextColor = purple
-    alert.visualStyle.backgroundColor = UIColor.white
-    alert.visualStyle.cornerRadius = 0
-
+    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
     alert.present()
   }
 
@@ -271,11 +257,10 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   }
 
   func imageFailure() {
-    let fail = AlertController(title: "", message: "", preferredStyle: .alert)
-    fail.add(AlertAction(title: "That didn't work", style: .normal))
-    fail.visualStyle.alertNormalFont = font
-    fail.visualStyle.normalTextColor = purple
-    fail.present()
+    let alert = AlertController(title: "", message: "", preferredStyle: .alert)
+    alert.add(AlertAction(title: "That didn't work", style: .normal))
+    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
+    alert.present()
   }
 
   func uploadUrl(_ url: String) {

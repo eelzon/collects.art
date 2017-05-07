@@ -337,13 +337,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
         self.initCollect(textField.text! as NSString)
       }
     }))
-    alert.visualStyle.textFieldFont = font
-    alert.visualStyle.textFieldHeight = 30
-    alert.visualStyle.alertNormalFont = font
-    alert.visualStyle.normalTextColor = purple
-    alert.visualStyle.backgroundColor = UIColor.white
-    alert.visualStyle.cornerRadius = 0
-
+    alert.visualStyle = CollectsAlertVisualStyle.init(alertStyle: .alert)
     alert.present()
   }
 

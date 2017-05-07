@@ -16,6 +16,7 @@
 		652CA7C91E971A2900AA749F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7C81E971A2900AA749F /* Assets.xcassets */; };
 		652CA7CC1E971A2900AA749F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 652CA7CA1E971A2900AA749F /* LaunchScreen.storyboard */; };
 		65489E051EA3D7A200D3B6FB /* RibbonCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */; };
+		659EC68F1EBFB2A800F7D86A /* CollectsAlertVisualStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EC68E1EBFB2A800F7D86A /* CollectsAlertVisualStyle.swift */; };
 		65BE48391EAEEECC008B0ED9 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */; };
 		65BE483B1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE483A1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift */; };
 		65C3BCBD1E9B407B0053FD76 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */; };
@@ -35,6 +36,7 @@
 		652CA7CB1E971A2900AA749F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		652CA7CD1E971A2900AA749F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RibbonCollectionViewController.swift; sourceTree = "<group>"; };
+		659EC68E1EBFB2A800F7D86A /* CollectsAlertVisualStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectsAlertVisualStyle.swift; sourceTree = "<group>"; };
 		65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		65BE483A1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateCollectionViewController.swift; sourceTree = "<group>"; };
 		65C3BCBC1E9B407B0053FD76 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				65BE48381EAEEECC008B0ED9 /* AboutViewController.swift */,
 				65489E041EA3D7A200D3B6FB /* RibbonCollectionViewController.swift */,
 				652839691E9726530060CFB7 /* CollectViewController.swift */,
+				659EC68E1EBFB2A800F7D86A /* CollectsAlertVisualStyle.swift */,
 				65BE483A1EAEF3FD008B0ED9 /* TemplateCollectionViewController.swift */,
 				652839681E9726530060CFB7 /* EntryViewController.swift */,
 				652CA7C81E971A2900AA749F /* Assets.xcassets */,
@@ -240,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				659EC68F1EBFB2A800F7D86A /* CollectsAlertVisualStyle.swift in Sources */,
 				65BE48391EAEEECC008B0ED9 /* AboutViewController.swift in Sources */,
 				652839701E9726530060CFB7 /* CollectViewController.swift in Sources */,
 				652839761E9737040060CFB7 /* CollectsViewController.swift in Sources */,
