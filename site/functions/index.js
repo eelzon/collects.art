@@ -7,11 +7,11 @@ admin.initializeApp(functions.config().firebase);
 // https://firebase.google.com/docs/functions/write-firebase-functions
 exports.template = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
-    admin.database().ref('/collects/' + req.query.timestamp).once('value').then(function(snapshot) {
-      var collect = snapshot.exportVal();
-      admin.database().ref(`/templates/template${collect.template}/background`).once('value').then(function(snapshot) {
-        var background = snapshot.exportVal();
-        var html = getTemplate(collect, background);
+    getValue(`/collects/${req.query.timestamp}`).then(function(collect) {
+      getValue(`/templates/template${collect.template}/background`).then(function(background) {
+        var template = require(`./templates/template${collect.template}`);
+        var entries = arrayFromEntries(collect.entries);
+        var html = template(collect.title, entries, background);
         res.send(html);
       });
     });
@@ -28,20 +28,8 @@ function arrayFromEntries(dict) {
   }, []);
 }
 
-function getTemplate(collect, background) {
-  var templates = [
-    'zero lol', // don't tell me what to do, man
-    require('./templates/template1'),
-    require('./templates/template2'),
-    require('./templates/template3'),
-    require('./templates/template4'),
-    require('./templates/template5'),
-    require('./templates/template6'),
-    require('./templates/template7'),
-    require('./templates/template8'),
-    require('./templates/template9'),
-    require('./templates/template10')
-  ];
-  var entries = arrayFromEntries(collect.entries);
-  return templates[collect.template](collect.title, entries, background);
+function getValue(path) {
+  return admin.database().ref(path).once('value').then(function(snapshot) {
+    return snapshot.exportVal();
+  });
 }
