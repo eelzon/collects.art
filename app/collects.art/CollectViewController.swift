@@ -6,7 +6,6 @@
 //  Copyright © 2017 Nozlee Samadzadeh and Bunny Rogers. All rights reserved.
 //
 
-import QuartzCore
 import UIKit
 import Firebase
 import AlamofireImage

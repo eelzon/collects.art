@@ -42,6 +42,10 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    if UserDefaults.standard.object(forKey: "collects") == nil {
+      UserDefaults.standard.set(NSDictionary(), forKey: "collects")
+    }
+
     setReachability()
 
     if !manager!.isReachable {
@@ -52,11 +56,8 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
 
     addButton.customView = CollectsButton(image: "add", target: self, action: #selector(createCollect(_:)))
 
-    let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
-    navigationItem.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
-    navigationItem.rightBarButtonItem?.tintColor = purple
-    navigationItem.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
-    navigationItem.leftBarButtonItem?.tintColor = purple
+    navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
+    navigationItem.leftBarButtonItem?.setTitleTextAttributes([NSFontAttributeName: font], for: .normal)
 
     tableView.scrollsToTop = true
     tableView.estimatedRowHeight = 80

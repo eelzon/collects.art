@@ -18,24 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   let manager = NetworkReachabilityManager()
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    // Override point for customization after application launch.
-    if UserDefaults.standard.object(forKey: "collects") == nil {
-      UserDefaults.standard.set(NSDictionary(), forKey: "collects")
-    }
-
     // Use Firebase library to configure APIs
     FIRApp.configure()
 
-    let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
-    let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!, NSForegroundColorAttributeName: purple]
-    UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "TimesNewRomanPS-BoldMT", size:32)!]
-    UINavigationBar.appearance().tintColor = purple
-    UINavigationBar.appearance().setTitleVerticalPositionAdjustment(4, for: .default)
-
-    UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: .normal)
-    UIBarButtonItem.appearance().tintColor = purple
-
     // custom scrollview behavior + done button entry
+    let purple = UIColor(colorLiteralRed: 85/256, green: 26/256, blue: 139/256, alpha: 1.0)
+    let attributes = [NSFontAttributeName: UIFont(name: "Times New Roman", size:18)!]
     let keyboardManager = IQKeyboardManager.sharedManager()
     keyboardManager.toolbarTintColor = purple
     keyboardManager.enable = true
@@ -50,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
       }
     }
-
     manager?.startListening()
 
     return true
