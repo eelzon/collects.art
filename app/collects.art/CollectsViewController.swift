@@ -45,10 +45,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     ref = FIRDatabase.database().reference()
     storageRef = FIRStorage.storage().reference()
 
-    if UserDefaults.standard.object(forKey: "collects") == nil {
-      UserDefaults.standard.set(NSDictionary(), forKey: "collects")
-    }
-
     initReachability()
 
     setAuth()
@@ -110,16 +106,7 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     return cell
   }
 
-  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    return true
-  }
-
   // MARK: UITableViewDelegate
-
-  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    cell.separatorInset = UIEdgeInsets.zero
-    cell.layoutMargins = UIEdgeInsets.zero
-  }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
@@ -207,24 +194,28 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func getCollects() {
-    tableView.isHidden = false
-    addButton.isEnabled = true
-    userButton.isEnabled = true
-    ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
-      if snapshot.exists(), let value = snapshot.value as? NSDictionary {
-        UserDefaults.standard.set(value, forKey: "collects")
-        self.setCollects(dict: value)
-      } else {
-        self.setCollects(dict: UserDefaults.standard.object(forKey: "collects") as! NSDictionary)
+    if UserDefaults.standard.object(forKey: "collects") == nil {
+      UserDefaults.standard.set(NSDictionary(), forKey: "collects")
+      ref.child("users/\(uid!)/collects").queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
+        if snapshot.exists(), let value = snapshot.value as? NSDictionary {
+          UserDefaults.standard.set(value, forKey: "collects")
+        }
+        self.setCollects()
+      }) { (error) in
+        print(error.localizedDescription)
+        self.setCollects()
       }
-    }) { (error) in
-      print(error.localizedDescription)
-      self.setCollects(dict: UserDefaults.standard.object(forKey: "collects") as! NSDictionary)
+    } else {
+      setCollects()
     }
   }
 
-  func setCollects(dict: NSDictionary) {
+  func setCollects() {
     activityIndicator.stopAnimating()
+    addButton.isEnabled = true
+    userButton.isEnabled = true
+
+    let dict = UserDefaults.standard.object(forKey: "collects") as! NSDictionary
     collects = dict.mutableCopy() as! NSMutableDictionary
     let array = (self.collects.allKeys as NSArray).reverseObjectEnumerator().allObjects
     timestamps = NSMutableArray(array: array)

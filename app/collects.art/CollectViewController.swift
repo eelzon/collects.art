@@ -160,19 +160,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
   }
 
-  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-    if readonly || indexPath.section == 0 {
-      return false
-    }
-    return true
-  }
-
   // MARK: UITableViewDelegate
-
-  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    cell.separatorInset = UIEdgeInsets.zero
-    cell.layoutMargins = UIEdgeInsets.zero
-  }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
