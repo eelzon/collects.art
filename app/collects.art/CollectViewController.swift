@@ -140,7 +140,7 @@ class CollectViewController: UIViewController, UITableViewDelegate, UITableViewD
         entryTitle = "untitled"
       }
 
-      var cell: SESlideTableViewCell;
+      var cell: SESlideTableViewCell
       if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
         cell = tableView.dequeueReusableCell(withIdentifier: "CollectWithImageTableViewCell") as! CollectWithImageTableViewCell
         (cell as! CollectWithImageTableViewCell).entryImageView.af_setImage(withURL: URL(string: imageURL)!)
