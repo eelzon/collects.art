@@ -25,7 +25,6 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   @IBOutlet var userButton: UIBarButtonItem!
   @IBOutlet var tableView: UITableView!
   @IBOutlet var activityIndicator: UIActivityIndicatorView!
-  @IBOutlet var offlineView: UIWebView!
 
   let font = UIFont(name: "Times New Roman", size: 18)!
   let manager = NetworkReachabilityManager()!
@@ -113,8 +112,15 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     // if there's any open slide menu, close it before moving
     if slidOpenIndexPath != nil,
       let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
-      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: false)
+      slidOpenCell.setSlideState(.center, animated: false)
     }
+  }
+
+  func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    if !manager.isReachable {
+      return nil
+    }
+    return indexPath
   }
 
   // MARK: SESlideTableViewCellDelegate
@@ -125,12 +131,24 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
     if slidOpenIndexPath != nil,
       indexPath != slidOpenIndexPath,
       let slidOpenCell = tableView.cellForRow(at: slidOpenIndexPath) as? SESlideTableViewCell {
-      slidOpenCell.setSlideState(SESlideTableViewCellSlideState.center, animated: true)
+      slidOpenCell.setSlideState(.center, animated: true)
     }
     slidOpenIndexPath = indexPath
   }
 
+  func slideTableViewCell(_ cell: SESlideTableViewCell!, canSlideTo slideState: SESlideTableViewCellSlideState) -> Bool {
+    // even if the app is offline, allow opened slide menus to close
+    if !manager.isReachable, slideState == .right {
+      return false
+    }
+    return true
+  }
+
   func slideTableViewCell(_ cell: SESlideTableViewCell!, didTriggerRightButton buttonIndex: NSInteger) {
+    if !manager.isReachable {
+      cell.setSlideState(.center, animated: true)
+      return
+    }
     let indexPath = tableView.indexPath(for: cell)!
     let timestamp = timestamps[indexPath.row] as! String
     let dict = collects[timestamp] as! NSDictionary
@@ -164,12 +182,9 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   func setAuth() {
     if !manager.isReachable {
       self.lockDown()
-      return
     }
 
-    offlineView.isHidden = false
     activityIndicator.startAnimating()
-    tableView.isHidden = true
 
     // Using Cloud Storage for Firebase requires the user be authenticated. Here we are using
     // anonymous authentication.
@@ -395,13 +410,11 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   // MARK: reachability
 
   func initReachability() {
-    let html = "<html><body><h1>oops</h1><p>please connect to the internet</p></body></html>"
-    offlineView.loadHTMLString(html, baseURL: nil)
-
     manager.listener = { status in
       if status == .notReachable {
         self.lockDown()
       } else {
+        self.navigationItem.title = "Collects";
         self.setAuth()
       }
     }
@@ -410,12 +423,11 @@ class CollectsViewController: UIViewController, UITableViewDelegate, UITableView
   }
 
   func lockDown() {
+    self.navigationItem.title = "Collects (offline)";
     dismiss(animated: true, completion: {})
     activityIndicator.stopAnimating()
     addButton.isEnabled = false
     userButton.isEnabled = false
-    tableView.isHidden = true
-    offlineView.isHidden = false
   }
   
 }

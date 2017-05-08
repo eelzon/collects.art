@@ -410,11 +410,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <webView hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Se7-dS-CaY">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </webView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="77" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="j7Y-hT-ZEk">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -507,7 +502,6 @@
                     <connections>
                         <outlet property="activityIndicator" destination="mkJ-r8-bnt" id="0HK-HW-0aK"/>
                         <outlet property="addButton" destination="7fv-HH-02L" id="V2v-ZS-r8B"/>
-                        <outlet property="offlineView" destination="Se7-dS-CaY" id="ORP-mM-p9O"/>
                         <outlet property="tableView" destination="j7Y-hT-ZEk" id="3xc-UJ-TQJ"/>
                         <outlet property="userButton" destination="QmR-nH-Gma" id="bBE-Gi-yt5"/>
                         <segue destination="NlI-zy-vna" kind="popoverPresentation" identifier="segueToRibbons" popoverAnchorBarButtonItem="QmR-nH-Gma" id="j6D-qu-FOq">
