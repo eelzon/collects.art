@@ -10,7 +10,7 @@ import UIKit
 
 class AboutViewController: UIViewController, UIWebViewDelegate {
 
-  @IBOutlet weak var webView: UIWebView!
+  @IBOutlet var webView: UIWebView!
 
   override func viewDidLoad() {
     super.viewDidLoad()

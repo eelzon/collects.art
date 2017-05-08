@@ -24,17 +24,19 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   @IBOutlet var imageButton: UIButton!
   @IBOutlet var imageView: UIImageView!
   @IBOutlet var titleView: UITextView!
-  @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var backButton: UIBarButtonItem!
+  @IBOutlet var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet var backButton: UIBarButtonItem!
 
   let imagePicker = UIImagePickerController()
   var timestamp: String!
   var collectTimestamp: String!
   var entry: NSMutableDictionary!
   var readonly: Bool!
-  var ref: FIRDatabaseReference!
-  var storageRef: FIRStorageReference!
+  var ref: FIRDatabaseReference = FIRDatabase.database().reference()
+  var storageRef: FIRStorageReference! = FIRStorage.storage().reference()
   var delegate: EntryDelegate!
+
+  // MARK: UIViewController
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -47,16 +49,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     titleView.layer.borderWidth = 1.0
     titleView.layer.cornerRadius = 0
     titleView.text = entry.value(forKey: "title") as? String
-
-    ref = FIRDatabase.database().reference()
-    storageRef = FIRStorage.storage().reference()
-
-    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-    view.addGestureRecognizer(tap)
-
     if readonly {
       titleView.isEditable = false
     }
+
+    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+    view.addGestureRecognizer(tap)
 
     let swipeToCollect = UISwipeGestureRecognizer(target: self, action: #selector(backToCollect(_:)))
     swipeToCollect.direction = .right
@@ -68,8 +66,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     imageView.layer.borderWidth = 1.0
     imageView.layer.cornerRadius = 0
 
-    imageButton.contentHorizontalAlignment = .fill
-    imageButton.contentVerticalAlignment = .fill
     if let imageURL = entry.object(forKey: "image") as? String, imageURL.characters.count > 0 {
       imageView.af_setImage(withURL: URL(string: imageURL)!)
       cameraImageView.isHidden = true
@@ -79,32 +75,13 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
   }
 
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-  }
-
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-  }
-
   override func viewWillDisappear(_ animated: Bool) {
     saveEntry()
 
     super.viewWillDisappear(animated)
   }
 
-  func saveEntry() {
-    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
-    entry.setValue(titleView.text!, forKey: "title")
-    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
-  }
-
-  func dismissKeyboard() {
-    view.endEditing(true)
-  }
-
-  // MARK: - UIImagePickerControllerDelegate Methods
+  // MARK: UIImagePickerControllerDelegate
 
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -128,6 +105,26 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     dismiss(animated: true, completion: nil)
   }
 
+  func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+    dismiss(animated: true, completion: nil)
+  }
+
+  // MARK: keyboard
+
+  func dismissKeyboard() {
+    view.endEditing(true)
+  }
+
+  // MARK: entry
+
+  func saveEntry() {
+    ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/title").setValue(titleView.text!)
+    entry.setValue(titleView.text!, forKey: "title")
+    delegate.updateEntry(entryTimestamp: timestamp, entry: entry)
+  }
+
+  // MARK: image utilities
+
   func resizedImage(_ image: UIImage) -> UIImage {
     let oldWidth = image.size.width
     let oldHeight = image.size.height
@@ -149,13 +146,25 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     return newImage!
   }
 
-  func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-    dismiss(animated: true, completion: nil)
+  func fileInfo(_ data: Data) -> (String, String) {
+    var values = [UInt8](repeating:0, count:1)
+    data.copyBytes(to: &values, count: 1)
+
+    switch (values[0]) {
+    case 0xFF:
+      return ("image/jpeg", "jpg")
+    case 0x89:
+      return ("image/png", "png")
+    case 0x47:
+      return ("image/gif", "gif")
+    case 0x49, 0x4D:
+      return ("image/tiff", "tiff")
+    default:
+      return ("", "")
+    }
   }
 
-  @IBAction func backToCollect(_ sender: Any) {
-    performSegue(withIdentifier: "unwindToCollect", sender: self)
-  }
+  // MARK: image actions
 
   @IBAction func addImage(_ button: UIButton) {
     if (readonly) {
@@ -218,7 +227,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
   func promptUrl() {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
     alert.addTextField(withHandler: { (textField) -> Void in
-      textField.autocapitalizationType = UITextAutocapitalizationType.none
+      textField.autocapitalizationType = .none
     })
     alert.add(AlertAction(title: "Cancel", style: .normal))
     alert.add(AlertAction(title: "Upload url", style: .normal, handler: { [weak alert] (action) -> Void in
@@ -234,23 +243,7 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     alert.present()
   }
 
-  func fileInfo(_ data: Data) -> (String, String) {
-    var values = [UInt8](repeating:0, count:1)
-    data.copyBytes(to: &values, count: 1)
-
-    switch (values[0]) {
-    case 0xFF:
-      return ("image/jpeg", "jpg")
-    case 0x89:
-      return ("image/png", "png")
-    case 0x47:
-      return ("image/gif", "gif")
-    case 0x49, 0x4D:
-      return ("image/tiff", "tiff")
-    default:
-      return ("", "")
-    }
-  }
+  // MARK: image upload
 
   func imageFailure() {
     let alert = AlertController(title: "", message: "", preferredStyle: .alert)
@@ -264,7 +257,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     saveEntry()
     ref.child("collects/\(collectTimestamp!)/entries/\(timestamp!)/image").setValue(url)
     cameraImageView.isHidden = true
-    imageView.isHidden = false
     imageView.af_setImage(withURL: URL(string: url)!)
   }
 
@@ -272,7 +264,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     let (contentType, fileExt) = fileInfo(data)
     if fileExt != "" {
       clearImage()
-      imageView.isHidden = true
       cameraImageView.isHidden = true
       activityIndicator.startAnimating()
 
@@ -283,7 +274,6 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
       task.put(data, metadata: imageMetadata, completion: { (_ metadata: FIRStorageMetadata?, _ error: Error?) in
         self.activityIndicator.stopAnimating()
         if error != nil {
-          self.imageView.isHidden = false
           if self.imageView.image == nil {
             self.cameraImageView.isHidden = false
           }
@@ -297,6 +287,12 @@ class EntryViewController: UIViewController, UIImagePickerControllerDelegate, UI
     } else {
       imageFailure()
     }
+  }
+
+  // MARK: segue
+
+  @IBAction func backToCollect(_ sender: Any) {
+    performSegue(withIdentifier: "unwindToCollect", sender: self)
   }
   
 }

@@ -178,16 +178,10 @@
                     <toolbarItems>
                         <barButtonItem title="back" id="oyv-q1-ceZ">
                             <color key="tintColor" red="0.33333333333333331" green="0.10196078431372549" blue="0.54509803921568623" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="backToCollects:" destination="Tlv-7y-fsl" id="4ae-lZ-ktj"/>
-                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Ud2-Eq-B00"/>
                         <barButtonItem title="open" id="gEc-QD-ovF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="openCollect:" destination="Tlv-7y-fsl" id="22I-NI-fhR"/>
-                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="7z7-fv-dq5"/>
                         <barButtonItem id="Aya-l4-dKb">
@@ -197,7 +191,6 @@
                         <barButtonItem title="template" id="UX5-0d-5Mf">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
-                                <action selector="openTemplate:" destination="Tlv-7y-fsl" id="dqz-Ur-Nak"/>
                                 <segue destination="Po2-JR-vjN" kind="popoverPresentation" identifier="segueToTemplates" popoverAnchorBarButtonItem="UX5-0d-5Mf" id="SQL-dk-a0K">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                 </segue>
@@ -206,9 +199,6 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="tT2-b4-dGR"/>
                         <barButtonItem title="add" id="rk1-8e-lkz">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="createEntry:" destination="Tlv-7y-fsl" id="i44-zk-cXN"/>
-                            </connections>
                         </barButtonItem>
                     </toolbarItems>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -366,9 +356,6 @@
                     <toolbarItems>
                         <barButtonItem title="back" id="THw-c5-6hF">
                             <color key="tintColor" red="0.33333333329999998" green="0.1019607843" blue="0.5450980392" alpha="1" colorSpace="calibratedRGB"/>
-                            <connections>
-                                <action selector="backToCollect:" destination="9w7-w4-OsN" id="tsO-oC-DFt"/>
-                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Sf2-ec-OcX"/>
                     </toolbarItems>
