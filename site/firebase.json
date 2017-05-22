@@ -11,7 +11,7 @@
       "source": "**/all",
       "destination": "/index.html"
     }, {
-      "source": "**/*[0-9]**",
+      "source": "**/**",
       "destination": "/collect.html"
     } ],
     "redirects": [ {
